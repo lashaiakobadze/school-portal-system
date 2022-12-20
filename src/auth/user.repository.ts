@@ -6,7 +6,7 @@ import { AuthCredentialDto } from './dto/auth.dto';
 import { User } from './user.entity';
 
 @Injectable()
-export class UserRepository extends Repository<User>  {
+export class UserRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
@@ -17,10 +17,10 @@ export class UserRepository extends Repository<User>  {
     // hash
     const salt = await bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     const user: User = this.create({
       username,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
     try {
@@ -29,9 +29,9 @@ export class UserRepository extends Repository<User>  {
       if (error.code === '23505') {
         throw new ConflictException('Username already exists');
       } else {
+        console.log('error', error);
         throw new InternalServerErrorException();
       }
     }
-
   }
 }

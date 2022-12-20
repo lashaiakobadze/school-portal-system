@@ -1,7 +1,6 @@
 import { IsString, Matches, MaxLength, MinLength } from "class-validator";
-import { Role } from "../models/role.enum";
 
-export class AuthCredentialDto {
+export class RegisterCredentialDto {
   @IsString()
   @MinLength(8)
   @MaxLength(20)
@@ -18,5 +17,5 @@ export class AuthCredentialDto {
   })
   password: string;
 
-  roles?: Role[];
+  roles?: string[];
 }
