@@ -1,33 +1,4 @@
-// import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-// import { Reflector } from '@nestjs/core';
-// import { Observable } from 'rxjs';
-// import { AuthCredentialDto } from './dto/auth.dto';
-// import { Role } from './models/role.enum';
-
-// @Injectable()
-// export class RolesGuard implements CanActivate {
-//   constructor(private reflector: Reflector) {}
-//   canActivate(context: ExecutionContext): boolean {
-//     const requireRoles = this.reflector.getAllAndOverride<Role[]>('roles', [context.getHandler(), context.getClass()]);
-
-//     console.log('requireRoles', requireRoles);
-
-//     if (!requireRoles) {
-//       return true;
-//     }
-//     const { body } = context.switchToHttp().getRequest();
-
-//     console.log('body', body);
-//     // const user: AuthCredentialDto = {
-//     //   username: 'kjsaldkj',
-//     //   password: 'kLAJDLKa',
-//     //   roles: [Role.ADMIN],
-//     // };
-//     return requireRoles.some(role => body.roles.includes(role));
-//   }
-// }
-
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, BadRequestException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from './models/role.enum';
 import { User } from './user.entity';
@@ -37,28 +8,31 @@ const ROLES_KEY = 'roles';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private usersRepository: UserRepository,
-    private reflector: Reflector
-  ) { }
+  constructor(private usersRepository: UserRepository, private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (!requiredRoles) {
       return true;
     }
 
     const { body } = context.switchToHttp().getRequest();
-    const username = body.username;
+    const creatorId = body.creatorId;
+    const creatorUser: User = await this.usersRepository.findOneBy({ id: creatorId });
 
-    const freshUser = await this.usersRepository.findOneBy({ username });
+    let data =  '';
+    const req = context.switchToHttp().getRequest();
+    console.log(data ? req.headers[data] : req.headers);
 
-    await console.log('freshUser', freshUser);
+    // console.log('req', req);
+
     console.log('body', body);
+    console.log('creatorUser', creatorUser);
 
-    return requiredRoles.some((role) => freshUser.roles?.includes(role));
+    if (!creatorId || !creatorUser) {
+      throw new BadRequestException('Something bad happened', { cause: new Error(), description: "Creator isn't correct" });
+    }
+
+    return requiredRoles.some(role => creatorUser.roles?.includes(role));
   }
 }

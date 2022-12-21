@@ -18,9 +18,9 @@ export class User {
   password: string;
 
   @Column()
-  roles?: Role[];
+  creatorId: string;
 
-  // @OneToMany((_type) => Task, (task) => task.user, { eager: true })
-  // tasks: Task[];
+  @Column()
+  roles?: Role[];
 }
 

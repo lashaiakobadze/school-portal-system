@@ -1,7 +1,7 @@
-import { IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, IsUUID, Matches, MaxLength, MinLength } from "class-validator";
 import { Role } from "../models/role.enum";
 
-export class AuthCredentialDto {
+export class SignupInputs {
   @IsString()
   @MinLength(8)
   @MaxLength(20)
@@ -14,4 +14,11 @@ export class AuthCredentialDto {
     message: "password is weak",
   })
   password: string;
+
+  @IsUUID()
+  creatorId: string;
+
+  @IsNotEmpty()
+  @IsEnum(Role, { each: true })
+  roles: Role[];
 }

@@ -4,6 +4,9 @@ import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
+import { v4 as uuid } from 'uuid';
+import { SignupInputs } from './models/signup.inputs';
+import { SignupDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +15,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  signUp(authCredentialDto: AuthCredentialDto): Promise<void> {
-    return this.usersRepository.createUser(authCredentialDto);
+  signUp(signupInputs: SignupInputs): Promise<void> {
+    const signupDto: SignupDto = {
+      id: uuid(),
+      ...signupInputs
+    }    
+    return this.usersRepository.createUser(signupDto);
   }
 
   async signIn(

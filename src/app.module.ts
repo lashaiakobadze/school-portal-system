@@ -43,10 +43,10 @@ import { UserRepository } from './auth/user.repository';
   providers: [
     UserRepository,
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule {}
