@@ -15,9 +15,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  signUp(signupInputs: SignupInputs): Promise<void> {
+  signUp(signupInputs: SignupInputs, user: User): Promise<void> {
+    const { creatorId } = user;
+    
     const signupDto: SignupDto = {
       id: uuid(),
+      creatorId,
+      createdDate: new Date(),
       ...signupInputs
     }    
     return this.usersRepository.createUser(signupDto);

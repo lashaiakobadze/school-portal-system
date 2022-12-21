@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from "class-validator";
 import { Role } from "../models/role.enum";
 
 export class SignupDto {
@@ -24,4 +24,15 @@ export class SignupDto {
   @IsNotEmpty()
   @IsEnum(Role, { each: true })
   roles: Role[];
+
+  @IsDate()
+  createdDate: Date;
+
+  @IsDate()
+  @IsOptional()
+  updatedDate?: Date;
+
+  @IsDate()
+  @IsOptional()
+  deletedDate?: Date;
 }

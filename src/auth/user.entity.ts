@@ -1,13 +1,11 @@
-/* eslint-disable prettier/prettier */
-// import { Task } from 'src/tasks/tasks.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ObjectIdColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Role } from './models/role.enum';
 
 @Entity()
 export class User {
   @ObjectIdColumn()
   _id: string;
-  
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,5 +20,13 @@ export class User {
 
   @Column()
   roles?: Role[];
-}
 
+  @CreateDateColumn()
+  createdDate: Date;
+
+  @UpdateDateColumn()
+  updatedDate: Date;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
+}

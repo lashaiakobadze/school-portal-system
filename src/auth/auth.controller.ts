@@ -7,6 +7,8 @@ import { RolesGuard } from './roles.guard';
 import { SignupInputs } from './models/signup.inputs';
 import { HasRoles } from './roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './get-user.decorator';
+import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -20,9 +22,9 @@ export class AuthController {
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup')
-  signUp(@Body() signupInputs: SignupInputs): Promise<void> {
+  signUp(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> {
     if (signupInputs.roles.some(role => role !== Role.TEACHER) && signupInputs.roles.some(role => role !== Role.ADMIN)) {
-      return this.authService.signUp(signupInputs);
+      return this.authService.signUp(signupInputs, user);
     } else {
       throw new BadRequestException('Something bad happened', { cause: new Error(), description: "You can't create teacher or admin from here." });
     }
@@ -31,10 +33,9 @@ export class AuthController {
   @HasRoles(Role.MAIN_ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup/admin')
-  signUpAdmin(@Body() signupInputs: SignupInputs): Promise<void> {
-    console.log('signupInputs', signupInputs);
+  signUpAdmin(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> {
     if (signupInputs.roles.some(role => role === Role.ADMIN)) {
-      return this.authService.signUp(signupInputs);
+      return this.authService.signUp(signupInputs, user);
     } else {
       throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'You can create only admin from here.' });
     }
@@ -43,9 +44,9 @@ export class AuthController {
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
   @UseGuards(RolesGuard, AuthGuard())
   @Post('/signup/teacher')
-  signUpTeacher(@Body() signupInputs: SignupInputs): Promise<void> {
+  signUpTeacher(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> | void {
     if (signupInputs.roles.some(role => role === Role.TEACHER)) {
-      return this.authService.signUp(signupInputs);
+      return this.authService.signUp(signupInputs, user);
     } else {
       throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'You can create only teacher from here.' });
     }

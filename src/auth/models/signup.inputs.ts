@@ -15,9 +15,6 @@ export class SignupInputs {
   })
   password: string;
 
-  @IsUUID()
-  creatorId: string;
-
   @IsNotEmpty()
   @IsEnum(Role, { each: true })
   roles: Role[];

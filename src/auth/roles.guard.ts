@@ -20,15 +20,6 @@ export class RolesGuard implements CanActivate {
     const creatorId = body.creatorId;
     const creatorUser: User = await this.usersRepository.findOneBy({ id: creatorId });
 
-    let data =  '';
-    const req = context.switchToHttp().getRequest();
-    console.log(data ? req.headers[data] : req.headers);
-
-    // console.log('req', req);
-
-    console.log('body', body);
-    console.log('creatorUser', creatorUser);
-
     if (!creatorId || !creatorUser) {
       throw new BadRequestException('Something bad happened', { cause: new Error(), description: "Creator isn't correct" });
     }
