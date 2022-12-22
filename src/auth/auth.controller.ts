@@ -1,12 +1,12 @@
 import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 import { Role } from './models/role.enum';
 import { RolesGuard } from './roles.guard';
 import { SignupInputs } from './models/signup.inputs';
-import { HasRoles } from './roles.decorator';
-import { GetUser } from './get-user.decorator';
+import { HasRoles } from './decorators/roles.decorator';
+import { GetUser } from './decorators/get-user.decorator';
 import { User } from './user.entity';
 
 @Controller('auth')

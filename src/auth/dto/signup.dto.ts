@@ -24,15 +24,4 @@ export class SignupDto {
   @IsNotEmpty()
   @IsEnum(Role, { each: true })
   roles: Role[];
-
-  @IsDate()
-  createdDate: Date;
-
-  @IsDate()
-  @IsOptional()
-  updatedDate?: Date;
-
-  @IsDate()
-  @IsOptional()
-  deletedDate?: Date;
 }

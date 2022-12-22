@@ -21,7 +21,6 @@ export class AuthService {
     const signupDto: SignupDto = {
       id: uuid(),
       creatorId,
-      createdDate: new Date(),
       ...signupInputs
     }    
     return this.usersRepository.createUser(signupDto);

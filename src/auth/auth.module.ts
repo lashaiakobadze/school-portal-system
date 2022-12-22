@@ -5,9 +5,9 @@ import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './jwt/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
-import { JWTModule } from './JWT.module';
+import { JWTModule } from './jwt/JWT.module';
 import { RolesGuard } from './roles.guard';
 
 @Module({
