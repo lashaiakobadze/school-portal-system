@@ -6,7 +6,6 @@ import { Role } from './models/role.enum';
 import { RolesGuard } from './roles.guard';
 import { SignupInputs } from './models/signup.inputs';
 import { HasRoles } from './roles.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
 
@@ -41,9 +40,9 @@ export class AuthController {
     }
   }
 
-  @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-  @UseGuards(RolesGuard, AuthGuard())
   @Post('/signup/teacher')
+  @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   signUpTeacher(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> | void {
     if (signupInputs.roles.some(role => role === Role.TEACHER)) {
       return this.authService.signUp(signupInputs, user);

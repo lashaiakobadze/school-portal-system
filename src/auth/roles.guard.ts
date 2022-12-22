@@ -16,14 +16,18 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const { body } = context.switchToHttp().getRequest();
-    const creatorId = body.creatorId;
-    const creatorUser: User = await this.usersRepository.findOneBy({ id: creatorId });
+    const request = await context.switchToHttp().getRequest();
 
-    if (!creatorId || !creatorUser) {
-      throw new BadRequestException('Something bad happened', { cause: new Error(), description: "Creator isn't correct" });
+    console.log('request.user', request.user);
+
+    if (request?.user) {
+      const { id } = request?.user;
+
+      const user: User = await this.usersRepository.findOneBy({ id });
+
+      return requiredRoles.some(role => user.roles?.includes(role));
     }
 
-    return requiredRoles.some(role => creatorUser.roles?.includes(role));
+    return false;
   }
 }

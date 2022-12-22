@@ -6,8 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { configValidationSchema } from './config.schema';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/roles.guard';
 import { UserRepository } from './auth/user.repository';
 
 @Module({
@@ -42,11 +40,7 @@ import { UserRepository } from './auth/user.repository';
   controllers: [AppController],
   providers: [
     UserRepository,
-    AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
+    AppService
   ],
 })
 export class AppModule {}
