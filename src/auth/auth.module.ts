@@ -11,13 +11,13 @@ import { JWTModule } from './jwt/JWT.module';
 import { RolesGuard } from './roles.guard';
 
 @Module({
-  imports: [ConfigModule, PassportModule.register({ defaultStrategy: 'jwt' }), JWTModule, TypeOrmModule.forFeature([User])],
-  providers: [
-    AuthService,
-    UserRepository,
-    JwtStrategy,
-    RolesGuard
+  imports: [
+    ConfigModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JWTModule,
+    TypeOrmModule.forFeature([User]),
   ],
+  providers: [AuthService, UserRepository, JwtStrategy, RolesGuard],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })

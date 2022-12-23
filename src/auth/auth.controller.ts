@@ -1,4 +1,10 @@
-import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
@@ -14,40 +20,63 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signin')
-  signIn(@Body() authCredentialDto: AuthCredentialDto): Promise<{ accessToken: string }> {
+  signIn(
+    @Body() authCredentialDto: AuthCredentialDto,
+  ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialDto);
   }
 
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup')
-  signUp(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> {
-    if (signupInputs.roles.some(role => role !== Role.TEACHER) && signupInputs.roles.some(role => role !== Role.ADMIN)) {
+  signUp(
+    @Body() signupInputs: SignupInputs,
+    @GetUser() user: User,
+  ): Promise<void> {
+    if (
+      signupInputs.roles.some(role => role !== Role.TEACHER) &&
+      signupInputs.roles.some(role => role !== Role.ADMIN)
+    ) {
       return this.authService.signUp(signupInputs, user);
     } else {
-      throw new BadRequestException('Something bad happened', { cause: new Error(), description: "You can't create teacher or admin from here." });
+      throw new BadRequestException('Something bad happened', {
+        cause: new Error(),
+        description: "You can't create teacher or admin from here.",
+      });
     }
   }
 
   @HasRoles(Role.MAIN_ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup/admin')
-  signUpAdmin(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> {
+  signUpAdmin(
+    @Body() signupInputs: SignupInputs,
+    @GetUser() user: User,
+  ): Promise<void> {
     if (signupInputs.roles.some(role => role === Role.ADMIN)) {
       return this.authService.signUp(signupInputs, user);
     } else {
-      throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'You can create only admin from here.' });
+      throw new BadRequestException('Something bad happened', {
+        cause: new Error(),
+        description: 'You can create only admin from here.',
+      });
     }
   }
 
   @Post('/signup/teacher')
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  signUpTeacher(@Body() signupInputs: SignupInputs, @GetUser() user: User): Promise<void> | void {
+  signUpTeacher(
+    @Body() signupInputs: SignupInputs,
+    @GetUser() user: User,
+  ): Promise<void> | void {
     if (signupInputs.roles.some(role => role === Role.TEACHER)) {
       return this.authService.signUp(signupInputs, user);
     } else {
-      throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'You can create only teacher from here.' });
+      throw new BadRequestException('Something bad happened', {
+        cause: new Error(),
+        description: 'You can create only teacher from here.',
+      });
     }
   }
 }

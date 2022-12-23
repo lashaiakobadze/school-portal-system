@@ -17,12 +17,12 @@ export class AuthService {
 
   signUp(signupInputs: SignupInputs, user: User): Promise<void> {
     const { creatorId } = user;
-    
+
     const signupDto: SignupDto = {
       id: uuid(),
       creatorId,
-      ...signupInputs
-    }    
+      ...signupInputs,
+    };
     return this.usersRepository.createUser(signupDto);
   }
 

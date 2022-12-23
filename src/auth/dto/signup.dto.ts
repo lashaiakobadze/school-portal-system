@@ -1,6 +1,13 @@
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from "class-validator";
-import { Role } from "../models/role.enum";
-
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { Role } from '../models/role.enum';
 export class SignupDto {
   @IsUUID()
   id: string;
@@ -14,7 +21,7 @@ export class SignupDto {
   @MinLength(8)
   @MaxLength(32)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: "password is weak",
+    message: 'password is weak',
   })
   password: string;
 

@@ -1,5 +1,9 @@
 import { DataSource, Repository } from 'typeorm';
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { User } from './user.entity';
@@ -20,7 +24,7 @@ export class UserRepository extends Repository<User> {
 
     const user: User = this.create({
       ...signupDto,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     try {

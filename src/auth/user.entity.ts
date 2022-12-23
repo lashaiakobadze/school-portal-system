@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ObjectIdColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Role } from './models/role.enum';
 
 @Entity()
