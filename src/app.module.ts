@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { configValidationSchema } from './config.schema';
 import { UserRepository } from './auth/user.repository';
+import { RegistrationModule } from './registration/registration.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { UserRepository } from './auth/user.repository';
         entities: [],
       }),
     }),
+    RegistrationModule,
   ],
   controllers: [AppController],
   providers: [UserRepository, AppService],
