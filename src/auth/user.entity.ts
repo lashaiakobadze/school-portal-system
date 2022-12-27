@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,6 +29,10 @@ export class User {
 
   @Column()
   roles?: Role[];
+
+  @Column({ nullable: true })
+  @Exclude()
+  refresh_token?: string;
 
   @CreateDateColumn()
   createdDate: Date;
