@@ -30,9 +30,11 @@ export class User {
   @Column()
   roles?: Role[];
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true
+  })
   @Exclude()
-  refresh_token?: string;
+  public currentHashedRefreshToken?: string;
 
   @CreateDateColumn()
   createdDate: Date;

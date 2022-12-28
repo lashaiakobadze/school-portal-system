@@ -5,10 +5,12 @@ import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { JWTModule } from './jwt/JWT.module';
 import { RolesGuard } from './roles.guard';
+import { LocalStrategy } from './jwt/local.strategy';
+import { JwtRefreshTokenStrategy } from './jwt/jwt-refresh.strategy';
+import { JwtStrategy } from './jwt/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,8 +19,8 @@ import { RolesGuard } from './roles.guard';
     JWTModule,
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [AuthService, UserRepository, JwtStrategy, RolesGuard],
+  providers: [AuthService, UserRepository, JwtStrategy, RolesGuard, LocalStrategy, JwtRefreshTokenStrategy],
   controllers: [AuthController],
-  exports: [JwtStrategy, PassportModule],
+  exports: [ PassportModule, JwtStrategy ],
 })
 export class AuthModule {}

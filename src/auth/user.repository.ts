@@ -1,6 +1,8 @@
 import { DataSource, Repository } from 'typeorm';
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -37,6 +39,33 @@ export class UserRepository extends Repository<User> {
         console.log('error', error);
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  async updateUser(userId: string, user: User): Promise<void> {
+    try {
+      await this.update(userId, user);
+    } catch (error) {
+      console.log('error', error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUserById(userId: string): Promise<User> {
+    try {
+      const user = await this.findOneBy({ id: userId });
+
+      if (user) {
+        return user;
+      }
+
+      throw new HttpException(
+        'User with this id does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    } catch (error) {
+      console.log('error', error);
+      throw new InternalServerErrorException();
     }
   }
 }

@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthCredentialDto } from './dto/auth.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
@@ -7,12 +12,15 @@ import { User } from './user.entity';
 import { v4 as uuid } from 'uuid';
 import { SignupInputs } from './models/signup.inputs';
 import { SignupDto } from './dto/signup.dto';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from './models/token-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UserRepository,
     private jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   signUp(signupInputs: SignupInputs, user: User): Promise<void> {
@@ -23,24 +31,125 @@ export class AuthService {
       creatorId,
       ...signupInputs,
     };
+
     return this.usersRepository.createUser(signupDto);
   }
 
-  async signIn(
-    authCredentialDto: AuthCredentialDto,
-  ): Promise<{ accessToken: string }> {
+  /// use when we want only access token.
+  // async signIn(
+  //   authCredentialDto: AuthCredentialDto,
+  // ): Promise<{ accessToken: string }> {
+  //   const { username, password } = authCredentialDto;
+
+  //   const user: User = await this.usersRepository.findOneBy({ username });
+
+  //   if (user && (await bcrypt.compare(password, user.password))) {
+  //     const roles = user.roles;
+  //     const payload = { username, roles };
+  //     const accessToken = await this.jwtService.sign(payload);
+
+  //     return { accessToken };
+  //   } else {
+  //     throw new UnauthorizedException('Please check your login credentials');
+  //   }
+  // }
+
+  async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
     const { username, password } = authCredentialDto;
 
     const user: User = await this.usersRepository.findOneBy({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      const roles = user.roles;
-      const payload = { username, roles };
-      const accessToken = await this.jwtService.sign(payload);
-
-      return { accessToken };
+      return user;
     } else {
       throw new UnauthorizedException('Please check your login credentials');
     }
+  }
+
+  public getCookieWithJwtAccessToken(user: User) {
+    const payload: TokenPayload = {
+      id: user.id,
+      username: user.username,
+      roles: user.roles,
+    };
+
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    /// FOR COOKIE:
+    // return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    //   'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+    // )}`;
+    return token;
+  }
+
+  public getCookieWithJwtRefreshToken(user: User) {
+    const payload: TokenPayload = {
+      id: user.id,
+      username: user.username,
+      roles: user.roles,
+    };
+
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    /// FOR COOKIE:
+    // const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    //   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+    // )}`;
+
+    // return {
+    //   cookie,
+    //   token,
+    // };
+    return token;
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, user: User) {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    user.currentHashedRefreshToken = currentHashedRefreshToken;
+    this.usersRepository.updateUser(user._id, user);
+  }
+
+  async getUserById(userId: string) {
+    const user = await this.usersRepository.getUserById(userId);
+
+    return user;
+  }
+
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
+    const user = await this.getUserById(userId);
+
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken + 'kjhjk', // ToDo: fix this true property
+      user.currentHashedRefreshToken,
+    );
+
+    console.log('isRefreshTokenMatching', isRefreshTokenMatching);
+
+    if (isRefreshTokenMatching) {
+      return user;
+    }
+  }
+
+  public getCookiesForLogOut() {
+    return [
+      'Authentication=; HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
+  }
+
+  async removeRefreshToken(user: User) {
+    user.currentHashedRefreshToken = null;
+    return this.usersRepository.updateUser(user._id, user);
   }
 }
