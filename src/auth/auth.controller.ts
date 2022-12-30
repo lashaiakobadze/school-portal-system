@@ -9,17 +9,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+
 import { AuthCredentialDto } from './dto/auth.dto';
-import { Role } from './models/role.enum';
-import { RolesGuard } from './roles.guard';
-import { SignupInputs } from './models/signup.inputs';
+import { User } from './user.entity';
+
 import { HasRoles } from './decorators/roles.decorator';
 import { GetUser } from './decorators/get-user.decorator';
-import { User } from './user.entity';
-import JwtRefreshGuard from './jwt/jwt-refresh.guard';
-import RequestWithUser from './models/requsetWithUser.interface';
+
 import { LocalAuthGuard } from './jwt/local-auth.guard';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
+import { RolesGuard } from './roles.guard';
+import JwtRefreshGuard from './jwt/jwt-refresh.guard';
+
+import RequestWithUser from './models/requestsWithUser';
+import { SignupInputs } from './models/signup.inputs';
+import { Role } from './models/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -66,9 +69,10 @@ export class AuthController {
   @Post('log-out')
   @HttpCode(200)
   async logOut(@Req() request: RequestWithUser) {
-    // console.log('request', request.user);
     await this.authService.removeRefreshToken(request.user);
-    request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
+
+    /// FOR COOKIE:
+    // request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
   }
 
   /// use when we want only access token.
@@ -80,7 +84,7 @@ export class AuthController {
   // }
 
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-  @UseGuards(JwtAuthGuard, RolesGuard, JwtRefreshGuard)
+  @UseGuards(JwtRefreshGuard, RolesGuard)
   @Post('/signup')
   signUp(
     @Body() signupInputs: SignupInputs,
@@ -90,6 +94,7 @@ export class AuthController {
       signupInputs.roles.some(role => role !== Role.TEACHER) &&
       signupInputs.roles.some(role => role !== Role.ADMIN)
     ) {
+      console.log('user', user);
       return this.authService.signUp(signupInputs, user);
     } else {
       throw new BadRequestException('Something bad happened', {
@@ -118,7 +123,7 @@ export class AuthController {
 
   @Post('/signup/teacher')
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRefreshGuard, RolesGuard)
+  @UseGuards(JwtRefreshGuard, RolesGuard)
   signUpTeacher(
     @Body() signupInputs: SignupInputs,
     @GetUser() user: User,

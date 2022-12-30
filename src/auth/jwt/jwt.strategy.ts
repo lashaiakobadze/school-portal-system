@@ -1,9 +1,9 @@
-/* eslint-disable prettier/prettier */
+/// use when we want only access token.
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtPayload } from '../models/jwt-paiload.interface';
+import { TokenPayload } from '../models/token-payload.interface';
 import { User } from '../user.entity';
 import { UserRepository } from '../user.repository';
 
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<User> {
+  async validate(payload: TokenPayload): Promise<User> {
     const { username } = payload;
 
     const user: User = await this.userRepository.findOneBy({ username });
