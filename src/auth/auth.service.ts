@@ -134,8 +134,6 @@ export class AuthService {
       user.currentHashedRefreshToken,
     );
 
-    console.log('isRefreshTokenMatching', isRefreshTokenMatching);
-
     if (isRefreshTokenMatching) {
       return user;
     }

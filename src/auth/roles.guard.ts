@@ -5,7 +5,6 @@ import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 
 const ROLES_KEY = 'roles';
-
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
@@ -23,8 +22,6 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = await context.switchToHttp().getRequest();
-
-    console.log('request.user', request.user);
 
     if (request?.user) {
       const { id } = request?.user;

@@ -94,7 +94,6 @@ export class AuthController {
       signupInputs.roles.some(role => role !== Role.TEACHER) &&
       signupInputs.roles.some(role => role !== Role.ADMIN)
     ) {
-      console.log('user', user);
       return this.authService.signUp(signupInputs, user);
     } else {
       throw new BadRequestException('Something bad happened', {
