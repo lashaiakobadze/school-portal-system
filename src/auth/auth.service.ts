@@ -130,6 +130,10 @@ export class AuthService {
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
     const user = await this.getUserById(userId);
 
+    if (!user || user.currentHashedRefreshToken) {
+      throw new UnauthorizedException('Please check your credentials');
+    }
+
     const isRefreshTokenMatching = await argon.verify(
       user.currentHashedRefreshToken,
       refreshToken,

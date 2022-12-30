@@ -19,6 +19,7 @@ import { GetUser } from './decorators/get-user.decorator';
 import { LocalAuthGuard } from './jwt/local-auth.guard';
 import { RolesGuard } from './roles.guard';
 import JwtRefreshGuard from './jwt/jwt-refresh.guard';
+import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 
 import RequestWithUser from './models/requestsWithUser';
 import { SignupInputs } from './models/signup.inputs';
@@ -68,7 +69,7 @@ export class AuthController {
     return accessTokenCookie;
   }
 
-  @UseGuards(JwtRefreshGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('log-out')
   @HttpCode(200)
   async logOut(@Req() request: RequestWithUser) {
@@ -87,7 +88,7 @@ export class AuthController {
   // }
 
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-  @UseGuards(JwtRefreshGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup')
   signUp(
     @Body() signupInputs: SignupInputs,
@@ -107,7 +108,7 @@ export class AuthController {
   }
 
   @HasRoles(Role.MAIN_ADMIN)
-  @UseGuards(JwtRefreshGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/signup/admin')
   signUpAdmin(
     @Body() signupInputs: SignupInputs,
@@ -125,7 +126,7 @@ export class AuthController {
 
   @Post('/signup/teacher')
   @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-  @UseGuards(JwtRefreshGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   signUpTeacher(
     @Body() signupInputs: SignupInputs,
     @GetUser() user: User,

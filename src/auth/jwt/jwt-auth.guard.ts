@@ -1,4 +1,3 @@
-/// use when we want only access token.
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

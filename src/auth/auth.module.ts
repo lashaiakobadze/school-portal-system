@@ -10,6 +10,7 @@ import { RolesGuard } from './roles.guard';
 import { LocalStrategy } from './jwt/local.strategy';
 import { JwtRefreshTokenStrategy } from './jwt/jwt-refresh.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt/jwt.strategy';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtService } from '@nestjs/jwt';
     LocalStrategy,
     JwtRefreshTokenStrategy,
     JwtService,
+    JwtStrategy
   ],
   controllers: [AuthController],
   exports: [PassportModule],
