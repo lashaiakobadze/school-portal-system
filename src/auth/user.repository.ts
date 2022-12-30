@@ -6,7 +6,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+
+import * as argon from 'argon2';
 
 import { User } from './user.entity';
 import { SignupDto } from './dto/signup.dto';
@@ -20,9 +21,7 @@ export class UserRepository extends Repository<User> {
   async createUser(signupDto: SignupDto): Promise<void> {
     const { password } = signupDto;
 
-    // hash
-    const salt = await bcrypt.genSaltSync(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await argon.hash(password);
 
     const user: User = this.create({
       ...signupDto,

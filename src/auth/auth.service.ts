@@ -4,9 +4,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+
+import * as argon from 'argon2';
+
 import { AuthCredentialDto } from './dto/auth.dto';
 import { UserRepository } from './user.repository';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import { v4 as uuid } from 'uuid';
@@ -43,7 +45,7 @@ export class AuthService {
 
   //   const user: User = await this.usersRepository.findOneBy({ username });
 
-  //   if (user && (await bcrypt.compare(password, user.password))) {
+  //   if (user && (await argon.verify(user.password, password))) {
   //     const roles = user.roles;
   //     const payload = { username, roles };
   //     const accessToken = await this.jwtService.sign(payload);
@@ -54,12 +56,12 @@ export class AuthService {
   //   }
   // }
 
-  async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
+  async checkUser(authCredentialDto: AuthCredentialDto): Promise<User | void> {
     const { username, password } = authCredentialDto;
 
     const user: User = await this.usersRepository.findOneBy({ username });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && (await argon.verify(user.password, password))) {
       return user;
     } else {
       throw new UnauthorizedException('Please check your login credentials');
@@ -114,8 +116,7 @@ export class AuthService {
   }
 
   async setCurrentRefreshToken(refreshToken: string, user: User) {
-    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-
+    const currentHashedRefreshToken = await argon.hash(refreshToken);
     user.currentHashedRefreshToken = currentHashedRefreshToken;
     this.usersRepository.updateUser(user._id, user);
   }
@@ -129,9 +130,9 @@ export class AuthService {
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
     const user = await this.getUserById(userId);
 
-    const isRefreshTokenMatching = await bcrypt.compare(
-      refreshToken + 'kjhjk', // ToDo: fix this true property
+    const isRefreshTokenMatching = await argon.verify(
       user.currentHashedRefreshToken,
+      refreshToken,
     );
 
     if (isRefreshTokenMatching) {

@@ -61,8 +61,11 @@ export class AuthController {
       request.user,
     );
 
-    request.res.setHeader('Set-Cookie', accessTokenCookie);
-    return request.user;
+    /// FOR COOKIE:
+    // request.res.setHeader('Set-Cookie', accessTokenCookie);
+    // return request.user;
+    
+    return accessTokenCookie;
   }
 
   @UseGuards(JwtRefreshGuard)
