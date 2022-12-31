@@ -26,6 +26,7 @@ import { SignupInputs } from './models/signup.inputs';
 import { Role } from './models/role.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
+import { ChangeUserStatusDto } from './dto/change-status.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -160,5 +161,14 @@ export class AuthController {
     @GetUser() user: User,
   ): Promise<void> {
     return this.authService.updatePassword(resetPasswordInputs, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/change-status')
+  changeUserStatus(
+    @Body() changeUserStatusDto: ChangeUserStatusDto,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.authService.changeUserStatus(changeUserStatusDto, user);
   }
 }

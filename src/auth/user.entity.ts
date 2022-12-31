@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { IsBoolean } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,12 +10,14 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { Role } from './models/role.enum';
+import { Status } from './models/user-status.enum';
 
 @Entity()
 export class User {
   @ObjectIdColumn()
   _id: string;
 
+  @Column({ unique: true })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -47,4 +50,7 @@ export class User {
 
   @DeleteDateColumn()
   deletedDate: Date;
+
+  @IsBoolean()  
+  status: Status;
 }

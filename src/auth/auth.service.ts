@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -19,6 +20,7 @@ import { TokenPayload } from './models/token-payload.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { Role } from './models/role.enum';
+import { ChangeUserStatusDto } from './dto/change-status.dto';
 
 @Injectable()
 export class AuthService {
@@ -78,7 +80,7 @@ export class AuthService {
     }
 
     // 3) reset password from main admin
-    if (currentUser.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN))) {
+    if (currentUser.roles.some((role) => role === Role.MAIN_ADMIN)) {
       user.password = await this.hashPassword(resetPasswordInputs.newPassword);
       user.passwordConfirm = await this.hashPassword(
         resetPasswordInputs.passwordConfirm,
@@ -90,9 +92,9 @@ export class AuthService {
 
     // 3) reset password from admin
     else if (
-      currentUser.roles.some(() => user.roles?.includes(Role.ADMIN)) &&
-      !user.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN)) &&
-      !user.roles.some(() => user.roles?.includes(Role.ADMIN))
+      currentUser.roles.some((role) => role === Role.ADMIN) &&
+      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
+      !user.roles.some((role) => role === Role.ADMIN)
     ) {
       user.password = await this.hashPassword(resetPasswordInputs.newPassword);
       user.passwordConfirm = await this.hashPassword(
@@ -105,10 +107,10 @@ export class AuthService {
 
     // 3) reset password from teacher to students and parents
     if (
-      currentUser.roles.some(() => user.roles?.includes(Role.TEACHER)) &&
-      !user.roles.some(() => user.roles?.includes(Role.ADMIN)) &&
-      !user.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN)) &&
-      !user.roles.some(() => user.roles?.includes(Role.TEACHER))
+      currentUser.roles.some((role) => role === Role.TEACHER) &&
+      !user.roles.some((role) => role === Role.ADMIN) &&
+      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
+      !user.roles.some((role) => role === Role.TEACHER)
     ) {
       user.password = await this.hashPassword(resetPasswordInputs.newPassword);
       user.passwordConfirm = await this.hashPassword(
@@ -118,6 +120,54 @@ export class AuthService {
 
       return this.usersRepository.updateUser(user._id, user);
     }
+  }
+
+  async changeUserStatus(
+    changeUserStatusDto: ChangeUserStatusDto,
+    currentUser: User,
+  ) {
+    // 1) Get user from collection
+    const user: User = await this.getUserById(changeUserStatusDto.userId);
+
+    // 2) Check if user exist.
+    if (!user) {
+      throw new UnauthorizedException("This user doesn't exist.");
+    }
+
+    // 3) reset password from main admin
+    if (currentUser.roles.some((role) => role === Role.MAIN_ADMIN)) {
+      // 3) If so, update password
+      user.status = changeUserStatusDto.status;
+
+      return this.usersRepository.updateUser(user._id, user);
+    }
+
+    // 3) reset password from admin
+    else if (
+      currentUser.roles.some((role) => role === Role.ADMIN) &&
+      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
+      !user.roles.some((role) => role === Role.ADMIN)
+    ) {
+      // 3) If so, update password
+      user.status = changeUserStatusDto.status;
+
+      return this.usersRepository.updateUser(user._id, user);
+    }
+
+    // 3) reset password from teacher to students and parents
+    if (
+      currentUser.roles.some((role) => role === Role.TEACHER) &&
+      !user.roles.some((role) => role === Role.ADMIN) &&
+      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
+      !user.roles.some((role) => role === Role.TEACHER)
+    ) {
+      // 3) If so, update password
+      user.status = changeUserStatusDto.status;
+
+      return this.usersRepository.updateUser(user._id, user);
+    }
+
+    throw new ForbiddenException("You can't this action with your status.");
   }
 
   /// use when we want only access token.
