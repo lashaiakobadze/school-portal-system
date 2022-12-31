@@ -58,7 +58,9 @@ export class AuthService {
 
     // 3) If so, update password
     user.password = await this.hashPassword(updatePasswordDto.newPassword);
-    user.passwordConfirm = await this.hashPassword(updatePasswordDto.passwordConfirm);
+    user.passwordConfirm = await this.hashPassword(
+      updatePasswordDto.passwordConfirm,
+    );
 
     return this.usersRepository.updateUser(user._id, user);
   }
@@ -70,45 +72,52 @@ export class AuthService {
     // 1) Get user from collection
     const user: User = await this.getUserById(resetPasswordInputs.userId);
 
-    // 2) Check if POSTed current password is correct
+    // 2) Check if user exist.
     if (!user) {
       throw new UnauthorizedException("This user doesn't exist.");
     }
 
     // 3) reset password from main admin
-    if (      
-      currentUser.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))
-    ) {    
+    if (currentUser.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN))) {
       user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
-  
-      return this.usersRepository.updateUser(user._id, user);
-    }
-    
-    // 3) reset password from admin
-    else if (
-      currentUser.roles.some(role => user.roles?.includes(Role.ADMIN)) &&
-      !user.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))      
-    ) {
-      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
-  
+      user.passwordConfirm = await this.hashPassword(
+        resetPasswordInputs.passwordConfirm,
+      );
+      user.currentHashedRefreshToken = null;
+
       return this.usersRepository.updateUser(user._id, user);
     }
 
+    // 3) reset password from admin
+    else if (
+      currentUser.roles.some(() => user.roles?.includes(Role.ADMIN)) &&
+      !user.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN)) &&
+      !user.roles.some(() => user.roles?.includes(Role.ADMIN))
+    ) {
+      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+      user.passwordConfirm = await this.hashPassword(
+        resetPasswordInputs.passwordConfirm,
+      );
+      user.currentHashedRefreshToken = null;
+
+      return this.usersRepository.updateUser(user._id, user);
+    }
 
     // 3) reset password from teacher to students and parents
     if (
-      currentUser.roles.some(role => user.roles?.includes(Role.TEACHER)) &&
-      !user.roles.some(role => user.roles?.includes(Role.ADMIN)) &&
-      !user.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))    
+      currentUser.roles.some(() => user.roles?.includes(Role.TEACHER)) &&
+      !user.roles.some(() => user.roles?.includes(Role.ADMIN)) &&
+      !user.roles.some(() => user.roles?.includes(Role.MAIN_ADMIN)) &&
+      !user.roles.some(() => user.roles?.includes(Role.TEACHER))
     ) {
       user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
-  
+      user.passwordConfirm = await this.hashPassword(
+        resetPasswordInputs.passwordConfirm,
+      );
+      user.currentHashedRefreshToken = null;
+
       return this.usersRepository.updateUser(user._id, user);
     }
-
   }
 
   /// use when we want only access token.
