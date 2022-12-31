@@ -25,6 +25,9 @@ export class User {
   password: string;
 
   @Column()
+  passwordConfirm: string;
+
+  @Column()
   creatorId: string;
 
   @Column()

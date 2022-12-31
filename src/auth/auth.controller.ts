@@ -24,6 +24,8 @@ import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 import RequestWithUser from './models/requestsWithUser';
 import { SignupInputs } from './models/signup.inputs';
 import { Role } from './models/role.enum';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { ResetPasswordInputs } from './models/reset-password.inputs';
 
 @Controller('auth')
 export class AuthController {
@@ -139,5 +141,24 @@ export class AuthController {
         description: 'You can create only teacher from here.',
       });
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/update-password')
+  updatePassword(
+    @Body() updatePasswordDto: UpdatePasswordDto,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.authService.updatePassword(updatePasswordDto, user);
+  }
+
+  @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+  @UseGuards(JwtAuthGuard)
+  @Post('/reset-password')
+  resetPassword(
+    @Body() resetPasswordInputs: ResetPasswordInputs,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.authService.updatePassword(resetPasswordInputs, user);
   }
 }

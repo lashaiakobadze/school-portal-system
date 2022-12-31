@@ -16,6 +16,9 @@ import { SignupInputs } from './models/signup.inputs';
 import { SignupDto } from './dto/signup.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './models/token-payload.interface';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { ResetPasswordInputs } from './models/reset-password.inputs';
+import { Role } from './models/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +38,77 @@ export class AuthService {
     };
 
     return this.usersRepository.createUser(signupDto);
+  }
+
+  async hashPassword(password: string) {
+    return await argon.hash(password);
+  }
+
+  async updatePassword(
+    updatePasswordDto: UpdatePasswordDto,
+    currentUser: User,
+  ) {
+    // 1) Get user from collection
+    const user: User = await this.getUserById(currentUser.id);
+
+    // 2) Check if POSTed current password is correct
+    if (updatePasswordDto.currentPassword !== user.password) {
+      throw new UnauthorizedException('Your current password is wrong.');
+    }
+
+    // 3) If so, update password
+    user.password = await this.hashPassword(updatePasswordDto.newPassword);
+    user.passwordConfirm = await this.hashPassword(updatePasswordDto.passwordConfirm);
+
+    return this.usersRepository.updateUser(user._id, user);
+  }
+
+  async resetPassword(
+    resetPasswordInputs: ResetPasswordInputs,
+    currentUser: User,
+  ) {
+    // 1) Get user from collection
+    const user: User = await this.getUserById(resetPasswordInputs.userId);
+
+    // 2) Check if POSTed current password is correct
+    if (!user) {
+      throw new UnauthorizedException("This user doesn't exist.");
+    }
+
+    // 3) reset password from main admin
+    if (      
+      currentUser.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))
+    ) {    
+      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
+  
+      return this.usersRepository.updateUser(user._id, user);
+    }
+    
+    // 3) reset password from admin
+    else if (
+      currentUser.roles.some(role => user.roles?.includes(Role.ADMIN)) &&
+      !user.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))      
+    ) {
+      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
+  
+      return this.usersRepository.updateUser(user._id, user);
+    }
+
+
+    // 3) reset password from teacher to students and parents
+    if (
+      currentUser.roles.some(role => user.roles?.includes(Role.TEACHER)) &&
+      !user.roles.some(role => user.roles?.includes(Role.ADMIN)) &&
+      !user.roles.some(role => user.roles?.includes(Role.MAIN_ADMIN))    
+    ) {
+      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+      user.passwordConfirm = await this.hashPassword(resetPasswordInputs.passwordConfirm);
+  
+      return this.usersRepository.updateUser(user._id, user);
+    }
+
   }
 
   /// use when we want only access token.
