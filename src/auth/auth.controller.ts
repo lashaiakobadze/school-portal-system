@@ -160,7 +160,7 @@ export class AuthController {
 		@Body() resetPasswordInputs: ResetPasswordInputs,
 		@GetUser() user: User,
 	): Promise<User> {
-		return this.authService.updatePassword(resetPasswordInputs, user);
+		return this.authService.resetPassword(resetPasswordInputs, user);
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)

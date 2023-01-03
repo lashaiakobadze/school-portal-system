@@ -3,6 +3,7 @@ import {
 	HttpException,
 	HttpStatus,
 	Injectable,
+	NotAcceptableException,
 	UnauthorizedException,
 } from '@nestjs/common';
 
@@ -167,7 +168,10 @@ export class AuthService {
 		// Get user from collection
 		const user: User = await this.usersRepository.getUserById(currentUser.id);
 
-		const isCurrentPasswordCorrect = await argon.verify(user.password, updatePasswordDto.currentPassword);
+		const isCurrentPasswordCorrect = await argon.verify(
+			user.password,
+			updatePasswordDto.currentPassword,
+		);
 
 		// Check if POSTed current password is correct
 		if (!isCurrentPasswordCorrect) {
@@ -175,7 +179,7 @@ export class AuthService {
 		}
 
 		if (updatePasswordDto.newPassword !== updatePasswordDto.passwordConfirm) {
-			throw new UnauthorizedException('Password do not match.');
+			throw new NotAcceptableException('Password do not match.');
 		}
 
 		// If so, update password
@@ -203,6 +207,12 @@ export class AuthService {
 
 		// reset password from main admin
 		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
+			if (
+				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
+			) {
+				throw new NotAcceptableException('Password do not match.');
+			}
+
 			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
 			user.passwordConfirm = await this.hashPassword(
 				resetPasswordInputs.passwordConfirm,
@@ -213,11 +223,17 @@ export class AuthService {
 		}
 
 		// reset password from admin
-		else if (
+		if (
 			currentUser.roles.some(role => role === Role.ADMIN) &&
 			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
 			!user.roles.some(role => role === Role.ADMIN)
 		) {
+			if (
+				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
+			) {
+				throw new NotAcceptableException('Password do not match.');
+			}
+
 			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
 			user.passwordConfirm = await this.hashPassword(
 				resetPasswordInputs.passwordConfirm,
@@ -234,6 +250,12 @@ export class AuthService {
 			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
 			!user.roles.some(role => role === Role.TEACHER)
 		) {
+			if (
+				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
+			) {
+				throw new NotAcceptableException('Password do not match.');
+			}
+
 			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
 			user.passwordConfirm = await this.hashPassword(
 				resetPasswordInputs.passwordConfirm,
@@ -242,6 +264,8 @@ export class AuthService {
 
 			return this.usersRepository.updateUser(user._id, user);
 		}
+
+		throw new ForbiddenException("You can't this action with your status.");
 	}
 
 	async changeUserStatus(
