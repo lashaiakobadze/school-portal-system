@@ -7,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Role } from '../models/role.enum';
+import { Status } from './user-status.enum';
 
 export class SignupInputs {
   @IsString()
@@ -26,11 +27,15 @@ export class SignupInputs {
   @MinLength(8)
   @MaxLength(32)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password is weak',
+    message: 'password do not match, password confirm is required.',
   })
   passwordConfirm: string;
 
   @IsNotEmpty()
   @IsEnum(Role, { each: true })
   roles: Role[];
+
+  @IsNotEmpty()
+  @IsEnum(Status)
+  status: Status;
 }

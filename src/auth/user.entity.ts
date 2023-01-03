@@ -51,6 +51,6 @@ export class User {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @IsBoolean()  
+  @Column() 
   status: Status;
 }

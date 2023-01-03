@@ -30,7 +30,7 @@ export class AuthService {
 		private readonly configService: ConfigService,
 	) {}
 
-	signUp(signupInputs: SignupInputs, user: User): Promise<void> {
+	signUp(signupInputs: SignupInputs, user: User): Promise<User> {
 		const { creatorId } = user;
 
 		const signupDto: SignupDto = {
@@ -167,9 +167,15 @@ export class AuthService {
 		// Get user from collection
 		const user: User = await this.usersRepository.getUserById(currentUser.id);
 
+		const isCurrentPasswordCorrect = await argon.verify(user.password, updatePasswordDto.currentPassword);
+
 		// Check if POSTed current password is correct
-		if (updatePasswordDto.currentPassword !== user.password) {
+		if (!isCurrentPasswordCorrect) {
 			throw new UnauthorizedException('Your current password is wrong.');
+		}
+
+		if (updatePasswordDto.newPassword !== updatePasswordDto.passwordConfirm) {
+			throw new UnauthorizedException('Password do not match.');
 		}
 
 		// If so, update password

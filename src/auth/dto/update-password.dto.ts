@@ -28,7 +28,7 @@ export class UpdatePasswordDto {
   @MinLength(8)
   @MaxLength(32)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password is weak',
+    message: 'password do not match, password confirm is required.',
   })
   passwordConfirm: string;
 }

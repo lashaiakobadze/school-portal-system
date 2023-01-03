@@ -69,7 +69,7 @@ export class AuthController {
 		// request.res.setHeader('Set-Cookie', accessTokenCookie);
 		// return request.user;
 
-		return {accessTokenCookie};
+		return { accessTokenCookie };
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -92,11 +92,11 @@ export class AuthController {
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post('/signup')
+	@Post('signup')
 	signUp(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		if (
 			signupInputs.roles.some(role => role !== Role.TEACHER) &&
 			signupInputs.roles.some(role => role !== Role.ADMIN)
@@ -112,11 +112,11 @@ export class AuthController {
 
 	@HasRoles(Role.MAIN_ADMIN)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post('/signup/admin')
+	@Post('signup/admin')
 	signUpAdmin(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		if (signupInputs.roles.some(role => role === Role.ADMIN)) {
 			return this.authService.signUp(signupInputs, user);
 		} else {
@@ -127,13 +127,13 @@ export class AuthController {
 		}
 	}
 
-	@Post('/signup/teacher')
+	@Post('signup/teacher')
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	signUpTeacher(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		if (signupInputs.roles.some(role => role === Role.TEACHER)) {
 			return this.authService.signUp(signupInputs, user);
 		} else {
@@ -145,30 +145,31 @@ export class AuthController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Post('/update-password')
+	@Post('update-password')
 	updatePassword(
 		@Body() updatePasswordDto: UpdatePasswordDto,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		return this.authService.updatePassword(updatePasswordDto, user);
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
 	@UseGuards(JwtAuthGuard)
-	@Post('/reset-password')
+	@Post('reset-password')
 	resetPassword(
 		@Body() resetPasswordInputs: ResetPasswordInputs,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		return this.authService.updatePassword(resetPasswordInputs, user);
 	}
 
-	@UseGuards(JwtAuthGuard)
-	@Post('/change-status')
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Post('change-status')
 	changeUserStatus(
 		@Body() changeUserStatusDto: ChangeUserStatusDto,
 		@GetUser() user: User,
-	): Promise<void> {
+	): Promise<User> {
 		return this.authService.changeUserStatus(changeUserStatusDto, user);
 	}
 }

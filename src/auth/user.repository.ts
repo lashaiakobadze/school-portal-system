@@ -18,7 +18,7 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async createUser(signupDto: SignupDto): Promise<void> {
+  async createUser(signupDto: SignupDto): Promise<User> {
     const { password } = signupDto;
 
     const hashedPassword = await argon.hash(password);
@@ -30,9 +30,11 @@ export class UserRepository extends Repository<User> {
 
     try {
       await this.save(user);
+
+      return user;
     } catch (error) {
-      // ToDo: Error handling
-      if (error.code === '23505') {
+      // ToDo: improve Error handling
+      if (error.code === 11000) {
         throw new ConflictException('Username already exists');
       } else {
         console.log('error', error);
@@ -41,9 +43,10 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async updateUser(userId: string, user: User): Promise<void> {
+  async updateUser(userId: string, user: User): Promise<User> {
     try {
       await this.update(userId, user);
+      return user;
     } catch (error) {
       console.log('error', error);
       throw new InternalServerErrorException();
@@ -63,6 +66,7 @@ export class UserRepository extends Repository<User> {
         HttpStatus.NOT_FOUND,
       );
     } catch (error) {
+      // ToDo: improve Error handling
       console.log('error', error);
       throw new InternalServerErrorException();
     }
