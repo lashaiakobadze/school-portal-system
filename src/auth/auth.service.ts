@@ -1,9 +1,9 @@
 import {
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
+	ForbiddenException,
+	HttpException,
+	HttpStatus,
+	Injectable,
+	UnauthorizedException,
 } from '@nestjs/common';
 
 import * as argon from 'argon2';
@@ -24,269 +24,267 @@ import { ChangeUserStatusDto } from './dto/change-status.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersRepository: UserRepository,
-    private jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
+	constructor(
+		private usersRepository: UserRepository,
+		private jwtService: JwtService,
+		private readonly configService: ConfigService,
+	) {}
 
-  signUp(signupInputs: SignupInputs, user: User): Promise<void> {
-    const { creatorId } = user;
+	signUp(signupInputs: SignupInputs, user: User): Promise<void> {
+		const { creatorId } = user;
 
-    const signupDto: SignupDto = {
-      id: uuid(),
-      creatorId,
-      ...signupInputs,
-    };
+		const signupDto: SignupDto = {
+			id: uuid(),
+			creatorId,
+			...signupInputs,
+		};
 
-    return this.usersRepository.createUser(signupDto);
-  }
+		return this.usersRepository.createUser(signupDto);
+	}
 
-  async hashPassword(password: string) {
-    return await argon.hash(password);
-  }
+	async hashPassword(password: string) {
+		return await argon.hash(password);
+	}
 
-  async updatePassword(
-    updatePasswordDto: UpdatePasswordDto,
-    currentUser: User,
-  ) {
-    // 1) Get user from collection
-    const user: User = await this.getUserById(currentUser.id);
+	/// use when we want only access token.
+	// async signIn(
+	//   authCredentialDto: AuthCredentialDto,
+	// ): Promise<{ accessToken: string }> {
+	//   const { username, password } = authCredentialDto;
 
-    // 2) Check if POSTed current password is correct
-    if (updatePasswordDto.currentPassword !== user.password) {
-      throw new UnauthorizedException('Your current password is wrong.');
-    }
+	//   const user: User = await this.usersRepository.findOneBy({ username });
 
-    // 3) If so, update password
-    user.password = await this.hashPassword(updatePasswordDto.newPassword);
-    user.passwordConfirm = await this.hashPassword(
-      updatePasswordDto.passwordConfirm,
-    );
+	//   if (user && (await argon.verify(user.password, password))) {
+	//     const roles = user.roles;
+	//     const payload = { username, roles };
+	//     const accessToken = await this.jwtService.sign(payload);
 
-    return this.usersRepository.updateUser(user._id, user);
-  }
+	//     return { accessToken };
+	//   } else {
+	//     throw new UnauthorizedException('Please check your login credentials');
+	//   }
+	// }
 
-  async resetPassword(
-    resetPasswordInputs: ResetPasswordInputs,
-    currentUser: User,
-  ) {
-    // 1) Get user from collection
-    const user: User = await this.getUserById(resetPasswordInputs.userId);
+	async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
+		const { username, password } = authCredentialDto;
 
-    // 2) Check if user exist.
-    if (!user) {
-      throw new UnauthorizedException("This user doesn't exist.");
-    }
+		const user: User = await this.usersRepository.findOneBy({ username });
 
-    // 3) reset password from main admin
-    if (currentUser.roles.some((role) => role === Role.MAIN_ADMIN)) {
-      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(
-        resetPasswordInputs.passwordConfirm,
-      );
-      user.currentHashedRefreshToken = null;
+		if (user && (await argon.verify(user.password, password))) {
+			return user;
+		} else {
+			throw new UnauthorizedException('Please check your login credentials');
+		}
+	}
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
+	public getCookieWithJwtAccessToken(user: User) {
+		const payload: TokenPayload = {
+			id: user.id,
+			username: user.username,
+			roles: user.roles,
+		};
 
-    // 3) reset password from admin
-    else if (
-      currentUser.roles.some((role) => role === Role.ADMIN) &&
-      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
-      !user.roles.some((role) => role === Role.ADMIN)
-    ) {
-      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(
-        resetPasswordInputs.passwordConfirm,
-      );
-      user.currentHashedRefreshToken = null;
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+			expiresIn: `${this.configService.get(
+				'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+			)}s`,
+		});
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
+		/// FOR COOKIE:
+		// return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+		//   'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+		// )}`;
+		return token;
+	}
 
-    // 3) reset password from teacher to students and parents
-    if (
-      currentUser.roles.some((role) => role === Role.TEACHER) &&
-      !user.roles.some((role) => role === Role.ADMIN) &&
-      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
-      !user.roles.some((role) => role === Role.TEACHER)
-    ) {
-      user.password = await this.hashPassword(resetPasswordInputs.newPassword);
-      user.passwordConfirm = await this.hashPassword(
-        resetPasswordInputs.passwordConfirm,
-      );
-      user.currentHashedRefreshToken = null;
+	public getCookieWithJwtRefreshToken(user: User) {
+		const payload: TokenPayload = {
+			id: user.id,
+			username: user.username,
+			roles: user.roles,
+		};
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
-  }
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+			expiresIn: `${this.configService.get(
+				'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+			)}s`,
+		});
 
-  async changeUserStatus(
-    changeUserStatusDto: ChangeUserStatusDto,
-    currentUser: User,
-  ) {
-    // 1) Get user from collection
-    const user: User = await this.getUserById(changeUserStatusDto.userId);
+		/// FOR COOKIE:
+		// const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+		//   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+		// )}`;
 
-    // 2) Check if user exist.
-    if (!user) {
-      throw new UnauthorizedException("This user doesn't exist.");
-    }
+		// return {
+		//   cookie,
+		//   token,
+		// };
+		return token;
+	}
 
-    // 3) reset password from main admin
-    if (currentUser.roles.some((role) => role === Role.MAIN_ADMIN)) {
-      // 3) If so, update password
-      user.status = changeUserStatusDto.status;
+	async setCurrentRefreshToken(refreshToken: string, user: User) {
+		const currentHashedRefreshToken = await argon.hash(refreshToken);
+		user.currentHashedRefreshToken = currentHashedRefreshToken;
+		this.usersRepository.updateUser(user._id, user);
+	}
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
+	async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
+		const user = await this.usersRepository.getUserById(userId);
 
-    // 3) reset password from admin
-    else if (
-      currentUser.roles.some((role) => role === Role.ADMIN) &&
-      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
-      !user.roles.some((role) => role === Role.ADMIN)
-    ) {
-      // 3) If so, update password
-      user.status = changeUserStatusDto.status;
+		if (!user || !user.currentHashedRefreshToken) {
+			throw new UnauthorizedException('Please check your credentials');
+		}
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
+		const isRefreshTokenMatching = await argon.verify(
+			user.currentHashedRefreshToken,
+			refreshToken,
+		);
 
-    // 3) reset password from teacher to students and parents
-    if (
-      currentUser.roles.some((role) => role === Role.TEACHER) &&
-      !user.roles.some((role) => role === Role.ADMIN) &&
-      !user.roles.some((role) => role === Role.MAIN_ADMIN) &&
-      !user.roles.some((role) => role === Role.TEACHER)
-    ) {
-      // 3) If so, update password
-      user.status = changeUserStatusDto.status;
+		if (isRefreshTokenMatching) {
+			return user;
+		}
+	}
 
-      return this.usersRepository.updateUser(user._id, user);
-    }
+	/// FOR COOKIE:
+	// public getCookiesForLogOut() {
+	//   return [
+	//     'Authentication=; HttpOnly; Path=/; Max-Age=0',
+	//     'Refresh=; HttpOnly; Path=/; Max-Age=0',
+	//   ];
+	// }
 
-    throw new ForbiddenException("You can't this action with your status.");
-  }
+	async removeRefreshToken(user: User) {
+		user.currentHashedRefreshToken = null;
+		return this.usersRepository.updateUser(user._id, user);
+	}
 
-  /// use when we want only access token.
-  // async signIn(
-  //   authCredentialDto: AuthCredentialDto,
-  // ): Promise<{ accessToken: string }> {
-  //   const { username, password } = authCredentialDto;
+	async updatePassword(
+		updatePasswordDto: UpdatePasswordDto,
+		currentUser: User,
+	) {
+		// Get user from collection
+		const user: User = await this.usersRepository.getUserById(currentUser.id);
 
-  //   const user: User = await this.usersRepository.findOneBy({ username });
+		// Check if POSTed current password is correct
+		if (updatePasswordDto.currentPassword !== user.password) {
+			throw new UnauthorizedException('Your current password is wrong.');
+		}
 
-  //   if (user && (await argon.verify(user.password, password))) {
-  //     const roles = user.roles;
-  //     const payload = { username, roles };
-  //     const accessToken = await this.jwtService.sign(payload);
+		// If so, update password
+		user.password = await this.hashPassword(updatePasswordDto.newPassword);
+		user.passwordConfirm = await this.hashPassword(
+			updatePasswordDto.passwordConfirm,
+		);
 
-  //     return { accessToken };
-  //   } else {
-  //     throw new UnauthorizedException('Please check your login credentials');
-  //   }
-  // }
+		return this.usersRepository.updateUser(user._id, user);
+	}
 
-  async checkUser(authCredentialDto: AuthCredentialDto): Promise<User | void> {
-    const { username, password } = authCredentialDto;
+	async resetPassword(
+		resetPasswordInputs: ResetPasswordInputs,
+		currentUser: User,
+	) {
+		// Get user from collection
+		const user: User = await this.usersRepository.getUserById(
+			resetPasswordInputs.userId,
+		);
 
-    const user: User = await this.usersRepository.findOneBy({ username });
+		// Check if user exist.
+		if (!user) {
+			throw new UnauthorizedException("This user doesn't exist.");
+		}
 
-    if (user && (await argon.verify(user.password, password))) {
-      return user;
-    } else {
-      throw new UnauthorizedException('Please check your login credentials');
-    }
-  }
+		// reset password from main admin
+		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
+			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+			user.passwordConfirm = await this.hashPassword(
+				resetPasswordInputs.passwordConfirm,
+			);
+			user.currentHashedRefreshToken = null;
 
-  public getCookieWithJwtAccessToken(user: User) {
-    const payload: TokenPayload = {
-      id: user.id,
-      username: user.username,
-      roles: user.roles,
-    };
+			return this.usersRepository.updateUser(user._id, user);
+		}
 
-    const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get(
-        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-      )}s`,
-    });
+		// reset password from admin
+		else if (
+			currentUser.roles.some(role => role === Role.ADMIN) &&
+			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
+			!user.roles.some(role => role === Role.ADMIN)
+		) {
+			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+			user.passwordConfirm = await this.hashPassword(
+				resetPasswordInputs.passwordConfirm,
+			);
+			user.currentHashedRefreshToken = null;
 
-    /// FOR COOKIE:
-    // return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-    //   'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-    // )}`;
-    return token;
-  }
+			return this.usersRepository.updateUser(user._id, user);
+		}
 
-  public getCookieWithJwtRefreshToken(user: User) {
-    const payload: TokenPayload = {
-      id: user.id,
-      username: user.username,
-      roles: user.roles,
-    };
+		// reset password from teacher to students and parents
+		if (
+			currentUser.roles.some(role => role === Role.TEACHER) &&
+			!user.roles.some(role => role === Role.ADMIN) &&
+			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
+			!user.roles.some(role => role === Role.TEACHER)
+		) {
+			user.password = await this.hashPassword(resetPasswordInputs.newPassword);
+			user.passwordConfirm = await this.hashPassword(
+				resetPasswordInputs.passwordConfirm,
+			);
+			user.currentHashedRefreshToken = null;
 
-    const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get(
-        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-      )}s`,
-    });
+			return this.usersRepository.updateUser(user._id, user);
+		}
+	}
 
-    /// FOR COOKIE:
-    // const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-    //   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-    // )}`;
+	async changeUserStatus(
+		changeUserStatusDto: ChangeUserStatusDto,
+		currentUser: User,
+	) {
+		// Get user from collection
+		const user: User = await this.usersRepository.getUserById(
+			changeUserStatusDto.userId,
+		);
 
-    // return {
-    //   cookie,
-    //   token,
-    // };
-    return token;
-  }
+		// Check if user exist.
+		if (!user) {
+			throw new UnauthorizedException("This user doesn't exist.");
+		}
 
-  async setCurrentRefreshToken(refreshToken: string, user: User) {
-    const currentHashedRefreshToken = await argon.hash(refreshToken);
-    user.currentHashedRefreshToken = currentHashedRefreshToken;
-    this.usersRepository.updateUser(user._id, user);
-  }
+		// change status from main admin
+		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
+			// If so, update status
+			user.status = changeUserStatusDto.status;
 
-  async getUserById(userId: string) {
-    const user = await this.usersRepository.getUserById(userId);
+			return this.usersRepository.updateUser(user._id, user);
+		}
 
-    return user;
-  }
+		// change status from admin
+		else if (
+			currentUser.roles.some(role => role === Role.ADMIN) &&
+			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
+			!user.roles.some(role => role === Role.ADMIN)
+		) {
+			// If so, update status
+			user.status = changeUserStatusDto.status;
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
-    const user = await this.getUserById(userId);
+			return this.usersRepository.updateUser(user._id, user);
+		}
 
-    if (!user || user.currentHashedRefreshToken) {
-      throw new UnauthorizedException('Please check your credentials');
-    }
+		// change status from teacher to students and parents
+		if (
+			currentUser.roles.some(role => role === Role.TEACHER) &&
+			!user.roles.some(role => role === Role.ADMIN) &&
+			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
+			!user.roles.some(role => role === Role.TEACHER)
+		) {
+			// If so, update status
+			user.status = changeUserStatusDto.status;
 
-    const isRefreshTokenMatching = await argon.verify(
-      user.currentHashedRefreshToken,
-      refreshToken,
-    );
+			return this.usersRepository.updateUser(user._id, user);
+		}
 
-    if (isRefreshTokenMatching) {
-      return user;
-    }
-  }
-
-  /// FOR COOKIE:
-  // public getCookiesForLogOut() {
-  //   return [
-  //     'Authentication=; HttpOnly; Path=/; Max-Age=0',
-  //     'Refresh=; HttpOnly; Path=/; Max-Age=0',
-  //   ];
-  // }
-
-  async removeRefreshToken(user: User) {
-    user.currentHashedRefreshToken = null;
-    return this.usersRepository.updateUser(user._id, user);
-  }
+		throw new ForbiddenException("You can't this action with your status.");
+	}
 }
