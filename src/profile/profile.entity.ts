@@ -5,15 +5,11 @@ import {
   ObjectIdColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
-
-import { Role } from './models/role.enum';
-import { Status } from './models/user-status.enum';
 
 @Entity()
-export class User {
+export class Profile  {
   @ObjectIdColumn()
   _id: string;
 
@@ -22,25 +18,22 @@ export class User {
   id: string;
 
   @Column({ unique: true })
-  username: string;
+  personalNumber: number;
 
   @Column()
-  password: string;
+  phoneNumber: string;
 
   @Column()
-  passwordConfirm: string;
+  firstName: string;
 
   @Column()
-  creatorId: string;
+  lastName: string;
+
+  @Column({ unique: true })
+  email: string;
 
   @Column()
-  roles?: Role[];
-
-  @Column({
-    nullable: true
-  })
-  @Exclude()
-  public currentHashedRefreshToken?: string;
+  profileImg: string;
 
   @CreateDateColumn()
   createdDate: Date;
@@ -51,9 +44,6 @@ export class User {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @Column() 
-  status: Status;
-
-  @Column()
-  profile: string;
+  @Column({ unique: true })
+  user: string;
 }

@@ -4,32 +4,39 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  Length,
-  MaxLength,
-  MinLength,
+  IsUUID,
+  Length
 } from 'class-validator';
 
-export class SignupInputs {
+export class ProfileDto {
+  @IsUUID()
+  @IsOptional()
+  id?: string;
+  
+  @IsUUID()
+  @IsOptional()
+  user?: string;
+
+  @IsNotEmpty()
   @IsString()
-  @MinLength(1)
-  @MaxLength(50)
+  @IsNotEmpty()
   firstName: string;
 
   @IsString()
-  @MinLength(1)
-  @MaxLength(50)
+  @IsNotEmpty()
   lastName: string;
 
   @Length(11)
-  @IsNumber()
+  @IsNotEmpty()
   personalNumber: number;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsNotEmpty()
   phoneNumber: string;
 
   @IsOptional()
-  profileImg: File;
+  profileImg: string;
 }

@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { configValidationSchema } from './config.schema';
 import { UserRepository } from './auth/user.repository';
-import { RegistrationModule } from './registration/registration.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { RegistrationModule } from './registration/registration.module';
         entities: [],
       }),
     }),
-    RegistrationModule,
+    ProfileModule,
   ],
   controllers: [],
   providers: [UserRepository],
