@@ -43,6 +43,12 @@ export class AuthService {
 		return this.usersRepository.createUser(signupDto);
 	}
 
+	async getUserById(userId: string) {
+		const user = await this.usersRepository.getUserById(userId);
+
+		return user;
+	}
+
 	async hashPassword(password: string) {
 		return await argon.hash(password);
 	}

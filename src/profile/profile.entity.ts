@@ -1,49 +1,53 @@
+import { Role } from 'src/auth/models/role.enum';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ObjectIdColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	ObjectIdColumn,
+	CreateDateColumn,
+	UpdateDateColumn,
+	DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class Profile  {
-  @ObjectIdColumn()
-  _id: string;
+export class Profile {
+	@ObjectIdColumn()
+	_id: string;
 
-  @Column({ unique: true })
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+	@Column({ unique: true })
+	@PrimaryGeneratedColumn('uuid')
+	id: string;
 
-  @Column({ unique: true })
-  personalNumber: number;
+	@Column({ unique: true })
+	personalNumber: number;
 
-  @Column()
-  phoneNumber: string;
+	@Column()
+	phoneNumber: string;
 
-  @Column()
-  firstName: string;
+	@Column()
+	firstName: string;
 
-  @Column()
-  lastName: string;
+	@Column()
+	lastName: string;
 
-  @Column({ unique: true })
-  email: string;
+	@Column({ unique: true })
+	email: string;
 
-  @Column()
-  profileImg: string;
+	@Column()
+	profileImg: string;
 
-  @CreateDateColumn()
-  createdDate: Date;
+	@CreateDateColumn()
+	createdDate: Date;
 
-  @UpdateDateColumn()
-  updatedDate: Date;
+	@UpdateDateColumn()
+	updatedDate: Date;
 
-  @DeleteDateColumn()
-  deletedDate: Date;
+	@DeleteDateColumn()
+	deletedDate: Date;
 
-  @Column({ unique: true })
-  user: string;
+	@Column({ unique: true })
+	user: string;
+
+	@Column()
+	roles: Role[];
 }
