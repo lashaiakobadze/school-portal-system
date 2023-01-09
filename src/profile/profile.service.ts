@@ -48,7 +48,7 @@ export class ProfileService {
 			updatedDate: new Date(),
 		};
 
-		return this.profileRepository.updateProfile(profile._id, updatedProfile);
+		return this.profileRepository.updateProfile(updatedProfile);
 	}
 
 	async updateProfile(
@@ -56,10 +56,6 @@ export class ProfileService {
 		profileInputs: ProfileDto,
 		profileId: string,
 	): Promise<Profile> {
-		// console.log('user', user);
-		// console.log('profileId', profileId);
-		// console.log('profileInputs', profileInputs);
-
 		let profile: Profile = await this.profileRepository.getProfileById(
 			profileId,
 		);
@@ -85,7 +81,7 @@ export class ProfileService {
 				updatedDate: new Date(),
 			};
 
-			return this.profileRepository.updateProfile(profile._id, updatedProfile);
+			return this.profileRepository.updateProfile(updatedProfile);
 		}
 
 		// If action author is admin.
@@ -99,7 +95,7 @@ export class ProfileService {
 				updatedDate: new Date(),
 			};
 
-			return this.profileRepository.updateProfile(profile._id, updatedProfile);
+			return this.profileRepository.updateProfile(updatedProfile);
 		}
 
 		// If action author is teacher.
@@ -114,7 +110,7 @@ export class ProfileService {
 				updatedDate: new Date(),
 			};
 
-			return this.profileRepository.updateProfile(profile._id, updatedProfile);
+			return this.profileRepository.updateProfile(updatedProfile);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");

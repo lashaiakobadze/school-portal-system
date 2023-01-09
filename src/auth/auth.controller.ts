@@ -4,7 +4,9 @@ import {
 	Controller,
 	Get,
 	HttpCode,
+	Patch,
 	Post,
+	Put,
 	Req,
 	UseGuards,
 } from '@nestjs/common';
@@ -145,7 +147,7 @@ export class AuthController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Post('update-password')
+	@Put('update-password')
 	updatePassword(
 		@Body() updatePasswordDto: UpdatePasswordDto,
 		@GetUser() user: User,
@@ -155,7 +157,7 @@ export class AuthController {
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
 	@UseGuards(JwtAuthGuard)
-	@Post('reset-password')
+	@Put('reset-password')
 	resetPassword(
 		@Body() resetPasswordInputs: ResetPasswordInputs,
 		@GetUser() user: User,
@@ -165,7 +167,7 @@ export class AuthController {
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post('change-status')
+	@Patch('change-status')
 	changeUserStatus(
 		@Body() changeUserStatusDto: ChangeUserStatusDto,
 		@GetUser() user: User,

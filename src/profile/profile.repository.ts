@@ -38,16 +38,11 @@ export class ProfileRepository extends Repository<Profile> {
 		}
 	}
 
-	async updateProfile(profileId: string, profile: Profile): Promise<Profile> {
-		const updatedProfile: Profile = {
-			...profile,
-		};
-
+	async updateProfile(profile: Profile): Promise<Profile> {
 		try {
-			// ToDo: fix this update behavior all key exception.
-			await this.update(profileId, updatedProfile);
+			await this.update(profile._id, profile);
 
-			return updatedProfile;
+			return profile;
 		} catch (error) {
 			if (error.code === 11000) {
 				console.log('error', error);

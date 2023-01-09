@@ -53,6 +53,19 @@ export class UserRepository extends Repository<User> {
     }
   }
 
+  async updateUserStatus(user: User): Promise<User> {
+    try {
+      await this.save(user);
+
+      return user;
+    } catch (error) {
+      console.log('error', error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+
+
   async getUserById(userId: string): Promise<User> {
     try {
       const user = await this.findOneBy({ id: userId });

@@ -4,6 +4,7 @@ import {
 	Get,
 	Param,
 	Post,
+	Put,
 	UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
@@ -43,7 +44,7 @@ export class ProfileController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Post('edit-profile')
+	@Put('edit-profile')
 	editProfile(
 		@Body() profileInputs: ProfileDto,
 		@GetUser() user: User,
@@ -53,7 +54,7 @@ export class ProfileController {
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post('update-profile/:id')
+	@Put('update-profile/:id')
 	updateProfile(
 		@Param('id') profileId: string,
 		@Body() profileInputs: ProfileDto,
