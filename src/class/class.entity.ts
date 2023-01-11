@@ -27,10 +27,10 @@ export class Class {
 	@Column()
 	currentStage: string;
 
-	@Column()
+	@Column('string', { array: true })
 	stages: string[];
 
-	@Column()
+	@Column('string', { array: true })
 	subjects: string[];
 
 	@Column()
