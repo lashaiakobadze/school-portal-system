@@ -3,7 +3,8 @@ import {
 	ConflictException,
 	HttpException,
 	HttpStatus,
-	Injectable, InternalServerErrorException,
+	Injectable,
+	InternalServerErrorException,
 } from '@nestjs/common';
 
 import { Class } from './class.entity';
@@ -16,15 +17,15 @@ export class ClassRepository extends Repository<Class> {
 		super(Class, dataSource.createEntityManager());
 	}
 
-	async createClass(classDto: ClassDto): Promise<Class> {
-		const classObject: Class = this.create({
-			...classDto,
+	async onCreate(dto: ClassDto): Promise<Class> {
+		const newCreated: Class = this.create({
+			...dto,
 		});
 
 		try {
-			await this.save(classObject);
+			await this.save(newCreated);
 
-			return classObject;
+			return newCreated;
 		} catch (error) {
 			// ToDo: improve Error handling
 			if (error.code === 11000) {
@@ -36,11 +37,11 @@ export class ClassRepository extends Repository<Class> {
 		}
 	}
 
-	async updateClass(classObject: Class): Promise<Class> {
+	async onUpdate(updated: Class): Promise<Class> {
 		try {
-			await this.update(classObject._id, classObject);
+			await this.update(updated._id, updated);
 
-			return classObject;
+			return updated;
 		} catch (error) {
 			if (error.code === 11000) {
 				console.log('error', error);
@@ -52,12 +53,12 @@ export class ClassRepository extends Repository<Class> {
 		}
 	}
 
-	async getClassById(classId: string): Promise<Class> {
+	async getById(id: string): Promise<Class> {
 		try {
-			const classObject = await this.findOneBy({ id: classId });
+			const object: Class = await this.findOneBy({ id });
 
-			if (classObject) {
-				return classObject;
+			if (object) {
+				return object;
 			}
 
 			throw new HttpException(
@@ -71,11 +72,16 @@ export class ClassRepository extends Repository<Class> {
 		}
 	}
 
-	async getClasses(user: User): Promise<Class[]> {
-		try {
-			let classes: Class[] = await this.find();
+	async getAll(user: User): Promise<Class[]> {
+		console.log('user', user);
 
-			throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
+		try {
+			let objects: Class[] = await this.find();
+
+			if (!objects)
+				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
+
+			return objects;
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);

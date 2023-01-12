@@ -17,6 +17,9 @@ export class Class {
 	@Column({ unique: true })
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
+
+	@Column()
+	creatorId: string;
 	
 	@Column()
 	class: number;

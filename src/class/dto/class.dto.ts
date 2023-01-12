@@ -17,8 +17,9 @@ export class ClassDto {
   id?: string;
   
   @IsUUID()
-  @IsOptional()
-  user?: string;
+  @IsNotEmpty()
+  @IsUUID()
+  creatorId: string;
 
   @IsString()
   @IsNotEmpty()
