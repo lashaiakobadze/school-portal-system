@@ -25,7 +25,7 @@ export class Stage {
 	stage: number;
 
 	@Column()
-	week: string;
+	weeks: string[];
 
 	@CreateDateColumn()
 	createdDate: Date;
