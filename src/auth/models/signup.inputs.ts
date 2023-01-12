@@ -1,41 +1,31 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 import { Role } from '../models/role.enum';
 import { Status } from './user-status.enum';
 
 export class SignupInputs {
-  @IsString()
-  @MinLength(8)
-  @MaxLength(20)
-  username: string;
+	@IsString()
+	@Length(8, 20)
+	username: string;
 
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password is weak',
-  })
-  password: string;
+	@IsString()
+	@Length(8, 20)
+	@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+		message: 'password is weak',
+	})
+	password: string;
 
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password do not match, password confirm is required.',
-  })
-  passwordConfirm: string;
+	@IsString()
+	@Length(8, 20)
+	@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+		message: 'password do not match, password confirm is required.',
+	})
+	passwordConfirm: string;
 
-  @IsNotEmpty()
-  @IsEnum(Role, { each: true })
-  roles: Role[];
+	@IsNotEmpty()
+	@IsEnum(Role, { each: true })
+	roles: Role[];
 
-  @IsNotEmpty()
-  @IsEnum(Status)
-  status: Status;
+	@IsNotEmpty()
+	@IsEnum(Status)
+	status: Status;
 }
