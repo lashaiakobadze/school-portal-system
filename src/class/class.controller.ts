@@ -29,8 +29,8 @@ export class ClassController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get('get')
-	get(id: string): Promise<Class> {
+	@Get('get/:id')
+	get(@Param('id') id: string): Promise<Class> {
 		return this.classService.get(id);
 	}
 

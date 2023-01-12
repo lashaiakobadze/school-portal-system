@@ -1,4 +1,5 @@
 import {
+	IsDefined,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
@@ -11,9 +12,9 @@ export class ClassDto {
 	@IsOptional()
 	id?: string;
 
-	@IsNotEmpty()
 	@IsUUID()
-	creatorId: string;
+	@IsOptional()
+	creatorId?: string;
 
 	@IsNotEmpty()
 	@IsNumber()
@@ -23,20 +24,20 @@ export class ClassDto {
 	@IsNotEmpty()
 	academicYear: string;
 
-	@IsString()
-	@IsNotEmpty()
-	currentStageId: string;
+	@IsUUID()
+	@IsOptional()
+	currentStageId?: string;
 
 	@IsUUID(undefined, { each: true })
-	@IsNotEmpty()
+	@IsDefined()
 	stages: string[];
 
 	@IsUUID(undefined, { each: true })
-	@IsNotEmpty()
+	@IsDefined()
 	subjects: string[];
 
 	@IsUUID(undefined, { each: true })
-	@IsNotEmpty()
+	@IsDefined()
 	teachers: string;
 
 	@IsUUID(undefined, { each: true })

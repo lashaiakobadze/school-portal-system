@@ -21,8 +21,8 @@ export class WeekController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get('get')
-	get(id: string): Promise<Week> {
+	@Get('get/:id')
+	get(@Param('id') id: string): Promise<Week> {
 		return this.weekService.get(id);
 	}
 

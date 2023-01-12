@@ -21,8 +21,8 @@ export class StageController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get('get')
-	get(id: string): Promise<Stage> {
+	@Get('get/:id')
+	get(@Param('id') id: string): Promise<Stage> {
 		return this.stageService.get(id);
 	}
 
