@@ -1,61 +1,45 @@
-import { Type } from 'class-transformer';
 import {
-  IsArray,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
 } from 'class-validator';
-import { Role } from 'src/auth/models/role.enum';
 
 export class ClassDto {
-  @IsUUID()
-  @IsOptional()
-  id?: string;
-  
-  @IsUUID()
-  @IsNotEmpty()
-  @IsUUID()
-  creatorId: string;
+	@IsUUID()
+	@IsOptional()
+	id?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  academicYear: string;
+	@IsNotEmpty()
+	@IsUUID()
+	creatorId: string;
 
-  @IsString()
-  @IsNotEmpty()
-  currentStage: string;
+	@IsNotEmpty()
+	@IsNumber()
+	class: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  class: number;
+	@IsString()
+	@IsNotEmpty()
+	academicYear: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  stages: string[];
+	@IsString()
+	@IsNotEmpty()
+	currentStageId: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  subjects: string[];
+	@IsUUID(undefined, { each: true })
+	@IsNotEmpty()
+	stages: string[];
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  @IsEnum(Role, { each: true })
-	teachers: Role.TEACHER[];
+	@IsUUID(undefined, { each: true })
+	@IsNotEmpty()
+	subjects: string[];
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  @IsEnum(Role, { each: true })
-	students: Role.STUDENT[];
+	@IsUUID(undefined, { each: true })
+	@IsNotEmpty()
+	teachers: string;
+
+	@IsUUID(undefined, { each: true })
+	@IsNotEmpty()
+	students: string;
 }

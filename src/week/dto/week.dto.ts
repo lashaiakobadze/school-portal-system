@@ -1,47 +1,27 @@
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator';
 
 export class WeekDto {
-  @IsUUID()
-  @IsOptional()
-  id?: string;
-  
-  @IsUUID()
-  @IsNotEmpty()
-  @IsUUID()
-  creatorId: string;
-  
-  @IsNotEmpty()
-  @IsString()
-  stage: string;
+	@IsUUID()
+	@IsOptional()
+	id?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  testScore: number;
+	@IsNotEmpty()
+	@IsUUID()
+	creatorId: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  homeworkScore: number;
+	@IsNotEmpty()
+	@IsNumber()
+	testScore: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  onlineTestScore: number;
+	@IsNotEmpty()
+	@IsNumber()
+	homeworkScore: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  activityScore: number;
+	@IsNotEmpty()
+	@IsNumber()
+	onlineTestScore: number;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  week: string;
+	@IsNotEmpty()
+	@IsNumber()
+	activityScore: number;
 }

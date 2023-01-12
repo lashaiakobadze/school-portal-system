@@ -1,4 +1,3 @@
-import { Role } from 'src/auth/models/role.enum';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -28,19 +27,19 @@ export class Class {
 	academicYear: string;
 
 	@Column()
-	currentStage: string;
+	currentStageId: string;
 
-	@Column('string', { array: true })
+	@Column()
 	stages: string[];
 
-	@Column('string', { array: true })
+	@Column()
 	subjects: string[];
 
 	@Column()
-	teachers: Role.TEACHER[];
+	teachers: string;
 
 	@Column()
-	students: Role.STUDENT[];
+	students: string;
 
 	@CreateDateColumn()
 	createdDate: Date;

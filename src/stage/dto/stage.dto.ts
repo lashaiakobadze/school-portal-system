@@ -1,35 +1,29 @@
-import { Type } from 'class-transformer';
 import {
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	IsUUID,
 } from 'class-validator';
 
 export class StageDto {
-  @IsUUID()
-  @IsOptional()
-  id?: string;
-  
-  @IsUUID()
-  @IsNotEmpty()
-  @IsUUID()
-  creatorId: string;
-  
-  @IsNotEmpty()
-  @IsNumber()
-  stage: number;
+	@IsUUID()
+	@IsOptional()
+	id?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  currentWeek: string;
+	@IsNotEmpty()
+	@IsUUID()
+	creatorId: string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => String)
-  @IsNotEmpty()
-  week: string;
+	@IsNotEmpty()
+	@IsNumber()
+	stage: number;
+
+	@IsString()
+	@IsNotEmpty()
+	currentWeekId: string;
+
+	@IsUUID(undefined, { each: true })
+	@IsNotEmpty()
+	week: string;
 }

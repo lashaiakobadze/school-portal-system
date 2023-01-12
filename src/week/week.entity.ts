@@ -18,7 +18,7 @@ export class Week {
 	id: string;
 
 	@Column()
-	stage: string;
+	creatorId: string;
 
 	@Column()
 	testScore: number;

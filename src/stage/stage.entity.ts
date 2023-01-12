@@ -1,4 +1,3 @@
-import { Role } from 'src/auth/models/role.enum';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
@@ -17,12 +16,12 @@ export class Stage {
 	@Column({ unique: true })
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
-	
-	@Column()
-	class: number;
 
 	@Column()
 	stage: number;
+
+	@Column()
+	currentWeekId: string;
 
 	@Column()
 	weeks: string[];
