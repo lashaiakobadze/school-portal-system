@@ -6,7 +6,7 @@ import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import { WeekDto } from './dto/week.dto';
-import { Week } from './week.entity';
+import { Week } from './week.schema';
 import { WeekService } from './week.service';
 
 @Controller('week')

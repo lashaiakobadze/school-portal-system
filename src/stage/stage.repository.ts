@@ -38,7 +38,7 @@ export class StageRepository {
 		try {
 			await this.stageModel.findByIdAndUpdate(id, updated).exec();
 
-			return (updated as any);
+			return updated as any;
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);

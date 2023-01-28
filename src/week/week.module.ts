@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { WeekController } from './week.controller';
-import { Week } from './week.entity';
+import { Week, WeekSchema } from './week.schema';
 import { WeekRepository } from './week.repository';
 import { WeekService } from './week.service';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Week]), AuthModule],
+	imports: [MongooseModule.forFeature([{ name: Week.name, schema: WeekSchema }]), AuthModule],
 	providers: [WeekRepository, WeekService],
 	controllers: [WeekController],
 })

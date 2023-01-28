@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "src/auth/user.schema";
 import { WeekDto } from "./dto/week.dto";
-import { Week } from "./week.entity";
+import { Week } from "./week.schema";
 import { WeekRepository } from "./week.repository";
 import { v4 as uuid } from 'uuid';
 
@@ -32,14 +32,11 @@ export class WeekService {
 	async update(user: User, inputs: WeekDto, id: string): Promise<Week> {
 		console.log('user', user);
 
-		let classObject: Week = await this.WeekRepository.getById(id);
-
-		let updated: Week = {
-			...classObject,
+		let updated: WeekDto = {
 			...inputs,
-			updatedDate: new Date(),
+			creatorId: user._id.toString(),
 		};
 
-		return this.WeekRepository.onUpdate(updated);
+		return this.WeekRepository.onUpdate(id, updated);
 	}
 }

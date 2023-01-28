@@ -28,7 +28,7 @@ export class ClassService {
 	}
 
 	async update(user: User, inputs: ClassDto, id: string): Promise<Class> {
-		let updated = {
+		let updated: ClassDto = {
 			...inputs,
 			creatorId: user._id.toString(),
 		};

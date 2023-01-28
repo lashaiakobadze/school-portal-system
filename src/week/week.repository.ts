@@ -6,25 +6,22 @@ import {
 	Injectable, InternalServerErrorException,
 } from '@nestjs/common';
 
-import { Week } from './week.entity';
+import { Week, WeekDocument } from './week.schema';
 import { WeekDto } from './dto/week.dto';
 import { User } from 'src/auth/user.schema';
 import MongoError from 'src/utils/mongoError.enum';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
-export class WeekRepository extends Repository<Week> {
-	constructor(private dataSource: DataSource) {
-		super(Week, dataSource.createEntityManager());
-	}
-
+export class WeekRepository {
+	constructor(
+		@InjectModel(Week.name) private weekModel: Model<WeekDocument>,
+	) {}
 	
 	async onCreate(dto: WeekDto): Promise<Week> {
-		const newCreated: Week = this.create({
-			...dto,
-		});
-
 		try {
-			await this.save(newCreated);
+			const newCreated = new this.weekModel({ dto }).save();
 
 			return newCreated;
 		} catch (error) {
@@ -38,11 +35,11 @@ export class WeekRepository extends Repository<Week> {
 		}
 	}
 
-	async onUpdate(updated: Week): Promise<Week> {
+	async onUpdate(id: string, updated: WeekDto): Promise<Week> {
 		try {
-			await this.update(updated._id, updated);
+			await this.weekModel.findByIdAndUpdate(id, updated).exec();
 
-			return updated;
+			return updated as Week;
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
@@ -56,7 +53,7 @@ export class WeekRepository extends Repository<Week> {
 
 	async getById(id: string): Promise<Week> {
 		try {
-			const object: Week = await this.findOneBy({ id });
+			const object: Week = await this.weekModel.findById(id).exec();
 
 			if (object) {
 				return object;
@@ -77,10 +74,9 @@ export class WeekRepository extends Repository<Week> {
 		console.log('user', user);
 
 		try {
-			let objects: Week[] = await this.find();
-
+			let objects: Week[] =  await this.weekModel.find();
 			if (!objects)
-				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
+				throw new HttpException('Weeks does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
 		} catch (error) {
