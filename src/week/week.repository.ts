@@ -9,6 +9,7 @@ import {
 import { Week } from './week.entity';
 import { WeekDto } from './dto/week.dto';
 import { User } from 'src/auth/user.schema';
+import MongoError from 'src/utils/mongoError.enum';
 
 @Injectable()
 export class WeekRepository extends Repository<Week> {
@@ -28,7 +29,7 @@ export class WeekRepository extends Repository<Week> {
 			return newCreated;
 		} catch (error) {
 			// ToDo: improve Error handling
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Week already exists');
 			} else {
 				console.log('error', error);
@@ -43,7 +44,7 @@ export class WeekRepository extends Repository<Week> {
 
 			return updated;
 		} catch (error) {
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
 				throw new ConflictException('Week already exists');
 			} else {

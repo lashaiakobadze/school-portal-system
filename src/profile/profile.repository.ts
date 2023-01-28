@@ -14,6 +14,7 @@ import { Role } from 'src/auth/models/role.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import ParamsWithId from 'src/utils/paramsWithId';
+import MongoError from 'src/utils/mongoError.enum';
 
 @Injectable()
 export class ProfileRepository {
@@ -37,7 +38,7 @@ export class ProfileRepository {
 		} catch (error) {
 			console.log(error);
 			// ToDo: improve Error handling
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Profile already exists');
 			} else {
 				console.log('error', error);
@@ -58,7 +59,7 @@ export class ProfileRepository {
 
 			return profile; // Todo: this isn't update profile.
 		} catch (error) {
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
 				throw new ConflictException('Profile already exists');
 			} else {

@@ -9,6 +9,7 @@ import {
 import { Stage } from './stage.entity';
 import { StageDto } from './dto/stage.dto';
 import { User } from 'src/auth/user.schema';
+import MongoError from 'src/utils/mongoError.enum';
 
 @Injectable()
 export class StageRepository extends Repository<Stage> {
@@ -27,7 +28,7 @@ export class StageRepository extends Repository<Stage> {
 			return newCreated;
 		} catch (error) {
 			// ToDo: improve Error handling
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Stage already exists');
 			} else {
 				console.log('error', error);
@@ -42,7 +43,7 @@ export class StageRepository extends Repository<Stage> {
 
 			return updated;
 		} catch (error) {
-			if (error.code === 11000) {
+			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
 				throw new ConflictException('Stage already exists');
 			} else {
