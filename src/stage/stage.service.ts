@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "src/auth/user.entity";
+import { User } from "src/auth/user.schema";
 import { StageDto } from "./dto/stage.dto";
 import { Stage } from "./stage.entity";
 import { StageRepository } from "./stage.repository";
@@ -15,7 +15,7 @@ export class StageService {
 	create(inputs: StageDto, user: User): Promise<Stage> {
 		const dto: StageDto = {
 			id: uuid(),
-			creatorId: user.id,
+			creatorId: user._id,
 			...inputs,
 		};
 

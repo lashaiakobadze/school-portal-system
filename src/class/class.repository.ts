@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { Class } from './class.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { ClassDto } from './dto/class.dto';
 
 @Injectable()

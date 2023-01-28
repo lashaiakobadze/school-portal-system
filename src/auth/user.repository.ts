@@ -1,4 +1,3 @@
-import { DataSource, Repository } from 'typeorm';
 import {
   ConflictException,
   HttpException,
@@ -9,32 +8,37 @@ import {
 
 import * as argon from 'argon2';
 
-import { User } from './user.entity';
+import { UserDocument, User } from './user.schema';
 import { SignupDto } from './dto/signup.dto';
 
+import { InjectModel } from '@nestjs/mongoose';
+
+import { Model, ObjectId } from 'mongoose';
+import MongoError from 'src/utils/mongoError.enum';
+
 @Injectable()
-export class UserRepository extends Repository<User> {
-  constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
-  }
+export class UserRepository {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>
+  ) { }
 
   async createUser(signupDto: SignupDto): Promise<User> {
     const { password } = signupDto;
 
     const hashedPassword = await argon.hash(password);
 
-    const user: User = this.create({
+    const createdUser = new this.userModel({
       ...signupDto,
       password: hashedPassword,
     });
 
     try {
-      await this.save(user);
+      await createdUser.save();
 
-      return user;
+      return createdUser;
     } catch (error) {
       // ToDo: improve Error handling
-      if (error.code === 11000) {
+      if (error.code === MongoError.DuplicateKey) {
         throw new ConflictException('Username already exists');
       } else {
         console.log('error', error);
@@ -43,9 +47,9 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async updateUser(userId: string, user: User): Promise<User> {
+  async updateUser(user: User): Promise<User> {
     try {
-      await this.update(userId, user);
+      await this.userModel.findOneAndUpdate(user._id, user);
       return user;
     } catch (error) {
       console.log('error', error);
@@ -55,7 +59,7 @@ export class UserRepository extends Repository<User> {
 
   async updateUserStatus(user: User): Promise<User> {
     try {
-      await this.save(user);
+      // await this.save(user);
 
       return user;
     } catch (error) {
@@ -66,9 +70,9 @@ export class UserRepository extends Repository<User> {
 
 
 
-  async getUserById(userId: string): Promise<User> {
+  async getUserById(id: ObjectId): Promise<User> {
     try {
-      const user = await this.findOneBy({ id: userId });
+      const user = await this.userModel.findById(id);
 
       if (user) {
         return user;
@@ -84,4 +88,23 @@ export class UserRepository extends Repository<User> {
       throw new InternalServerErrorException();
     }
   }
+
+  async findByName(name: string): Promise<User> {
+      try {
+        const user = await this.userModel.findOne({ username: name });
+  
+        if (user) {
+          return user;
+        }
+  
+        throw new HttpException(
+          'User with this name does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      } catch (error) {
+        // ToDo: improve Error handling
+        console.log('error', error);
+        throw new InternalServerErrorException();
+      }
+    }
 }

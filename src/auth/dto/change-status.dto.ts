@@ -1,13 +1,14 @@
 import {
   IsEnum,
+  IsMongoId,
   IsNotEmpty,
-  IsUUID
 } from 'class-validator';
+import { ObjectId } from 'mongoose';
 import { Status } from '../models/user-status.enum';
 
 export class ChangeUserStatusDto {
-  @IsUUID()
-  userId: string;
+  @IsMongoId()
+  userId: ObjectId;
 
   @IsNotEmpty()
   @IsEnum(Status)

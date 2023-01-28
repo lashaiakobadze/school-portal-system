@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "src/auth/user.entity";
+import { User } from "src/auth/user.schema";
 import { WeekDto } from "./dto/week.dto";
 import { Week } from "./week.entity";
 import { WeekRepository } from "./week.repository";
@@ -14,7 +14,7 @@ export class WeekService {
 	create(inputs: WeekDto, user: User): Promise<Week> {
 		const dto: WeekDto = {
 			id: uuid(),
-			creatorId: user.id,
+			creatorId: user._id,
 			...inputs,
 		};
 

@@ -5,17 +5,11 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUUID,
   Length
 } from 'class-validator';
 import { Role } from 'src/auth/models/role.enum';
 
 export class ProfileDto {
-  @IsUUID()
-  @IsOptional()
-  id?: string;
-  
-  @IsUUID()
   @IsOptional()
   user?: string;
 
@@ -29,6 +23,7 @@ export class ProfileDto {
   lastName: string;
 
   @Length(11)
+  // @IsNumber()
   @IsNotEmpty()
   personalNumber: number;
 

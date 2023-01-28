@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { Class } from './class.entity';
 import { ClassRepository } from './class.repository';
 import { ClassDto } from './dto/class.dto';
@@ -12,7 +12,7 @@ export class ClassService {
 	create(inputs: ClassDto, user: User): Promise<Class> {
 		const dto: ClassDto = {
 			id: uuid(),
-			creatorId: user.id,
+			// creatorId: user._id,
 			...inputs,
 		};
 

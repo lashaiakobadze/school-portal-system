@@ -12,7 +12,7 @@ import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { Class } from './class.entity';
 import { ClassService } from './class.service';
 import { ClassDto } from './dto/class.dto';

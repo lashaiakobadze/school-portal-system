@@ -9,11 +9,12 @@ import {
 	Put,
 	Req,
 	UseGuards,
+	UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { AuthCredentialDto } from './dto/auth.dto';
-import { User } from './user.entity';
+import { User } from './user.schema';
 
 import { HasRoles } from './decorators/roles.decorator';
 import { GetUser } from './decorators/get-user.decorator';
@@ -29,8 +30,10 @@ import { Role } from './models/role.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
+import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 
 @Controller('auth')
+@UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
@@ -175,3 +178,4 @@ export class AuthController {
 		return this.authService.changeUserStatus(changeUserStatusDto, user);
 	}
 }
+

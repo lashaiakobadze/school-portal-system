@@ -1,10 +1,11 @@
-import { IsNotEmpty, IsString, IsUUID, Length, Matches } from 'class-validator';
+import { IsNotEmpty, IsString, IsMongoId, Length, Matches } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class ResetPasswordInputs {
 	@IsNotEmpty()
 	@IsString()
-	@IsUUID()
-	userId: string;
+	@IsMongoId()
+	userId: ObjectId;
 
 	@IsString()
 	@Length(8, 20)

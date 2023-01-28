@@ -8,7 +8,7 @@ import {
 
 import { Week } from './week.entity';
 import { WeekDto } from './dto/week.dto';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 
 @Injectable()
 export class WeekRepository extends Repository<Week> {

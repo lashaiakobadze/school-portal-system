@@ -4,7 +4,7 @@ import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { StageDto } from './dto/stage.dto';
 import { Stage } from './stage.entity';
 import { StageService } from './stage.service';

@@ -6,18 +6,22 @@ import {
 	Post,
 	Put,
 	UseGuards,
+	UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
+import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import ParamsWithId from 'src/utils/paramsWithId';
 import { ProfileDto } from './dto/profile.dto';
-import { Profile } from './profile.entity';
+import { Profile } from './profile.schema';
 import { ProfileService } from './profile.service';
 
 @Controller('profile')
+@UseInterceptors(MongooseClassSerializerInterceptor(Profile))
 export class ProfileController {
 	constructor(private profileService: ProfileService) {}
 
@@ -56,10 +60,10 @@ export class ProfileController {
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put('update-profile/:id')
 	updateProfile(
-		@Param('id') profileId: string,
+		@Param('id') profileId: ParamsWithId,
 		@Body() profileInputs: ProfileDto,
 		@GetUser() user: User,
-	): Promise<Profile> {
+	): Promise<Profile> | any {
 		return this.profileService.updateProfile(
 			user,
 			profileInputs,

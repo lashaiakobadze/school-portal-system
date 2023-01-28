@@ -8,7 +8,7 @@ import {
 
 import { Stage } from './stage.entity';
 import { StageDto } from './dto/stage.dto';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 
 @Injectable()
 export class StageRepository extends Repository<Stage> {

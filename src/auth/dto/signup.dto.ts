@@ -2,13 +2,13 @@ import {
 	IsEnum,
 	IsNotEmpty,
 	IsString,
-	IsUUID,
+	IsMongoId,
 	Length,
 	Matches,
 } from 'class-validator';
 import { Role } from '../models/role.enum';
 export class SignupDto {
-	@IsUUID()
+	@IsMongoId()
 	id: string;
 
 	@IsString()
@@ -29,7 +29,7 @@ export class SignupDto {
 	})
 	passwordConfirm: string;
 
-	@IsUUID()
+	@IsMongoId()
 	creatorId: string;
 
 	@IsNotEmpty()

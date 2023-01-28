@@ -1,5 +1,7 @@
+import { ObjectId } from "mongoose";
+
 export interface TokenPayload {
-  id: string;
+  id: ObjectId;
   username: string;
   roles: string[];
 }

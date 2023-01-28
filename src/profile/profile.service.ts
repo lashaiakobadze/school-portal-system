@@ -3,13 +3,13 @@ import {
 	Injectable,
 	UnauthorizedException,
 } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { ProfileDto } from './dto/profile.dto';
 import { ProfileRepository } from './profile.repository';
-import { v4 as uuid } from 'uuid';
-import { Profile } from './profile.entity';
+import { Profile } from './profile.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
+import ParamsWithId from 'src/utils/paramsWithId';
 
 @Injectable()
 export class ProfileService {
@@ -19,18 +19,11 @@ export class ProfileService {
 	) {}
 
 	registrationProfile(profileInputs: ProfileDto, user: User): Promise<Profile> {
-		const profileDto: ProfileDto = {
-			id: uuid(),
-			user: user.id,
-			roles: user.roles,
-			...profileInputs,
-		};
-
-		return this.profileRepository.createProfile(profileDto);
+		return this.profileRepository.createProfile(profileInputs, user);
 	}
 
 	getProfile(user: User): Promise<Profile> {
-		return this.profileRepository.getProfileByUserId(user.id);
+		return this.profileRepository.getProfileByUserId(user._id);
 	}
 
 	getProfiles(user: User): Promise<Profile[]> {
@@ -38,28 +31,20 @@ export class ProfileService {
 	}
 
 	async editProfile(user: User, profileInputs: ProfileDto): Promise<Profile> {
-		let profile: Profile = await this.profileRepository.getProfileByUserId(
-			user.id,
+		let profile = await this.profileRepository.getProfileByUserId(
+			user._id,
 		);
 
-		let updatedProfile: Profile = {
-			...profile,
-			...profileInputs,
-			updatedDate: new Date(),
-		};
-
-		return this.profileRepository.updateProfile(updatedProfile);
+		return await this.profileRepository.update(profile._id.toString(), profileInputs);
 	}
 
 	async updateProfile(
 		user: User,
 		profileInputs: ProfileDto,
-		profileId: string,
-	): Promise<Profile> {
-		let profile: Profile = await this.profileRepository.getProfileById(
-			profileId,
-		);
-		let profileUser: User = await this.authService.getUserById(profile.user);
+		profileId: ParamsWithId,
+	): Promise<Profile | any> {
+		let profile: Profile = await this.profileRepository.findOne(profileId);
+		let profileUser: User = await this.authService.getUserById(profile.user._id);
 
 		// Check if user exist.
 		if (!profileUser) {
@@ -68,20 +53,14 @@ export class ProfileService {
 
 		if (
 			profileUser.roles.some(role => role === Role.MAIN_ADMIN) &&
-			profileUser.id !== user.id
+			profileUser._id.toString() !== user._id.toString()
 		) {
 			throw new ForbiddenException("You can't update main admin's profile.");
 		}
 
 		// If action author is main admin.
 		if (user.roles.some(role => role === Role.MAIN_ADMIN)) {
-			let updatedProfile: Profile = {
-				...profile,
-				...profileInputs,
-				updatedDate: new Date(),
-			};
-
-			return this.profileRepository.updateProfile(updatedProfile);
+			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		// If action author is admin.
@@ -89,13 +68,7 @@ export class ProfileService {
 			user.roles.some(role => role === Role.ADMIN) &&
 			!profileUser.roles.some(role => role === Role.ADMIN)
 		) {
-			let updatedProfile: Profile = {
-				...profile,
-				...profileInputs,
-				updatedDate: new Date(),
-			};
-
-			return this.profileRepository.updateProfile(updatedProfile);
+			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		// If action author is teacher.
@@ -104,13 +77,7 @@ export class ProfileService {
 			!profileUser.roles.some(role => role === Role.ADMIN) &&
 			!profileUser.roles.some(role => role === Role.TEACHER)
 		) {
-			let updatedProfile: Profile = {
-				...profile,
-				...profileInputs,
-				updatedDate: new Date(),
-			};
-
-			return this.profileRepository.updateProfile(updatedProfile);
+			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");

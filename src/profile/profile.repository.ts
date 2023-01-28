@@ -1,33 +1,41 @@
-import { DataSource, Repository } from 'typeorm';
 import {
 	ConflictException,
 	HttpException,
 	HttpStatus,
 	Injectable,
 	InternalServerErrorException,
+	NotFoundException,
 } from '@nestjs/common';
 
-import { Profile } from './profile.entity';
+import { Profile, ProfileDocument } from './profile.schema';
 import { ProfileDto } from './dto/profile.dto';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/auth/user.schema';
 import { Role } from 'src/auth/models/role.enum';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId } from 'mongoose';
+import ParamsWithId from 'src/utils/paramsWithId';
 
 @Injectable()
-export class ProfileRepository extends Repository<Profile> {
-	constructor(private dataSource: DataSource) {
-		super(Profile, dataSource.createEntityManager());
-	}
+export class ProfileRepository {
+	constructor(
+		@InjectModel(Profile.name) private profileModel: Model<ProfileDocument>,
+	) {}
 
-	async createProfile(profileDto: ProfileDto): Promise<Profile> {
-		const profile: Profile = this.create({
-			...profileDto,
-		});
-
+	async createProfile(profileDto: ProfileDto, user: User): Promise<Profile> {
 		try {
-			await this.save(profile);
+			const newProfile = await new this.profileModel({
+				...profileDto,
+				user,
+			}).save();
 
-			return profile;
+			// await this.profileModel.updateOne(
+			// 	{ personalNumber: newProfile.personalNumber },
+			// 	{ user: user._id },
+			// );
+
+			return newProfile;
 		} catch (error) {
+			console.log(error);
 			// ToDo: improve Error handling
 			if (error.code === 11000) {
 				throw new ConflictException('Profile already exists');
@@ -38,11 +46,17 @@ export class ProfileRepository extends Repository<Profile> {
 		}
 	}
 
-	async updateProfile(profile: Profile): Promise<Profile> {
+	async update(id: ParamsWithId, profileData: ProfileDto): Promise<Profile> {
 		try {
-			await this.update(profile._id, profile);
+			const profile = await this.profileModel
+				.findByIdAndUpdate(id, profileData)
+				.exec();
 
-			return profile;
+			if (!profile) {
+				throw new NotFoundException();
+			}
+
+			return profile; // Todo: this isn't update profile.
 		} catch (error) {
 			if (error.code === 11000) {
 				console.log('error', error);
@@ -54,9 +68,9 @@ export class ProfileRepository extends Repository<Profile> {
 		}
 	}
 
-	async getProfileById(profileId: string): Promise<Profile> {
+	async findOne(id: ParamsWithId): Promise<Profile> {
 		try {
-			const profile = await this.findOneBy({ id: profileId });
+			let profile: Profile = await this.profileModel.findById(id).exec();
 
 			if (profile) {
 				return profile;
@@ -73,9 +87,16 @@ export class ProfileRepository extends Repository<Profile> {
 		}
 	}
 
-	async getProfileByUserId(profileUserId: string): Promise<Profile> {
+	async getProfileByUserId(profileUserId: ObjectId): Promise<any> {
 		try {
-			const profile = await this.findOneBy({ user: profileUserId });
+			console.log('profileUserId', profileUserId);
+
+			const profile: Profile = await this.profileModel.findOne({
+				user: profileUserId,
+			});
+			// .populate('user');
+
+			console.log('profile', profile);
 
 			if (profile) {
 				return profile;
@@ -94,7 +115,7 @@ export class ProfileRepository extends Repository<Profile> {
 
 	async getProfiles(user: User): Promise<Profile[]> {
 		try {
-			let profiles: Profile[] = await this.find();
+			let profiles: Profile[] = await this.profileModel.find().populate('user');
 
 			if (profiles.length) {
 				if (user.roles.some(role => role === Role.MAIN_ADMIN)) {
@@ -108,7 +129,7 @@ export class ProfileRepository extends Repository<Profile> {
 				} else if (user.roles.some(role => role === Role.TEACHER)) {
 					return profiles.filter((profile: Profile) => {
 						return profile.roles.some(
-							 role =>
+							role =>
 								role !== Role.MAIN_ADMIN &&
 								role !== Role.ADMIN &&
 								role !== Role.TEACHER,

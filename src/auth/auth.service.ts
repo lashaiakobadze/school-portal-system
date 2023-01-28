@@ -12,7 +12,7 @@ import * as argon from 'argon2';
 import { AuthCredentialDto } from './dto/auth.dto';
 import { UserRepository } from './user.repository';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './user.entity';
+import { User } from './user.schema';
 import { v4 as uuid } from 'uuid';
 import { SignupInputs } from './models/signup.inputs';
 import { SignupDto } from './dto/signup.dto';
@@ -22,6 +22,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { Role } from './models/role.enum';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +44,7 @@ export class AuthService {
 		return this.usersRepository.createUser(signupDto);
 	}
 
-	async getUserById(userId: string) {
+	async getUserById(userId: ObjectId) {
 		const user = await this.usersRepository.getUserById(userId);
 
 		return user;
@@ -75,7 +76,7 @@ export class AuthService {
 	async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
 		const { username, password } = authCredentialDto;
 
-		const user: User = await this.usersRepository.findOneBy({ username });
+		const user: User = await this.usersRepository.findByName(username);
 
 		if (user && (await argon.verify(user.password, password))) {
 			return user;
@@ -86,7 +87,7 @@ export class AuthService {
 
 	public getCookieWithJwtAccessToken(user: User) {
 		const payload: TokenPayload = {
-			id: user.id,
+			id: user._id,
 			username: user.username,
 			roles: user.roles,
 		};
@@ -107,7 +108,7 @@ export class AuthService {
 
 	public getCookieWithJwtRefreshToken(user: User) {
 		const payload: TokenPayload = {
-			id: user.id,
+			id: user._id,
 			username: user.username,
 			roles: user.roles,
 		};
@@ -134,10 +135,10 @@ export class AuthService {
 	async setCurrentRefreshToken(refreshToken: string, user: User) {
 		const currentHashedRefreshToken = await argon.hash(refreshToken);
 		user.currentHashedRefreshToken = currentHashedRefreshToken;
-		this.usersRepository.updateUser(user._id, user);
+		this.usersRepository.updateUser(user);
 	}
 
-	async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
+	async getUserIfRefreshTokenMatches(refreshToken: string, userId: ObjectId) {
 		const user = await this.usersRepository.getUserById(userId);
 
 		if (!user || !user.currentHashedRefreshToken) {
@@ -164,7 +165,7 @@ export class AuthService {
 
 	async removeRefreshToken(user: User) {
 		user.currentHashedRefreshToken = null;
-		return this.usersRepository.updateUser(user._id, user);
+		return this.usersRepository.updateUser(user);
 	}
 
 	async updatePassword(
@@ -172,7 +173,7 @@ export class AuthService {
 		currentUser: User,
 	) {
 		// Get user from collection
-		const user: User = await this.usersRepository.getUserById(currentUser.id);
+		const user: User = await this.usersRepository.getUserById(currentUser._id);
 
 		const isCurrentPasswordCorrect = await argon.verify(
 			user.password,
@@ -194,7 +195,7 @@ export class AuthService {
 			updatePasswordDto.passwordConfirm,
 		);
 
-		return this.usersRepository.updateUser(user._id, user);
+		return this.usersRepository.updateUser(user);
 	}
 
 	async resetPassword(
@@ -225,7 +226,7 @@ export class AuthService {
 			);
 			user.currentHashedRefreshToken = null;
 
-			return this.usersRepository.updateUser(user._id, user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		// reset password from admin
@@ -246,7 +247,7 @@ export class AuthService {
 			);
 			user.currentHashedRefreshToken = null;
 
-			return this.usersRepository.updateUser(user._id, user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		// reset password from teacher to students and parents
@@ -268,7 +269,7 @@ export class AuthService {
 			);
 			user.currentHashedRefreshToken = null;
 
-			return this.usersRepository.updateUser(user._id, user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");
