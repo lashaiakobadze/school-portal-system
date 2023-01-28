@@ -6,7 +6,7 @@ import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import { StageDto } from './dto/stage.dto';
-import { Stage } from './stage.entity';
+import { Stage } from './stage.schema';
 import { StageService } from './stage.service';
 
 @Controller('stage')

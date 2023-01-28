@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "src/auth/user.schema";
 import { StageDto } from "./dto/stage.dto";
-import { Stage } from "./stage.entity";
+import { Stage } from "./stage.schema";
 import { StageRepository } from "./stage.repository";
 import { v4 as uuid } from 'uuid';
 
@@ -35,12 +35,11 @@ export class StageService {
 
 		let classObject: Stage = await this.stageRepository.getById(id);
 
-		let updated: Stage = {
-			...classObject,
+		let updated: StageDto = {
 			...inputs,
-			updatedDate: new Date(),
+			creatorId: user._id.toString(),
 		};
 
-		return this.stageRepository.onUpdate(updated);
+		return this.stageRepository.onUpdate(id, updated);
 	}
 }

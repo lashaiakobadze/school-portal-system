@@ -6,24 +6,21 @@ import {
 	Injectable, InternalServerErrorException,
 } from '@nestjs/common';
 
-import { Stage } from './stage.entity';
+import { Stage, StageDocument } from './stage.schema';
 import { StageDto } from './dto/stage.dto';
 import { User } from 'src/auth/user.schema';
 import MongoError from 'src/utils/mongoError.enum';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
-export class StageRepository extends Repository<Stage> {
-	constructor(private dataSource: DataSource) {
-		super(Stage, dataSource.createEntityManager());
-	}
+export class StageRepository {
+	constructor(
+		@InjectModel(Stage.name) private stageModel: Model<StageDocument>,
+	) {}
 
-	async onCreate(dto: StageDto): Promise<Stage> {
-		const newCreated: Stage = this.create({
-			...dto,
-		});
-
-		try {
-			await this.save(newCreated);
+	async onCreate(dto: StageDto): Promise<Stage> {		try {
+			const newCreated = new this.stageModel({ dto }).save();
 
 			return newCreated;
 		} catch (error) {
@@ -37,11 +34,11 @@ export class StageRepository extends Repository<Stage> {
 		}
 	}
 
-	async onUpdate(updated: Stage): Promise<Stage> {
+	async onUpdate(id: string, updated: StageDto): Promise<Stage> {
 		try {
-			await this.update(updated._id, updated);
+			await this.stageModel.findByIdAndUpdate(id, updated).exec();
 
-			return updated;
+			return (updated as any);
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
@@ -55,7 +52,7 @@ export class StageRepository extends Repository<Stage> {
 
 	async getById(id: string): Promise<Stage> {
 		try {
-			const object: Stage = await this.findOneBy({ id });
+			const object: Stage = await this.stageModel.findById(id).exec();
 
 			if (object) {
 				return object;
@@ -76,7 +73,7 @@ export class StageRepository extends Repository<Stage> {
 		console.log('user', user);
 
 		try {
-			let objects: Stage[] = await this.find();
+			let objects: Stage[] = await this.stageModel.find();
 
 			if (!objects)
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
