@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/user.schema';
-import { Class } from './class.entity';
 import { ClassRepository } from './class.repository';
 import { ClassDto } from './dto/class.dto';
 import { v4 as uuid } from 'uuid';
+import { Class } from './class.schema';
 
 @Injectable()
 export class ClassService {
@@ -12,7 +12,7 @@ export class ClassService {
 	create(inputs: ClassDto, user: User): Promise<Class> {
 		const dto: ClassDto = {
 			id: uuid(),
-			// creatorId: user._id,
+			creatorId: user._id.toString(),
 			...inputs,
 		};
 
@@ -28,16 +28,11 @@ export class ClassService {
 	}
 
 	async update(user: User, inputs: ClassDto, id: string): Promise<Class> {
-		console.log('user', user);
-
-		let classObject: Class = await this.classRepository.getById(id);
-
-		let updated: Class = {
-			...classObject,
+		let updated = {
 			...inputs,
-			updatedDate: new Date(),
+			creatorId: user._id.toString(),
 		};
 
-		return this.classRepository.onUpdate(updated);
+		return this.classRepository.onUpdate(id, updated);
 	}
 }

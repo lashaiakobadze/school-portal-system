@@ -1,7 +1,7 @@
 import { Role } from 'src/auth/models/role.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
-import mongoose, { ObjectId } from 'mongoose';
+import { ObjectId } from 'mongoose';
 import { User, UserSchema } from 'src/auth/user.schema';
 
 export type ProfileDocument = Profile & Document;

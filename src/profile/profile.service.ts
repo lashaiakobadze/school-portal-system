@@ -9,7 +9,6 @@ import { ProfileRepository } from './profile.repository';
 import { Profile } from './profile.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
-import ParamsWithId from 'src/utils/paramsWithId';
 
 @Injectable()
 export class ProfileService {
@@ -41,7 +40,7 @@ export class ProfileService {
 	async updateProfile(
 		user: User,
 		profileInputs: ProfileDto,
-		profileId: ParamsWithId,
+		profileId: string,
 	): Promise<Profile | any> {
 		let profile: Profile = await this.profileRepository.findOne(profileId);
 		let profileUser: User = await this.authService.getUserById(profile.user._id);

@@ -13,7 +13,7 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
-import { Class } from './class.entity';
+import { Class } from './class.schema';
 import { ClassService } from './class.service';
 import { ClassDto } from './dto/class.dto';
 

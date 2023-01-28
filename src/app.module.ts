@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -33,7 +32,7 @@ import { WeekModule } from './week/week.module';
 		}),
 		AuthModule,
 		ProfileModule,
-		// ClassModule,
+		ClassModule,
 		// StageModule,
 		// WeekModule,
 	],

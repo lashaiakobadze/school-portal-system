@@ -60,7 +60,7 @@ export class ProfileController {
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put('update-profile/:id')
 	updateProfile(
-		@Param('id') profileId: ParamsWithId,
+		@Param('id') profileId: string,
 		@Body() profileInputs: ProfileDto,
 		@GetUser() user: User,
 	): Promise<Profile> | any {

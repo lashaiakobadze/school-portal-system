@@ -13,7 +13,6 @@ import { User } from 'src/auth/user.schema';
 import { Role } from 'src/auth/models/role.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import ParamsWithId from 'src/utils/paramsWithId';
 import MongoError from 'src/utils/mongoError.enum';
 
 @Injectable()
@@ -47,7 +46,7 @@ export class ProfileRepository {
 		}
 	}
 
-	async update(id: ParamsWithId, profileData: ProfileDto): Promise<Profile> {
+	async update(id: string, profileData: ProfileDto): Promise<Profile> {
 		try {
 			const profile = await this.profileModel
 				.findByIdAndUpdate(id, profileData)
@@ -69,7 +68,7 @@ export class ProfileRepository {
 		}
 	}
 
-	async findOne(id: ParamsWithId): Promise<Profile> {
+	async findOne(id: string): Promise<Profile> {
 		try {
 			let profile: Profile = await this.profileModel.findById(id).exec();
 
