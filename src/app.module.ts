@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from './auth/auth.module';
 import { configValidationSchema } from './config.schema';
-import { UserRepository } from './auth/user.repository';
 import { ProfileModule } from './profile/profile.module';
 import { StageModule } from './stage/stage.module';
 import { ClassModule } from './class/class.module';
@@ -33,8 +32,8 @@ import { WeekModule } from './week/week.module';
 		AuthModule,
 		ProfileModule,
 		ClassModule,
-		// StageModule,
-		// WeekModule,
+		StageModule,
+		WeekModule,
 	],
 	controllers: [],
 	providers: [],

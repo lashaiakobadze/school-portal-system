@@ -6,7 +6,6 @@ async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  // app.useGlobalInterceptors(new TransformInterceptor());
   app.enableCors();
   const port = 3000;
   await app.listen(port);

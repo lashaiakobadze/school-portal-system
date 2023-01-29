@@ -1,18 +1,17 @@
 import {
 	IsDefined,
+	IsMongoId,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from 'class-validator';
 
 export class ClassDto {
-	@IsUUID()
+	@IsMongoId()
 	@IsOptional()
 	id?: string;
 
-	@IsUUID()
 	@IsOptional()
 	creatorId?: string;
 
@@ -24,23 +23,18 @@ export class ClassDto {
 	@IsNotEmpty()
 	academicYear: string;
 
-	@IsUUID()
 	@IsOptional()
 	currentStageId?: string;
 
-	@IsUUID(undefined, { each: true })
 	@IsDefined()
 	stages: string[];
 
-	@IsUUID(undefined, { each: true })
 	@IsDefined()
 	subjects: string[];
 
-	@IsUUID(undefined, { each: true })
 	@IsDefined()
 	teachers: string;
 
-	@IsUUID(undefined, { each: true })
 	@IsNotEmpty()
 	students: string;
 }

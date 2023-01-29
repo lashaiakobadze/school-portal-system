@@ -2,17 +2,14 @@ import {
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
-	IsString,
-	IsUUID,
+	IsString
 } from 'class-validator';
 
 export class StageDto {
-	@IsUUID()
 	@IsOptional()
 	id?: string;
 
 	@IsNotEmpty()
-	@IsUUID()
 	creatorId: string;
 
 	@IsNotEmpty()
@@ -23,7 +20,6 @@ export class StageDto {
 	@IsNotEmpty()
 	currentWeekId: string;
 
-	@IsUUID(undefined, { each: true })
 	@IsNotEmpty()
 	week: string;
 }
