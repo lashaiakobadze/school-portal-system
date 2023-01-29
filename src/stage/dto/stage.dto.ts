@@ -9,7 +9,7 @@ export class StageDto {
 	@IsOptional()
 	id?: string;
 
-	@IsNotEmpty()
+	@IsOptional()
 	creatorId: string;
 
 	@IsNotEmpty()
@@ -20,6 +20,10 @@ export class StageDto {
 	@IsNotEmpty()
 	currentWeekId: string;
 
-	@IsNotEmpty()
-	week: string;
+	@IsString()
+	@IsOptional()
+	class: string;
+
+	// @IsNotEmpty()
+	// week: string;
 }

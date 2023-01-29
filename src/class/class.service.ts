@@ -11,7 +11,6 @@ export class ClassService {
 
 	create(inputs: ClassDto, user: User): Promise<Class> {
 		const dto: ClassDto = {
-			id: uuid(),
 			creatorId: user._id.toString(),
 			...inputs,
 		};

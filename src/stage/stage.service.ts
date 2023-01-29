@@ -3,8 +3,6 @@ import { User } from "src/auth/user.schema";
 import { StageDto } from "./dto/stage.dto";
 import { Stage } from "./stage.schema";
 import { StageRepository } from "./stage.repository";
-import { v4 as uuid } from 'uuid';
-
 
 @Injectable()
 export class StageService {
@@ -12,11 +10,11 @@ export class StageService {
 		private stageRepository: StageRepository
 	) {}
 
-	create(inputs: StageDto, user: User): Promise<Stage> {
+	async create(inputs: StageDto, classId: string, user: User): Promise<Stage> {
 		const dto: StageDto = {
-			id: uuid(),
-			creatorId: user._id,
 			...inputs,
+			class: classId,
+			creatorId: user._id.toString(),
 		};
 
 		return this.stageRepository.onCreate(dto);

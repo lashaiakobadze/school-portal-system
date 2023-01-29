@@ -1,9 +1,9 @@
-import { DataSource, Repository } from 'typeorm';
 import {
 	ConflictException,
 	HttpException,
 	HttpStatus,
-	Injectable, InternalServerErrorException,
+	Injectable,
+	InternalServerErrorException,
 } from '@nestjs/common';
 
 import { Stage, StageDocument } from './stage.schema';
@@ -19,8 +19,9 @@ export class StageRepository {
 		@InjectModel(Stage.name) private stageModel: Model<StageDocument>,
 	) {}
 
-	async onCreate(dto: StageDto): Promise<Stage> {		try {
-			const newCreated = new this.stageModel({ dto }).save();
+	async onCreate(dto: StageDto): Promise<Stage> {
+		try {
+			const newCreated = await new this.stageModel(dto).save();
 
 			return newCreated;
 		} catch (error) {
@@ -73,10 +74,10 @@ export class StageRepository {
 		console.log('user', user);
 
 		try {
-			let objects: Stage[] = await this.stageModel.find();
+			let objects: Stage[] = await this.stageModel.find().populate('class');
 
 			if (!objects)
-				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
+				throw new HttpException('Stages does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
 		} catch (error) {

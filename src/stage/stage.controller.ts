@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
@@ -11,13 +19,13 @@ import { StageService } from './stage.service';
 
 @Controller('stage')
 export class StageController {
-    constructor(private stageService: StageService) {}
+	constructor(private stageService: StageService) {}
 
-    @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post('create')
-	create(@Body() inputs: StageDto, @GetUser() user: User): Promise<Stage> {
-		return this.stageService.create(inputs, user);
+	@Post('create/:id')
+	create(@Body() inputs: StageDto, @Param('id') classId: string, @GetUser() user: User): Promise<Stage> {
+		return this.stageService.create(inputs, classId, user);
 	}
 
 	@UseGuards(JwtAuthGuard)

@@ -7,7 +7,10 @@ import { StageService } from './stage.service';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: Stage.name, schema: StageSchema }]), AuthModule],
+	imports: [
+		MongooseModule.forFeature([{ name: Stage.name, schema: StageSchema }]),
+		AuthModule
+	],
 	providers: [StageRepository, StageService],
 	controllers: [StageController],
 })

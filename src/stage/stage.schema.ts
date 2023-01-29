@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import mongoose from 'mongoose';
+import { Class } from 'src/class/class.schema';
 
 export type StageDocument = Stage & Document;
 
@@ -12,10 +14,17 @@ export class Stage {
 	stage: number;
 
 	@Prop()
-	currentWeekId: string;
+	creatorId: string;
 
 	@Prop()
-	weeks: string[];
+	currentWeekId: string;
+
+	// @Prop()
+	// weeks: string[];
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name })
+	@Type(() => Class)
+	class: Class;
 }
 
 export const StageSchema = SchemaFactory.createForClass(Stage);

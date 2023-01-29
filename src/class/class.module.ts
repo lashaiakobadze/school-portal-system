@@ -10,5 +10,6 @@ import { ClassService } from './class.service';
 	imports: [MongooseModule.forFeature([{ name: Class.name, schema: ClassSchema }]), AuthModule],
 	providers: [ClassRepository, ClassService],
 	controllers: [ClassController],
+	exports:[ClassService]
 })
 export class ClassModule {}

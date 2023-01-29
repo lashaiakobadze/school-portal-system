@@ -74,7 +74,7 @@ export class ClassRepository {
 		console.log('user', user);
 
 		try {
-			let objects: Class[] = await this.classModel.find();
+			let objects: Class[] = await this.classModel.find().populate('stages');
 
 			if (!objects)
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);

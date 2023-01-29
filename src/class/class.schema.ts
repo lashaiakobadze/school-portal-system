@@ -1,38 +1,48 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ObjectId } from 'mongoose';
+import { Stage } from 'src/stage/stage.schema';
 
 export type ClassDocument = Class & Document;
 
-@Schema()
+@Schema({
+	toJSON: {
+		getters: true,
+		virtuals: true,
+	},
+})
 export class Class {
 	@Transform(value => value.obj._id.toString())
 	_id: ObjectId;
 
-    @Prop()
+	@Prop()
 	creatorId: string;
-	
-    @Prop()
+
+	@Prop()
 	class: number;
 
-    @Prop()
+	@Prop()
 	academicYear: string;
 
-    @Prop()
+	@Prop()
 	currentStageId: string;
 
-    @Prop()
-	stages: string[];
-
-    @Prop()
+	@Prop()
 	subjects: string[];
 
-    @Prop()
+	@Prop()
 	teachers: string;
 
-    @Prop()
+	@Prop()
 	students: string;
 }
 
-export const ClassSchema = SchemaFactory.createForClass(Class);
+const ClassSchema = SchemaFactory.createForClass(Class);
 
+ClassSchema.virtual('stages', {
+	ref: 'Stage',
+	localField: '_id',
+	foreignField: 'class',
+});
+
+export { ClassSchema };

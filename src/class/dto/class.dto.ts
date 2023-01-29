@@ -27,9 +27,6 @@ export class ClassDto {
 	currentStageId?: string;
 
 	@IsDefined()
-	stages: string[];
-
-	@IsDefined()
 	subjects: string[];
 
 	@IsDefined()
