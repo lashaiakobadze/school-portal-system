@@ -9,9 +9,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: Stage.name, schema: StageSchema }]),
-		AuthModule
+		AuthModule,
 	],
 	providers: [StageRepository, StageService],
 	controllers: [StageController],
+	exports: [StageRepository, StageService],
 })
 export class StageModule {}

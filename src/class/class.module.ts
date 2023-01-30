@@ -7,9 +7,12 @@ import { Class, ClassSchema } from './class.schema';
 import { ClassService } from './class.service';
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: Class.name, schema: ClassSchema }]), AuthModule],
+	imports: [
+		MongooseModule.forFeature([{ name: Class.name, schema: ClassSchema }]),
+		AuthModule,
+	],
 	providers: [ClassRepository, ClassService],
 	controllers: [ClassController],
-	exports:[ClassService]
+	exports: [ClassService, ClassRepository],
 })
 export class ClassModule {}

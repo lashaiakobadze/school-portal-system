@@ -39,7 +39,7 @@ export class StageRepository {
 		try {
 			await this.stageModel.findByIdAndUpdate(id, updated).exec();
 
-			return updated as any;
+			return updated as any; // Todo: fix all this any case, around of project.
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
@@ -74,7 +74,7 @@ export class StageRepository {
 		console.log('user', user);
 
 		try {
-			let objects: Stage[] = await this.stageModel.find().populate('class');
+			let objects: Stage[] = await this.stageModel.find().populate('weeks');
 
 			if (!objects)
 				throw new HttpException('Stages does not exist', HttpStatus.NOT_FOUND);

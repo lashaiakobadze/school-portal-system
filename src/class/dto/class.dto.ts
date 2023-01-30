@@ -30,8 +30,8 @@ export class ClassDto {
 	subjects: string[];
 
 	@IsDefined()
-	teachers: string;
+	teachers: string[];
 
 	@IsNotEmpty()
-	students: string;
+	students: string[];
 }

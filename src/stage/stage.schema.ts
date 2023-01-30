@@ -5,7 +5,12 @@ import { Class } from 'src/class/class.schema';
 
 export type StageDocument = Stage & Document;
 
-@Schema()
+@Schema({
+	toJSON: {
+		getters: true,
+		virtuals: true,
+	},
+})
 export class Stage {
 	@Transform(value => value.obj._id.toString())
 	_id: string;
@@ -19,12 +24,17 @@ export class Stage {
 	@Prop()
 	currentWeekId: string;
 
-	// @Prop()
-	// weeks: string[];
-
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name })
 	@Type(() => Class)
 	class: Class;
 }
 
-export const StageSchema = SchemaFactory.createForClass(Stage);
+const StageSchema = SchemaFactory.createForClass(Stage);
+
+StageSchema.virtual('weeks', {
+	ref: 'Week',
+	localField: '_id',
+	foreignField: 'stage',
+});
+
+export { StageSchema };

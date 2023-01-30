@@ -11,10 +11,10 @@ export class WeekService {
 		private WeekRepository: WeekRepository
 	) {}
 
-	create(inputs: WeekDto, user: User): Promise<Week> {
+	create(inputs: WeekDto, stageId: string, user: User): Promise<Week> {
 		const dto: WeekDto = {
-			id: uuid(),
 			creatorId: user._id,
+			stage: stageId,
 			...inputs,
 		};
 

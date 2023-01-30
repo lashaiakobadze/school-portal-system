@@ -31,10 +31,10 @@ export class Class {
 	subjects: string[];
 
 	@Prop()
-	teachers: string;
+	teachers: string[];
 
 	@Prop()
-	students: string;
+	students: string[];
 }
 
 const ClassSchema = SchemaFactory.createForClass(Class);

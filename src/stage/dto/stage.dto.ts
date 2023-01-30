@@ -8,7 +8,6 @@ import {
 export class StageDto {
 	@IsOptional()
 	id?: string;
-
 	@IsOptional()
 	creatorId: string;
 
@@ -23,7 +22,4 @@ export class StageDto {
 	@IsString()
 	@IsOptional()
 	class: string;
-
-	// @IsNotEmpty()
-	// week: string;
 }

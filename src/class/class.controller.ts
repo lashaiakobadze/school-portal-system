@@ -6,6 +6,7 @@ import {
 	Post,
 	Put,
 	UseGuards,
+	UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
@@ -13,11 +14,13 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
+import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { Class } from './class.schema';
 import { ClassService } from './class.service';
 import { ClassDto } from './dto/class.dto';
 
 @Controller('class')
+@UseInterceptors(MongooseClassSerializerInterceptor(Class))
 export class ClassController {
 	constructor(private classService: ClassService) {}
 

@@ -21,7 +21,7 @@ export class ClassRepository {
 
 	async onCreate(dto: ClassDto): Promise<Class> {
 		try {
-			const newCreated = new this.classModel({ dto }).save();
+			const newCreated = await new this.classModel(dto).save();
 
 			return newCreated;
 		} catch (error) {
@@ -74,7 +74,12 @@ export class ClassRepository {
 		console.log('user', user);
 
 		try {
-			let objects: Class[] = await this.classModel.find().populate('stages');
+			let objects: Class[] = await this.classModel.find().populate({
+				path: 'stages',
+				populate: {
+					path: 'weeks',
+				},
+			});
 
 			if (!objects)
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);

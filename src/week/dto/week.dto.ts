@@ -1,11 +1,18 @@
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class WeekDto {
 	@IsOptional()
 	id?: string;
 
-	@IsNotEmpty()
+	@IsOptional()
 	creatorId: string;
+
+	@IsNotEmpty()
+	week: number;
+
+	@IsString()
+	@IsOptional()
+	stage: string;
 
 	@IsNotEmpty()
 	@IsNumber()

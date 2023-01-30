@@ -17,6 +17,9 @@ export class Week {
 	testScore: number;
 
 	@Prop()
+	week: number;
+
+	@Prop()
 	homeworkScore: number;
 
 	@Prop()

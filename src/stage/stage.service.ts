@@ -12,9 +12,9 @@ export class StageService {
 
 	async create(inputs: StageDto, classId: string, user: User): Promise<Stage> {
 		const dto: StageDto = {
-			...inputs,
 			class: classId,
 			creatorId: user._id.toString(),
+			...inputs,
 		};
 
 		return this.stageRepository.onCreate(dto);

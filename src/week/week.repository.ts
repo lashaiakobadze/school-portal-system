@@ -20,7 +20,7 @@ export class WeekRepository {
 	
 	async onCreate(dto: WeekDto): Promise<Week> {
 		try {
-			const newCreated = new this.weekModel({ dto }).save();
+			const newCreated = await new this.weekModel(dto).save();
 
 			return newCreated;
 		} catch (error) {
@@ -38,7 +38,7 @@ export class WeekRepository {
 		try {
 			await this.weekModel.findByIdAndUpdate(id, updated).exec();
 
-			return updated as Week;
+			return updated as any;
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
