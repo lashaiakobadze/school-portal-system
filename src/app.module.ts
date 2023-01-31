@@ -8,6 +8,7 @@ import { ProfileModule } from './profile/profile.module';
 import { StageModule } from './stage/stage.module';
 import { ClassModule } from './class/class.module';
 import { WeekModule } from './week/week.module';
+import { TeacherModule } from './teacher/teacher.module';
 
 @Module({
 	imports: [
@@ -34,6 +35,7 @@ import { WeekModule } from './week/week.module';
 		ClassModule,
 		StageModule,
 		WeekModule,
+		TeacherModule,
 	],
 	controllers: [],
 	providers: [],
