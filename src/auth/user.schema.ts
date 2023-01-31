@@ -8,44 +8,47 @@ import { Profile } from 'src/profile/profile.schema';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({
+	toJSON: {
+		getters: true,
+		virtuals: true,
+	},
+})
 export class User {
-  @Transform(({ value }) => value.toString())
-  _id: ObjectId;
+	@Transform(({ value }) => value.toString())
+	_id: ObjectId;
 
-  @Prop({ unique: true })
-  username: string;
+	@Prop({ unique: true })
+	username: string;
 
-  @Prop()
-  @Exclude()
-  password: string;
+	@Prop()
+	@Exclude()
+	password: string;
 
-  @Prop()
-  @Exclude()
-  passwordConfirm: string;
+	@Prop()
+	@Exclude()
+	passwordConfirm: string;
 
-  @Prop()
-  creatorId: string;
+	@Prop()
+	creatorId: string;
 
-  @Prop()
-  roles?: Role[];
+	@Prop()
+	roles?: Role[];
 
-  @Prop()
-  @Exclude()
-  public currentHashedRefreshToken?: string;
+	@Prop()
+	@Exclude()
+	public currentHashedRefreshToken?: string;
 
-  // @CreateDateColumn()
-  // createdDate: Date;
-
-  // @UpdateDateColumn()
-  // updatedDate: Date;
-
-  // @DeleteDateColumn()
-  // deletedDate: Date;
-
-  @Prop() 
-  status: Status;
+	@Prop()
+	status: Status;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
 
+UserSchema.virtual('profile', {
+	ref: 'Profile',
+	localField: '_id',
+	foreignField: 'user',
+});
+
+export { UserSchema };

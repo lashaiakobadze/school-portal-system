@@ -1,8 +1,8 @@
 import { Role } from 'src/auth/models/role.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
-import { ObjectId } from 'mongoose';
-import { User, UserSchema } from 'src/auth/user.schema';
+import mongoose, { ObjectId } from 'mongoose';
+import { User } from 'src/auth/user.schema';
 
 export type ProfileDocument = Profile & Document;
 
@@ -29,16 +29,7 @@ export class Profile {
 	@Prop()
 	profileImg: string;
 
-	// @CreateDateColumn()
-	// createdDate: Date;
-
-	// @UpdateDateColumn()
-	// updatedDate: Date;
-
-	// @DeleteDateColumn()
-	// deletedDate: Date;
-
-	@Prop({ type: UserSchema,  }) 
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
 	@Type(() => User)
 	user: User;
 
