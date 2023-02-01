@@ -6,11 +6,13 @@ import { Teacher } from './teacher.schema';
 
 @Injectable()
 export class TeacherService {
-        constructor(
-		private teacherRepository: TeacherRepository
-	) {}
+	constructor(private teacherRepository: TeacherRepository) {}
 
-	async create(inputs: TeacherDto, teacherUserId: string, user: User): Promise<Teacher> {
+	async create(
+		inputs: TeacherDto,
+		teacherUserId: string,
+		user: User,
+	): Promise<Teacher> {
 		const dto: TeacherDto = {
 			user: teacherUserId,
 			creatorId: user._id.toString(),

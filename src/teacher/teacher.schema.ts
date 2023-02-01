@@ -29,6 +29,8 @@ export class Teacher {
 	user: User;
 }
 
-const TeacherSchema = SchemaFactory.createForClass(Teacher);
+// const TeacherSchema = SchemaFactory.createForClass(Teacher);
 
-export { TeacherSchema };
+// export { TeacherSchema };
+
+export const TeacherSchema = SchemaFactory.createForClass(Teacher);

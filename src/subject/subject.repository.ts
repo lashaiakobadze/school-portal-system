@@ -3,24 +3,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
 import MongoError from 'src/utils/mongoError.enum';
-import { TeacherDto } from './dto/teacher.dto';
-import { Teacher, TeacherDocument } from './teacher.schema';
+import { SubjectDto } from './dto/subject.dto';
+import { Subject, SubjectDocument } from './subject.schema';
 
 @Injectable()
-export class TeacherRepository {
+export class SubjectRepository {
     constructor(
-		@InjectModel(Teacher.name) private teacherModel: Model<TeacherDocument>,
+		@InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
 	) {}
 
-	async onCreate(dto: TeacherDto): Promise<Teacher> {
+	async onCreate(dto: SubjectDto): Promise<Subject> {
 		try {
-			const newCreated = await new this.teacherModel(dto).save();
+			const newCreated = await new this.subjectModel(dto).save();
 
 			return newCreated;
 		} catch (error) {
 			// ToDo: improve Error handling
 			if (error.code === MongoError.DuplicateKey) {
-				throw new ConflictException('Teacher already exists');
+				throw new ConflictException('Subject already exists');
 			} else {
 				console.log('error', error);
 				throw new InternalServerErrorException();
@@ -28,15 +28,15 @@ export class TeacherRepository {
 		}
 	}
 
-	async onUpdate(id: string, updated: TeacherDto): Promise<Teacher> {
+	async onUpdate(id: string, updated: SubjectDto): Promise<Subject> {
 		try {
-			await this.teacherModel.findByIdAndUpdate(id, updated).exec();
+			await this.subjectModel.findByIdAndUpdate(id, updated).exec();
 
 			return updated as any; // Todo: fix all this any case, around of project.
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
-				throw new ConflictException('Teacher already exists');
+				throw new ConflictException('Subject already exists');
 			} else {
 				console.log('error', error);
 				throw new InternalServerErrorException();
@@ -44,16 +44,16 @@ export class TeacherRepository {
 		}
 	}
 
-	async getById(id: string): Promise<Teacher> {
+	async getById(id: string): Promise<Subject> {
 		try {
-			const object: Teacher = await this.teacherModel.findById(id);
+			const object: Subject = await this.subjectModel.findById(id).exec();
 
 			if (object) {
 				return object;
 			}
 
 			throw new HttpException(
-				'Teacher with this id does not exist',
+				'Subject with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
 		} catch (error) {
@@ -63,14 +63,14 @@ export class TeacherRepository {
 		}
 	}
 
-	async getAll(user: User): Promise<Teacher[]> {
+	async getAll(user: User): Promise<Subject[]> {
 		console.log('user', user);
 
 		try {
-			let objects: Teacher[] = await this.teacherModel.find().populate('user');
+			let objects: Subject[] = await this.subjectModel.find().populate('');
 
 			if (!objects)
-				throw new HttpException('Teachers does not exist', HttpStatus.NOT_FOUND);
+				throw new HttpException('Subjects does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
 		} catch (error) {

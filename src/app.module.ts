@@ -9,6 +9,7 @@ import { StageModule } from './stage/stage.module';
 import { ClassModule } from './class/class.module';
 import { WeekModule } from './week/week.module';
 import { TeacherModule } from './teacher/teacher.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
 	imports: [
@@ -36,6 +37,7 @@ import { TeacherModule } from './teacher/teacher.module';
 		StageModule,
 		WeekModule,
 		TeacherModule,
+		SubjectModule,
 	],
 	controllers: [],
 	providers: [],
