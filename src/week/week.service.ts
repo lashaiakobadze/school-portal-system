@@ -3,7 +3,6 @@ import { User } from "src/auth/user.schema";
 import { WeekDto } from "./dto/week.dto";
 import { Week } from "./week.schema";
 import { WeekRepository } from "./week.repository";
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class WeekService {

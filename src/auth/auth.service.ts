@@ -13,7 +13,6 @@ import { AuthCredentialDto } from './dto/auth.dto';
 import { UserRepository } from './user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.schema';
-import { v4 as uuid } from 'uuid';
 import { SignupInputs } from './models/signup.inputs';
 import { SignupDto } from './dto/signup.dto';
 import { ConfigService } from '@nestjs/config';
@@ -36,7 +35,6 @@ export class AuthService {
 		const { creatorId } = user;
 
 		const signupDto: SignupDto = {
-			id: uuid(),
 			creatorId,
 			...signupInputs,
 		};

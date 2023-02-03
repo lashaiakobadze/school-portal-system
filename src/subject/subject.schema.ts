@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
+import { ObjectId } from 'mongoose';
 
 export type SubjectDocument = Subject & Document;
 
@@ -11,7 +12,7 @@ export type SubjectDocument = Subject & Document;
 })
 export class Subject {
 	@Transform(value => value.obj._id.toString())
-	_id: string;
+	_id: ObjectId;
 
 	@Prop()
 	name: string;

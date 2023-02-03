@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { User } from 'src/auth/user.schema';
 
 export type TeacherDocument = Teacher & Document;
@@ -13,7 +13,7 @@ export type TeacherDocument = Teacher & Document;
 })
 export class Teacher {
 	@Transform(value => value.obj._id.toString())
-	_id: string;
+	_id: ObjectId;
 
 	@Prop()
 	firstName: string;

@@ -8,9 +8,6 @@ import {
 } from 'class-validator';
 import { Role } from '../models/role.enum';
 export class SignupDto {
-	@IsMongoId()
-	id: string;
-
 	@IsString()
 	@Length(8, 20)
 	username: string;

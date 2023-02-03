@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/user.schema';
 import { ClassRepository } from './class.repository';
 import { ClassDto } from './dto/class.dto';
-import { v4 as uuid } from 'uuid';
 import { Class } from './class.schema';
 
 @Injectable()
