@@ -14,16 +14,33 @@ export class Profile {
 	@Transform(value => value.obj._id.toString())
 	_id: ObjectId;
 
-	@Prop({ unique: true })
+	@Prop({
+		// ToDo: fix this pipe.
+		get: (personalNumber: string) => {
+			if (!personalNumber) {
+				return;
+			}
+			return `ID ${personalNumber}`;
+		},
+		unique: true,
+	})
 	personalNumber: number;
 
 	@Prop()
 	phoneNumber: string;
 
-	@Prop()
+	@Prop({
+		set: (content: string) => {
+			return content.trim();
+		},
+	})
 	firstName: string;
 
-	@Prop()
+	@Prop({
+		set: (content: string) => {
+			return content.trim();
+		},
+	})
 	lastName: string;
 
 	@Prop({ unique: true })

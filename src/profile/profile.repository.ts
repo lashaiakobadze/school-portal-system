@@ -15,10 +15,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import MongoError from 'src/utils/mongoError.enum';
 
+import { InjectConnection } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
+import { transaction } from 'src/utils/transaction';
+
 @Injectable()
 export class ProfileRepository {
 	constructor(
 		@InjectModel(Profile.name) private profileModel: Model<ProfileDocument>,
+		// @InjectConnection() private readonly connection: mongoose.Connection,
+		@InjectConnection() private connection: mongoose.Connection,
 	) {}
 
 	async createProfile(profileDto: ProfileDto, user: User): Promise<Profile> {
@@ -79,7 +85,7 @@ export class ProfileRepository {
 			// ToDo: improve Error handling
 			console.log('error', error);
 			throw new InternalServerErrorException();
-			
+
 			// ToDo: implement ErrorResponse
 			// return {
 			// 	reason: error.response,
@@ -110,6 +116,13 @@ export class ProfileRepository {
 			throw new InternalServerErrorException();
 		}
 	}
+
+	// Trying to do transaction all methods 
+	// async getProfiles(user: User): Promise<Profile[]> {
+	// 	return transaction(this.connection, async session => {
+	// 		return this.profileModel.find().populate('user').session(session).exec();
+	// 	});
+	// }
 
 	async getProfiles(user: User): Promise<Profile[]> {
 		try {
