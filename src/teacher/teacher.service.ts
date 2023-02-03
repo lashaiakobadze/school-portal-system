@@ -27,7 +27,7 @@ export class TeacherService {
 	}
 
 	getAll(user: User): Promise<Teacher[]> {
-		return this.teacherRepository.getAll(user);
+		return this.teacherRepository.getAll();
 	}
 
 	async update(user: User, inputs: TeacherDto, id: string): Promise<Teacher> {

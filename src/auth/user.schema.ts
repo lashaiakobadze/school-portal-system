@@ -1,10 +1,9 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
-import { Exclude, Transform, Type } from 'class-transformer';
+import { Document, ObjectId } from 'mongoose';
+import { Exclude, Transform } from 'class-transformer';
 
 import { Role } from './models/role.enum';
 import { Status } from './models/user-status.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Profile } from 'src/profile/profile.schema';
 
 export type UserDocument = User & Document;
 

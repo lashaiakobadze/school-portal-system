@@ -28,11 +28,6 @@ export class ProfileRepository {
 				user,
 			}).save();
 
-			// await this.profileModel.updateOne(
-			// 	{ personalNumber: newProfile.personalNumber },
-			// 	{ user: user._id },
-			// );
-
 			return newProfile;
 		} catch (error) {
 			console.log(error);
@@ -84,15 +79,22 @@ export class ProfileRepository {
 			// ToDo: improve Error handling
 			console.log('error', error);
 			throw new InternalServerErrorException();
+			
+			// ToDo: implement ErrorResponse
+			// return {
+			// 	reason: error.response,
+			// 	status: error.status
+			// }
 		}
 	}
 
 	async getProfileByUserId(profileUserId: ObjectId): Promise<any> {
 		try {
-			const profile: Profile = await this.profileModel.findOne({
-				user: profileUserId,
-			});
-			// .populate('user');
+			const profile: Profile = await this.profileModel
+				.findOne({
+					user: profileUserId,
+				})
+				.populate('user');
 
 			if (profile) {
 				return profile;
@@ -118,13 +120,13 @@ export class ProfileRepository {
 					return profiles;
 				} else if (user.roles.some(role => role === Role.ADMIN)) {
 					return profiles.filter((profile: Profile) => {
-						return profile.roles.some(
+						return profile.user.roles.some(
 							role => role !== Role.MAIN_ADMIN && role !== Role.ADMIN,
 						);
 					});
 				} else if (user.roles.some(role => role === Role.TEACHER)) {
 					return profiles.filter((profile: Profile) => {
-						return profile.roles.some(
+						return profile.user.roles.some(
 							role =>
 								role !== Role.MAIN_ADMIN &&
 								role !== Role.ADMIN &&

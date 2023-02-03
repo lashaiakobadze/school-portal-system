@@ -63,9 +63,7 @@ export class TeacherRepository {
 		}
 	}
 
-	async getAll(user: User): Promise<Teacher[]> {
-		console.log('user', user);
-
+	async getAll(): Promise<Teacher[]> {
 		try {
 			let objects: Teacher[] = await this.teacherModel.find().populate('user');
 

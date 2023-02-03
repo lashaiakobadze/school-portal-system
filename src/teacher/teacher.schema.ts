@@ -24,13 +24,11 @@ export class Teacher {
 	@Prop()
 	creatorId: string;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, unique: true })
 	@Type(() => User)
 	user: User;
 }
 
-// const TeacherSchema = SchemaFactory.createForClass(Teacher);
+const TeacherSchema = SchemaFactory.createForClass(Teacher);
 
-// export { TeacherSchema };
-
-export const TeacherSchema = SchemaFactory.createForClass(Teacher);
+export { TeacherSchema };

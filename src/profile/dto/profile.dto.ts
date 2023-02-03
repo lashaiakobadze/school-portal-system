@@ -1,13 +1,10 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Length
 } from 'class-validator';
-import { Role } from 'src/auth/models/role.enum';
 
 export class ProfileDto {
   @IsOptional()
@@ -36,8 +33,4 @@ export class ProfileDto {
 
   @IsOptional()
   profileImg: string;
-
-  @IsOptional()
-  @IsEnum(Role, { each: true })
-  roles?: Role[];
 }

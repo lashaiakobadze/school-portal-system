@@ -292,7 +292,7 @@ export class AuthService {
 			// If so, update status
 			user.status = changeUserStatusDto.status;
 
-			return this.usersRepository.updateUserStatus(user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		// change status from admin
@@ -304,7 +304,7 @@ export class AuthService {
 			// If so, update status
 			user.status = changeUserStatusDto.status;
 
-			return this.usersRepository.updateUserStatus(user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		// change status from teacher to students and parents
@@ -317,7 +317,7 @@ export class AuthService {
 			// If so, update status
 			user.status = changeUserStatusDto.status;
 
-			return this.usersRepository.updateUserStatus(user);
+			return this.usersRepository.updateUser(user);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");

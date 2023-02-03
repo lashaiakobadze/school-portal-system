@@ -64,8 +64,6 @@ export class SubjectRepository {
 	}
 
 	async getAll(user: User): Promise<Subject[]> {
-		console.log('user', user);
-
 		try {
 			let objects: Subject[] = await this.subjectModel.find().populate('');
 

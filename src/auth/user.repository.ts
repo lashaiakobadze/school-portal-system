@@ -57,18 +57,17 @@ export class UserRepository {
     }
   }
 
-  async updateUserStatus(user: User): Promise<User> {
-    try {
-      // await this.save(user);
+  // ToDo: improve this method for patch actions.
+  // async updateUserStatus(user: User): Promise<User> {
+  //   try {
+  //     // await this.save(user);
 
-      return user;
-    } catch (error) {
-      console.log('error', error);
-      throw new InternalServerErrorException();
-    }
-  }
-
-
+  //     return user;
+  //   } catch (error) {
+  //     console.log('error', error);
+  //     throw new InternalServerErrorException();
+  //   }
+  // }
 
   async getUserById(id: ObjectId): Promise<User> {
     try {
@@ -78,10 +77,6 @@ export class UserRepository {
         return user;
       }
 
-      throw new HttpException(
-        'User with this id does not exist',
-        HttpStatus.NOT_FOUND,
-      );
     } catch (error) {
       // ToDo: improve Error handling
       console.log('error', error);
@@ -96,11 +91,7 @@ export class UserRepository {
         if (user) {
           return user;
         }
-  
-        throw new HttpException(
-          'User with this name does not exist',
-          HttpStatus.NOT_FOUND,
-        );
+
       } catch (error) {
         // ToDo: improve Error handling
         console.log('error', error);

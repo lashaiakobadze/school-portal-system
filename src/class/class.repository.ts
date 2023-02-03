@@ -71,8 +71,6 @@ export class ClassRepository {
 	}
 
 	async getAll(user: User): Promise<Class[]> {
-		console.log('user', user);
-
 		try {
 			let objects: Class[] = await this.classModel.find().populate({
 				path: 'stages',

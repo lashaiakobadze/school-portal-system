@@ -71,8 +71,6 @@ export class StageRepository {
 	}
 
 	async getAll(user: User): Promise<Stage[]> {
-		console.log('user', user);
-
 		try {
 			let objects: Stage[] = await this.stageModel.find().populate('weeks');
 
