@@ -70,8 +70,6 @@ export class WeekRepository {
 	}
 
 	async getAll(user: User): Promise<Week[]> {
-		console.log('user', user);
-
 		try {
 			let objects: Week[] =  await this.weekModel.find();
 			if (!objects)

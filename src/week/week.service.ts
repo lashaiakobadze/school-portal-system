@@ -29,8 +29,6 @@ export class WeekService {
 	}
 
 	async update(user: User, inputs: WeekDto, id: string): Promise<Week> {
-		console.log('user', user);
-
 		let updated: WeekDto = {
 			...inputs,
 			creatorId: user._id.toString(),

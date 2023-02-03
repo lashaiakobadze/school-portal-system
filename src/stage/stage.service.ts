@@ -29,8 +29,6 @@ export class StageService {
 	}
 
 	async update(user: User, inputs: StageDto, id: string): Promise<Stage> {
-		console.log('user', user);
-
 		let updated: StageDto = {
 			...inputs,
 			creatorId: user._id.toString(),

@@ -31,8 +31,6 @@ export class TeacherService {
 	}
 
 	async update(user: User, inputs: TeacherDto, id: string): Promise<Teacher> {
-		console.log('user', user);
-
 		let updated: TeacherDto = {
 			...inputs,
 			creatorId: user._id.toString(),

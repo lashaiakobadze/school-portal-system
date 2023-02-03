@@ -29,8 +29,6 @@ export class SubjectService {
 	}
 
 	async update(user: User, inputs: SubjectDto, id: string): Promise<Subject> {
-		console.log('user', user);
-
 		let updated: SubjectDto = {
 			...inputs,
 			creatorId: user._id.toString(),

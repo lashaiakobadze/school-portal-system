@@ -89,14 +89,10 @@ export class ProfileRepository {
 
 	async getProfileByUserId(profileUserId: ObjectId): Promise<any> {
 		try {
-			console.log('profileUserId', profileUserId);
-
 			const profile: Profile = await this.profileModel.findOne({
 				user: profileUserId,
 			});
 			// .populate('user');
-
-			console.log('profile', profile);
 
 			if (profile) {
 				return profile;
