@@ -30,11 +30,12 @@ export class ProfileService {
 	}
 
 	async editProfile(user: User, profileInputs: ProfileDto): Promise<Profile> {
-		let profile = await this.profileRepository.getProfileByUserId(
-			user._id,
-		);
+		let profile = await this.profileRepository.getProfileByUserId(user._id);
 
-		return await this.profileRepository.update(profile._id.toString(), profileInputs);
+		return await this.profileRepository.update(
+			profile._id.toString(),
+			profileInputs,
+		);
 	}
 
 	async updateProfile(
@@ -43,7 +44,9 @@ export class ProfileService {
 		profileId: string,
 	): Promise<Profile | any> {
 		let profile: Profile = await this.profileRepository.findOne(profileId);
-		let profileUser: User = await this.authService.getUserById(profile.user._id);
+		let profileUser: User = await this.authService.getUserById(
+			profile.user._id,
+		);
 
 		// Check if user exist.
 		if (!profileUser) {
@@ -80,5 +83,19 @@ export class ProfileService {
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");
+	}
+	
+	async findAll(
+		documentsToSkip: number,
+		limitOfDocuments?: number,
+		startId?: string,
+		searchQuery?: string,
+	) {
+		return await this.profileRepository.findAll(
+			documentsToSkip,
+			limitOfDocuments,
+			startId,
+			searchQuery,
+		);
 	}
 }

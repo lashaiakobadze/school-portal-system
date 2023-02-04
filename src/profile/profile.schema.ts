@@ -7,6 +7,7 @@ export type ProfileDocument = Profile & Document;
 
 @Schema({
 	toJSON: {
+		getters: true,
 		virtuals: true,
 	},
 })
@@ -33,6 +34,7 @@ export class Profile {
 		set: (content: string) => {
 			return content.trim();
 		},
+		// index: true, // secondary indexes that don’t make properties unique.
 	})
 	firstName: string;
 
@@ -40,6 +42,7 @@ export class Profile {
 		set: (content: string) => {
 			return content.trim();
 		},
+		// index: true, // secondary indexes that don’t make properties unique
 	})
 	lastName: string;
 
@@ -59,5 +62,28 @@ const ProfileSchema = SchemaFactory.createForClass(Profile);
 ProfileSchema.virtual('fullName').get(function (this: ProfileDocument) {
 	return `${this.firstName} ${this.lastName}`;
 });
+
+/**
+ * When we set up a text index, we can take advantage of the $text operator. 
+ * It performs a text search on the content of the fields indexed with a text index.
+ * A collection can’t have more than one text index.
+ */
+ProfileSchema.index({ firstName: 'text' });
+
+/**
+ * Compound Indexes: where the index structure holds references to multiple fields.
+ */
+// ProfileSchema.index({ firstName: 'text', lastName: 'text' });
+
+/**
+ * By using 1, we create an ascending index. 
+ * When we use -1, we create a descending index. 
+ * The direction doesn’t matter for single key indexes because MongoDB can traverse the index in either direction. 
+ * It can be significant for compound indexes, though. 
+ * The official documentation: https://www.mongodb.com/docs/manual/core/index-compound/#sort-order
+ * StackOverflow page provide a good explanation: https://stackoverflow.com/questions/10329104/why-does-direction-of-index-matter-in-mongodb
+ * Default: The @Prop({ index: true }) decorator creates an ascending index
+ */
+// ProfileSchema.index({ firstName: 1, lastName: 1 });
 
 export { ProfileSchema };

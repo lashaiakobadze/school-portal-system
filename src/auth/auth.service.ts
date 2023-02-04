@@ -289,10 +289,10 @@ export class AuthService {
 
 		// change status from main admin
 		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
-			// If so, update status
-			user.status = changeUserStatusDto.status;
-
-			return this.usersRepository.updateUser(user);
+			return this.usersRepository.updateUserStatus(
+				user._id.toString(),
+				changeUserStatusDto,
+			);
 		}
 
 		// change status from admin
@@ -301,10 +301,10 @@ export class AuthService {
 			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
 			!user.roles.some(role => role === Role.ADMIN)
 		) {
-			// If so, update status
-			user.status = changeUserStatusDto.status;
-
-			return this.usersRepository.updateUser(user);
+			return this.usersRepository.updateUserStatus(
+				user._id.toString(),
+				changeUserStatusDto,
+			);
 		}
 
 		// change status from teacher to students and parents
@@ -314,10 +314,10 @@ export class AuthService {
 			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
 			!user.roles.some(role => role === Role.TEACHER)
 		) {
-			// If so, update status
-			user.status = changeUserStatusDto.status;
-
-			return this.usersRepository.updateUser(user);
+			return this.usersRepository.updateUserStatus(
+				user._id.toString(),
+				changeUserStatusDto,
+			);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");

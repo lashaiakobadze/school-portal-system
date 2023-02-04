@@ -12,7 +12,7 @@ import { ProfileDto } from './dto/profile.dto';
 import { User } from 'src/auth/user.schema';
 import { Role } from 'src/auth/models/role.enum';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { FilterQuery, Model, ObjectId } from 'mongoose';
 import MongoError from 'src/utils/mongoError.enum';
 
 import { InjectConnection } from '@nestjs/mongoose';
@@ -51,13 +51,15 @@ export class ProfileRepository {
 		try {
 			const profile = await this.profileModel
 				.findByIdAndUpdate(id, profileData)
-				.exec();
+				.setOptions({ overwrite: false, new: true })
+				// .findOneAndReplace({ _id: id }, profileData, { new: true }) // if we want replace document.
+				.populate('user');
 
 			if (!profile) {
 				throw new NotFoundException();
 			}
 
-			return profile; // Todo: this isn't update profile.
+			return profile;
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
@@ -117,7 +119,7 @@ export class ProfileRepository {
 		}
 	}
 
-	// Trying to do transaction all methods 
+	// Trying to do transaction all methods
 	// async getProfiles(user: User): Promise<Profile[]> {
 	// 	return transaction(this.connection, async session => {
 	// 		return this.profileModel.find().populate('user').session(session).exec();
@@ -154,6 +156,67 @@ export class ProfileRepository {
 			// ToDo: improve Error handling
 			console.log('error', error);
 			throw new InternalServerErrorException();
+		}
+	}
+
+	async findAll(
+		documentsToSkip = 0,
+		limitOfDocuments?: number,
+		startId?: string,
+		searchQuery?: string,
+	) {
+		if (!searchQuery) {
+			const findQuery = this.profileModel
+				.find({
+					_id: {
+						$gt: startId,
+					},
+				})
+				.sort({ _id: 1 })
+				.skip(documentsToSkip)
+				.populate('user');
+
+			if (limitOfDocuments) {
+				findQuery.limit(limitOfDocuments);
+			}
+
+			const results = await findQuery;
+			const count = await this.profileModel.count();
+
+			// return { resultsArray: results, count };
+			return results;
+		} else {
+			const filters: FilterQuery<ProfileDocument> = startId
+				? {
+						_id: {
+							$gt: startId,
+						},
+				  }
+				: {};
+
+			if (searchQuery) {
+				// Doc: For more option https://www.mongodb.com/docs/manual/reference/operator/query/text/#op._S_text
+				filters.$text = {
+					$search: searchQuery,
+				};
+			}
+
+			const findQuery = this.profileModel
+				.find(filters)
+				.sort({ _id: 1 })
+				.skip(documentsToSkip)
+				.populate('user');
+
+			if (limitOfDocuments) {
+				findQuery.limit(limitOfDocuments);
+			}
+
+			const results = await findQuery;
+			const count = await this.profileModel.count();;
+
+			// ToDo: fix this object property set bug.
+			// return { results, count };
+			return results;
 		}
 	}
 }

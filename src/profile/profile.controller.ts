@@ -5,6 +5,7 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { PaginationParams } from 'src/utils/paginationParams';
 import ParamsWithId from 'src/utils/paramsWithId';
 import { ProfileDto } from './dto/profile.dto';
 import { Profile } from './profile.schema';
@@ -61,6 +63,7 @@ export class ProfileController {
 	@Put('update-profile/:id')
 	updateProfile(
 		@Param('id') profileId: string,
+		// @Param() { id }: ParamsWithId,
 		@Body() profileInputs: ProfileDto,
 		@GetUser() user: User,
 	): Promise<Profile> | any {
@@ -69,5 +72,15 @@ export class ProfileController {
 			profileInputs,
 			profileId,
 		);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Get('get-search-profiles')
+	async getAllProfiles(
+	  @Query() { skip, limit, startId }: PaginationParams,
+	  @Query('searchQuery') searchQuery: string,
+	) {
+	  return this.profileService.findAll(skip, limit, startId, searchQuery);
 	}
 }
