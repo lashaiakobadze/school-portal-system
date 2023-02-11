@@ -11,6 +11,10 @@ import { JwtRefreshTokenStrategy } from './jwt/jwt-refresh.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthenticationService } from './authWithServerside/authentication.service';
+import { UsersService } from './authWithServerside/user.service';
+import { AuthenticationController } from './authWithServerside/authentication.controller';
+import { LocalSerializer } from './authWithServerside/local.serializer';
 
 @Module({
 	imports: [
@@ -38,8 +42,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 		JwtRefreshTokenStrategy,
 		JwtService,
 		JwtStrategy,
+		/**
+		 * server-side-sessions
+		 */
+		AuthenticationService,
+		UsersService,
+		LocalSerializer
 	],
-	controllers: [AuthController],
+	controllers: [AuthController, AuthenticationController],
 	exports: [PassportModule, AuthService, UserRepository, RolesGuard],
 })
 export class AuthModule {}
