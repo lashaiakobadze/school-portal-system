@@ -9,26 +9,13 @@ import {
 	ClassSerializerInterceptor,
 	Get,
 } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
-import RegisterDto from './register.dto';
 import { CookieAuthenticationGuard } from './cookieAuthentication.guard';
 import RequestWithUser from '../models/requestsWithUser';
-import { LogInWithCredentialsGuard } from './logInWithCredentialsGuard';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { User } from '../user.schema';
+import { LogInWithCredentialsGuard } from '../jwt/logIn-with-credentials.guard';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
-// @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthenticationController {
-	constructor(private readonly authenticationService: AuthenticationService) {}
-
-	@Post('register')
-	async register(@Body() registrationData: RegisterDto) {
-		// console.log('registrationData', registrationData);
-		return this.authenticationService.register(registrationData);
-	}
-
 	@HttpCode(200)
 	@UseGuards(LogInWithCredentialsGuard)
 	@Post('log-in')
@@ -47,7 +34,7 @@ export class AuthenticationController {
 	@UseGuards(CookieAuthenticationGuard)
 	@Post('log-out')
 	async logOut(@Req() request: RequestWithUser) {
-		request.logout((err) => {
+		request.logout(err => {
 			if (err) {
 				console.log('invalid logout', err);
 			}

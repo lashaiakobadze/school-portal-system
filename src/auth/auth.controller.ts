@@ -19,7 +19,6 @@ import { User } from './user.schema';
 import { HasRoles } from './decorators/roles.decorator';
 import { GetUser } from './decorators/get-user.decorator';
 
-import { LocalAuthGuard } from './jwt/local-auth.guard';
 import { RolesGuard } from './roles.guard';
 import JwtRefreshGuard from './jwt/jwt-refresh.guard';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
@@ -31,6 +30,8 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { CookieAuthenticationGuard } from './auth-with-server-side/cookieAuthentication.guard';
+import { LogInWithCredentialsGuard } from './jwt/logIn-with-credentials.guard';
 
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
@@ -38,7 +39,7 @@ export class AuthController {
 	constructor(private authService: AuthService) {}
 
 	@HttpCode(200)
-	@UseGuards(LocalAuthGuard)
+	@UseGuards(LogInWithCredentialsGuard)
 	@Post('log-in')
 	async logIn(@Req() request: RequestWithUser) {
 		const { user } = request;
@@ -96,7 +97,7 @@ export class AuthController {
 	// }
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(CookieAuthenticationGuard, RolesGuard)
 	@Post('signup')
 	signUp(
 		@Body() signupInputs: SignupInputs,
@@ -116,7 +117,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(CookieAuthenticationGuard, RolesGuard)
 	@Post('signup/admin')
 	signUpAdmin(
 		@Body() signupInputs: SignupInputs,
@@ -178,4 +179,3 @@ export class AuthController {
 		return this.authService.changeUserStatus(changeUserStatusDto, user);
 	}
 }
-
