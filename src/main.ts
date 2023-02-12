@@ -5,6 +5,8 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ConfigService } from '@nestjs/config';
+import { createClient } from 'redis';
+import * as createRedisStore from 'connect-redis';
 
 async function bootstrap() {
 	const logger = new Logger();
@@ -12,18 +14,29 @@ async function bootstrap() {
 	// app.useGlobalPipes(new ValidationPipe({ transform: true }));
 	app.useGlobalPipes(
 		new ValidationPipe({
-		  forbidUnknownValues: false
+			forbidUnknownValues: false,
 		}),
-	  );
+	);
 	app.enableCors();
 
 	/**
-	 * server-side-sessions
+	 * server-side-sessions with redis.
 	 */
 	const configService = app.get(ConfigService);
 
+	const RedisStore = createRedisStore(session);
+	const client = createClient({
+		legacyMode: true,
+		url: `redis://${configService.get('REDIS_HOST')}:${configService.get(
+			'REDIS_PORT',
+		)}`,
+	});
+
+	await client.connect();
+
 	app.use(
 		session({
+			store: new RedisStore({client} as any),
 			secret: configService.get('SESSION_SECRET'),
 			resave: false,
 			saveUninitialized: false,
