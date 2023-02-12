@@ -1,7 +1,5 @@
 import {
 	ConflictException,
-	HttpException,
-	HttpStatus,
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
@@ -103,4 +101,5 @@ export class UserRepository {
 			throw new InternalServerErrorException();
 		}
 	}
+
 }

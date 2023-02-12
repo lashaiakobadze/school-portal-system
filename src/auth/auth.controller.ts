@@ -13,16 +13,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
-import { AuthCredentialDto } from './dto/auth.dto';
 import { User } from './user.schema';
 
 import { HasRoles } from './decorators/roles.decorator';
 import { GetUser } from './decorators/get-user.decorator';
 
-import { LocalAuthGuard } from './jwt/local-auth.guard';
 import { RolesGuard } from './roles.guard';
 import JwtRefreshGuard from './jwt/jwt-refresh.guard';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 
 import RequestWithUser from './models/requestsWithUser';
 import { SignupInputs } from './models/signup.inputs';
@@ -31,31 +28,26 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { LogInWithCredentialsGuard } from './jwt/logIn-with-credentials.guard';
+import { Public } from 'src/utils/public.decorator';
 
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+	@Public()
 	@HttpCode(200)
-	@UseGuards(LocalAuthGuard)
+	@UseGuards(LogInWithCredentialsGuard)
 	@Post('log-in')
 	async logIn(@Req() request: RequestWithUser) {
 		const { user } = request;
 		const accessTokenCookie =
 			this.authService.getCookieWithJwtAccessToken(user);
-		/// FOR COOKIE:
-		// const { cookie: refreshTokenCookie, token: refreshToken } =
-		//   this.authService.getCookieWithJwtRefreshToken(user);
 
 		const refreshToken = this.authService.getCookieWithJwtRefreshToken(user);
 
 		await this.authService.setCurrentRefreshToken(refreshToken, user);
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', [
-		//   accessTokenCookie,
-		//   refreshToken,
-		// ]);
 
 		return {
 			accessTokenCookie,
@@ -63,40 +55,24 @@ export class AuthController {
 		};
 	}
 
-	@UseGuards(JwtAuthGuard, JwtRefreshGuard)
+	@UseGuards(JwtRefreshGuard)
 	@Get('refresh')
 	refresh(@Req() request: RequestWithUser) {
 		const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(
 			request.user,
 		);
 
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', accessTokenCookie);
-		// return request.user;
-
 		return { accessTokenCookie };
 	}
 
-	@UseGuards(JwtAuthGuard)
 	@Post('log-out')
 	@HttpCode(200)
 	async logOut(@Req() request: RequestWithUser) {
 		await this.authService.removeRefreshToken(request.user);
-
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
 	}
 
-	/// use when we want only access token.
-	// @Post('/signin')
-	// signIn(
-	//   @Body() authCredentialDto: AuthCredentialDto,
-	// ): Promise<{ accessToken: string }> {
-	//   return this.authService.signIn(authCredentialDto);
-	// }
-
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Post('signup')
 	signUp(
 		@Body() signupInputs: SignupInputs,
@@ -116,7 +92,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Post('signup/admin')
 	signUpAdmin(
 		@Body() signupInputs: SignupInputs,
@@ -134,7 +110,7 @@ export class AuthController {
 
 	@Post('signup/teacher')
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	signUpTeacher(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
@@ -149,7 +125,7 @@ export class AuthController {
 		}
 	}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Put('update-password')
 	updatePassword(
 		@Body() updatePasswordDto: UpdatePasswordDto,
@@ -159,7 +135,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard)
+	
 	@Put('reset-password')
 	resetPassword(
 		@Body() resetPasswordInputs: ResetPasswordInputs,
@@ -169,7 +145,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Patch('change-status')
 	changeUserStatus(
 		@Body() changeUserStatusDto: ChangeUserStatusDto,
@@ -178,4 +154,3 @@ export class AuthController {
 		return this.authService.changeUserStatus(changeUserStatusDto, user);
 	}
 }
-
