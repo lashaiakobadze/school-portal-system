@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
@@ -27,7 +26,7 @@ import { ProfileService } from './profile.service';
 export class ProfileController {
 	constructor(private profileService: ProfileService) {}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Post('registration')
 	signUp(
 		@Body() profileInputs: ProfileDto,
@@ -36,20 +35,20 @@ export class ProfileController {
 		return this.profileService.registrationProfile(profileInputs, user);
 	}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Get('get-profile')
 	getProfile(@GetUser() user: User): Promise<Profile> {
 		return this.profileService.getProfile(user);
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Get('get-profiles')
 	getProfiles(@GetUser() user: User): Promise<Profile[]> {
 		return this.profileService.getProfiles(user);
 	}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Put('edit-profile')
 	editProfile(
 		@Body() profileInputs: ProfileDto,
@@ -59,7 +58,7 @@ export class ProfileController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Put('update-profile/:id')
 	updateProfile(
 		@Param('id') profileId: string,
@@ -75,7 +74,7 @@ export class ProfileController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Get('get-search-profiles')
 	async getAllProfiles(
 	  @Query() { skip, limit, startId }: PaginationParams,

@@ -18,4 +18,5 @@ export const configValidationSchema = Joi.object({
 	SESSION_SECRET: Joi.string(),
 	REDIS_HOST: Joi.string().required(),
 	REDIS_PORT: Joi.number().required(),
+	AUTH_CONFIG: Joi.string().required(),
 });

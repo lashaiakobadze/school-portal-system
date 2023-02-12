@@ -7,7 +7,7 @@ export class LogInWithCredentialsGuard extends AuthGuard('local') {
 	 * server-side-sessions
 	 */
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		// check the email and the password
+		// check the username and the password
 		await super.canActivate(context);
 
 		// initialize the session

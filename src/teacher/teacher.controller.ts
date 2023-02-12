@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
@@ -25,27 +24,27 @@ export class TeacherController {
     constructor(private teacherService: TeacherService) {}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Post('create/:id')
 	create(@Body() inputs: TeacherDto, @Param('id') teacherUserId: string, @GetUser() user: User): Promise<Teacher> {
 		return this.teacherService.create(inputs, teacherUserId, user);
 	}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Get('get/:id')
 	get(@Param('id') id: string): Promise<Teacher> {
 		return this.teacherService.get(id);
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Get('get-all')
 	getAll(@GetUser() user: User): Promise<Teacher[]> {
 		return this.teacherService.getAll(user);
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
 		@Param('id') id: string,

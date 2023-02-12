@@ -21,7 +21,6 @@ import { GetUser } from './decorators/get-user.decorator';
 
 import { RolesGuard } from './roles.guard';
 import JwtRefreshGuard from './jwt/jwt-refresh.guard';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 
 import RequestWithUser from './models/requestsWithUser';
 import { SignupInputs } from './models/signup.inputs';
@@ -30,14 +29,15 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { CookieAuthenticationGuard } from './auth-with-server-side/cookieAuthentication.guard';
 import { LogInWithCredentialsGuard } from './jwt/logIn-with-credentials.guard';
+import { Public } from 'src/utils/public.decorator';
 
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+	@Public()
 	@HttpCode(200)
 	@UseGuards(LogInWithCredentialsGuard)
 	@Post('log-in')
@@ -64,7 +64,7 @@ export class AuthController {
 		};
 	}
 
-	@UseGuards(JwtAuthGuard, JwtRefreshGuard)
+	@UseGuards(JwtRefreshGuard)
 	@Get('refresh')
 	refresh(@Req() request: RequestWithUser) {
 		const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(
@@ -78,7 +78,6 @@ export class AuthController {
 		return { accessTokenCookie };
 	}
 
-	@UseGuards(JwtAuthGuard)
 	@Post('log-out')
 	@HttpCode(200)
 	async logOut(@Req() request: RequestWithUser) {
@@ -96,13 +95,14 @@ export class AuthController {
 	//   return this.authService.signIn(authCredentialDto);
 	// }
 
-	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(CookieAuthenticationGuard, RolesGuard)
+	// @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+	// @UseGuards(RolesGuard)
 	@Post('signup')
 	signUp(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
 	): Promise<User> {
+		console.log('signupInputs', signupInputs);
 		if (
 			signupInputs.roles.some(role => role !== Role.TEACHER) &&
 			signupInputs.roles.some(role => role !== Role.ADMIN)
@@ -117,7 +117,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN)
-	@UseGuards(CookieAuthenticationGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Post('signup/admin')
 	signUpAdmin(
 		@Body() signupInputs: SignupInputs,
@@ -135,7 +135,7 @@ export class AuthController {
 
 	@Post('signup/teacher')
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	signUpTeacher(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
@@ -150,7 +150,7 @@ export class AuthController {
 		}
 	}
 
-	@UseGuards(JwtAuthGuard)
+	
 	@Put('update-password')
 	updatePassword(
 		@Body() updatePasswordDto: UpdatePasswordDto,
@@ -160,7 +160,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard)
+	
 	@Put('reset-password')
 	resetPassword(
 		@Body() resetPasswordInputs: ResetPasswordInputs,
@@ -170,7 +170,7 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	@UseGuards(RolesGuard)
 	@Patch('change-status')
 	changeUserStatus(
 		@Body() changeUserStatusDto: ChangeUserStatusDto,
