@@ -1,7 +1,5 @@
 import {
 	ForbiddenException,
-	HttpException,
-	HttpStatus,
 	Injectable,
 	NotAcceptableException,
 	UnauthorizedException,
@@ -52,25 +50,6 @@ export class AuthService {
 		return await argon.hash(password);
 	}
 
-	/// use when we want only access token.
-	// async signIn(
-	//   authCredentialDto: AuthCredentialDto,
-	// ): Promise<{ accessToken: string }> {
-	//   const { username, password } = authCredentialDto;
-
-	//   const user: User = await this.usersRepository.findOneBy({ username });
-
-	//   if (user && (await argon.verify(user.password, password))) {
-	//     const roles = user.roles;
-	//     const payload = { username, roles };
-	//     const accessToken = await this.jwtService.sign(payload);
-
-	//     return { accessToken };
-	//   } else {
-	//     throw new UnauthorizedException('Please check your login credentials');
-	//   }
-	// }
-
 	async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
 		const { username, password } = authCredentialDto;
 
@@ -97,10 +76,6 @@ export class AuthService {
 			)}s`,
 		});
 
-		/// FOR COOKIE:
-		// return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-		//   'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-		// )}`;
 		return token;
 	}
 
@@ -118,15 +93,6 @@ export class AuthService {
 			)}s`,
 		});
 
-		/// FOR COOKIE:
-		// const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-		//   'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-		// )}`;
-
-		// return {
-		//   cookie,
-		//   token,
-		// };
 		return token;
 	}
 
@@ -152,14 +118,6 @@ export class AuthService {
 			return user;
 		}
 	}
-
-	/// FOR COOKIE:
-	// public getCookiesForLogOut() {
-	//   return [
-	//     'Authentication=; HttpOnly; Path=/; Max-Age=0',
-	//     'Refresh=; HttpOnly; Path=/; Max-Age=0',
-	//   ];
-	// }
 
 	async removeRefreshToken(user: User) {
 		user.currentHashedRefreshToken = null;

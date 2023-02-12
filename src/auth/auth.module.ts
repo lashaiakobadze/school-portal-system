@@ -9,7 +9,6 @@ import { RolesGuard } from './roles.guard';
 import { LocalStrategy } from './jwt/local.strategy';
 import { JwtRefreshTokenStrategy } from './jwt/jwt-refresh.strategy';
 import { JwtService } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthenticationController } from './auth-with-server-side/authentication.controller';
 import { LocalSerializer } from './auth-with-server-side/local.serializer';
@@ -39,13 +38,12 @@ import { LocalSerializer } from './auth-with-server-side/local.serializer';
 		LocalStrategy,
 		JwtRefreshTokenStrategy,
 		JwtService,
-		JwtStrategy,
 		/**
 		 * server-side-sessions
 		 */
 		LocalSerializer,
 	],
 	controllers: [AuthController, AuthenticationController],
-	exports: [PassportModule, AuthService, UserRepository, RolesGuard],
+	exports: [PassportModule, AuthService, UserRepository, RolesGuard, ConfigModule],
 })
 export class AuthModule {}

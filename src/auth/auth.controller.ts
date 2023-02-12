@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
-import { AuthCredentialDto } from './dto/auth.dto';
 import { User } from './user.schema';
 
 import { HasRoles } from './decorators/roles.decorator';
@@ -45,18 +44,10 @@ export class AuthController {
 		const { user } = request;
 		const accessTokenCookie =
 			this.authService.getCookieWithJwtAccessToken(user);
-		/// FOR COOKIE:
-		// const { cookie: refreshTokenCookie, token: refreshToken } =
-		//   this.authService.getCookieWithJwtRefreshToken(user);
 
 		const refreshToken = this.authService.getCookieWithJwtRefreshToken(user);
 
 		await this.authService.setCurrentRefreshToken(refreshToken, user);
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', [
-		//   accessTokenCookie,
-		//   refreshToken,
-		// ]);
 
 		return {
 			accessTokenCookie,
@@ -71,10 +62,6 @@ export class AuthController {
 			request.user,
 		);
 
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', accessTokenCookie);
-		// return request.user;
-
 		return { accessTokenCookie };
 	}
 
@@ -82,27 +69,15 @@ export class AuthController {
 	@HttpCode(200)
 	async logOut(@Req() request: RequestWithUser) {
 		await this.authService.removeRefreshToken(request.user);
-
-		/// FOR COOKIE:
-		// request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
 	}
 
-	/// use when we want only access token.
-	// @Post('/signin')
-	// signIn(
-	//   @Body() authCredentialDto: AuthCredentialDto,
-	// ): Promise<{ accessToken: string }> {
-	//   return this.authService.signIn(authCredentialDto);
-	// }
-
-	// @HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	// @UseGuards(RolesGuard)
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+	@UseGuards(RolesGuard)
 	@Post('signup')
 	signUp(
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
 	): Promise<User> {
-		console.log('signupInputs', signupInputs);
 		if (
 			signupInputs.roles.some(role => role !== Role.TEACHER) &&
 			signupInputs.roles.some(role => role !== Role.ADMIN)
