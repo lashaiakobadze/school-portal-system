@@ -1,4 +1,10 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+	ConflictException,
+	HttpException,
+	HttpStatus,
+	Injectable,
+	InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
@@ -8,7 +14,7 @@ import { Teacher, TeacherDocument } from './teacher.schema';
 
 @Injectable()
 export class TeacherRepository {
-    constructor(
+	constructor(
 		@InjectModel(Teacher.name) private teacherModel: Model<TeacherDocument>,
 	) {}
 
@@ -65,10 +71,16 @@ export class TeacherRepository {
 
 	async getAll(): Promise<Teacher[]> {
 		try {
-			let objects: Teacher[] = await this.teacherModel.find().populate('user');
+			let objects: Teacher[] = await this.teacherModel
+				.find()
+				.populate('user')
+				.populate('classes');
 
 			if (!objects)
-				throw new HttpException('Teachers does not exist', HttpStatus.NOT_FOUND);
+				throw new HttpException(
+					'Teachers does not exist',
+					HttpStatus.NOT_FOUND,
+				);
 
 			return objects;
 		} catch (error) {

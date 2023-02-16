@@ -30,9 +30,6 @@ export class Class {
 	subjects: string[];
 
 	@Prop()
-	teachers: string[];
-
-	@Prop()
 	students: string[];
 }
 
@@ -42,6 +39,12 @@ ClassSchema.virtual('stages', {
 	ref: 'Stage',
 	localField: '_id',
 	foreignField: 'class',
+});
+
+ClassSchema.virtual('teachers', {
+	ref: 'Teacher',
+	localField: '_id',
+	foreignField: 'classes',
 });
 
 export { ClassSchema };

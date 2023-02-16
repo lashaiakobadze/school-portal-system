@@ -39,7 +39,7 @@ export class ClassRepository {
 		try {
 			await this.classModel.findByIdAndUpdate(id, updated).exec();
 
-			return updated as Class;
+			return updated as any;
 		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				console.log('error', error);
@@ -72,12 +72,15 @@ export class ClassRepository {
 
 	async getAll(user: User): Promise<Class[]> {
 		try {
-			let objects: Class[] = await this.classModel.find().populate({
-				path: 'stages',
-				populate: {
-					path: 'weeks',
-				},
-			});
+			let objects: Class[] = await this.classModel
+				.find()
+				.populate({
+					path: 'stages',
+					populate: {
+						path: 'weeks',
+					},
+				})
+				.populate('teachers');
 
 			if (!objects)
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);

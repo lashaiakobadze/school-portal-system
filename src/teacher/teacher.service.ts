@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/user.schema';
+import { assignTeacherToClassDto } from './dto/assignTeacherToClass.dto';
 import { TeacherDto } from './dto/teacher.dto';
 import { TeacherRepository } from './teacher.repository';
 import { Teacher } from './teacher.schema';
@@ -37,5 +38,12 @@ export class TeacherService {
 		};
 
 		return this.teacherRepository.onUpdate(id, updated);
+	}
+
+	async assignTeacherToClass(user: User, inputs: assignTeacherToClassDto) {
+		let teacher: Teacher = await this.get(inputs.teacherId);
+		teacher.classes.push(inputs.classId);
+
+		return this.teacherRepository.onUpdate(teacher._id.toString(), teacher);
 	}
 }

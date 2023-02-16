@@ -3,6 +3,8 @@ import {
 	IsOptional,
 	IsString
 } from 'class-validator';
+import { User } from 'src/auth/user.schema';
+import { Class } from 'src/class/class.schema';
 
 export class TeacherDto {
 	@IsOptional()
@@ -21,5 +23,7 @@ export class TeacherDto {
 
 	@IsString()
 	@IsOptional()
-	user: string;
+	user: User;
+
+	classes: Class[];
 }

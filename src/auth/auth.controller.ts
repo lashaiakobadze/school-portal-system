@@ -125,7 +125,6 @@ export class AuthController {
 		}
 	}
 
-	
 	@Put('update-password')
 	updatePassword(
 		@Body() updatePasswordDto: UpdatePasswordDto,
@@ -135,7 +134,6 @@ export class AuthController {
 	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	
 	@Put('reset-password')
 	resetPassword(
 		@Body() resetPasswordInputs: ResetPasswordInputs,
