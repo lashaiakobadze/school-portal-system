@@ -17,6 +17,7 @@ import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { PaginationParams } from 'src/utils/paginationParams';
 import ParamsWithId from 'src/utils/paramsWithId';
+import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { Profile } from './profile.schema';
 import { ProfileService } from './profile.service';
@@ -81,5 +82,15 @@ export class ProfileController {
 	  @Query('searchQuery') searchQuery: string,
 	) {
 	  return this.profileService.findAll(skip, limit, startId, searchQuery);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@UseGuards(RolesGuard)
+	@Put('assign-student-to-class')
+	assignStudentToClass(
+		@Body() inputs: assignStudentToClassDto,
+		@GetUser() user: User,
+	): Promise<Profile> {
+		return this.profileService.assignStudentToClass(user, inputs);
 	}
 }

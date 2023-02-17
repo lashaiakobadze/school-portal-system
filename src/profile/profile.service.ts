@@ -9,6 +9,7 @@ import { ProfileRepository } from './profile.repository';
 import { Profile } from './profile.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
+import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
 
 @Injectable()
 export class ProfileService {
@@ -19,6 +20,10 @@ export class ProfileService {
 
 	registrationProfile(profileInputs: ProfileDto, user: User): Promise<Profile> {
 		return this.profileRepository.createProfile(profileInputs, user);
+	}
+
+	get(id: string): Promise<Profile> {
+		return this.profileRepository.findOne(id);
 	}
 
 	getProfile(user: User): Promise<Profile> {
@@ -97,5 +102,12 @@ export class ProfileService {
 			startId,
 			searchQuery,
 		);
+	}
+
+	async assignStudentToClass(user: User, inputs: assignStudentToClassDto) {
+		let profile: Profile = await this.get(inputs.studentId);
+		profile.class = inputs.classId;
+
+		return this.profileRepository.update(profile._id.toString(), profile as any);
 	}
 }

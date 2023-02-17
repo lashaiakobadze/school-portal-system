@@ -28,9 +28,6 @@ export class Class {
 
 	@Prop()
 	subjects: string[];
-
-	@Prop()
-	students: string[];
 }
 
 const ClassSchema = SchemaFactory.createForClass(Class);
@@ -45,6 +42,12 @@ ClassSchema.virtual('teachers', {
 	ref: 'Teacher',
 	localField: '_id',
 	foreignField: 'classes',
+});
+
+ClassSchema.virtual('students', {
+	ref: 'Profile',
+	localField: '_id',
+	foreignField: 'class',
 });
 
 export { ClassSchema };
