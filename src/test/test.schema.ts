@@ -1,0 +1,30 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform, Type } from 'class-transformer';
+import mongoose, { ObjectId } from 'mongoose';
+import { Class } from 'src/class/class.schema';
+
+export type TestDocument = Test & Document;
+
+@Schema({
+	toJSON: {
+		getters: true,
+		virtuals: true,
+	},
+})
+export class Test {
+	@Transform(value => value.obj._id.toString())
+	_id: ObjectId;
+
+	@Prop()
+	orderId: number;
+
+	@Prop()
+	creatorId: string;
+
+	@Prop()
+	level: string;
+}
+
+const TestSchema = SchemaFactory.createForClass(Test);
+
+export { TestSchema };
