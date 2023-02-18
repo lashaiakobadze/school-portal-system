@@ -81,7 +81,8 @@ export class ClassRepository {
 					},
 				})
 				.populate('teachers')
-				.populate('students');
+				.populate('students')
+				.populate('subjects');
 
 
 			if (!objects)

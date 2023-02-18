@@ -5,6 +5,7 @@ import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { assignSubjectToClassDto } from './dto/assignSubjectToClass.dto';
 import { SubjectDto } from './dto/subject.dto';
 import { Subject } from './subject.schema';
 import { SubjectService } from './subject.service';
@@ -43,5 +44,15 @@ export class SubjectController {
 		@GetUser() user: User,
 	): Promise<Subject> {
 		return this.subjectService.update(user, inputs, id);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@UseGuards(RolesGuard)
+	@Put('assign-to-class')
+	assignToClass(
+		@Body() inputs: assignSubjectToClassDto,
+		@GetUser() user: User,
+	): Promise<Subject> {
+		return this.subjectService.assignToClass(user, inputs);
 	}
 }

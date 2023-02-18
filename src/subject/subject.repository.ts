@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
@@ -23,7 +23,7 @@ export class SubjectRepository {
 				throw new ConflictException('Subject already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -39,7 +39,7 @@ export class SubjectRepository {
 				throw new ConflictException('Subject already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -59,7 +59,7 @@ export class SubjectRepository {
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -74,7 +74,7 @@ export class SubjectRepository {
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 }
