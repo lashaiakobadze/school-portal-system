@@ -20,6 +20,7 @@ import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { Role } from './models/role.enum';
 import { ChangeUserStatusDto } from './dto/change-status.dto';
 import { ObjectId } from 'mongoose';
+import { hasRole } from './decorators/has-role.decorator';
 
 @Injectable()
 export class AuthService {
@@ -169,7 +170,7 @@ export class AuthService {
 		}
 
 		// reset password from main admin
-		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
+		if (hasRole(Role.MAIN_ADMIN, currentUser.roles)) {
 			if (
 				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
 			) {
@@ -187,9 +188,9 @@ export class AuthService {
 
 		// reset password from admin
 		if (
-			currentUser.roles.some(role => role === Role.ADMIN) &&
-			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
-			!user.roles.some(role => role === Role.ADMIN)
+			hasRole(Role.ADMIN, currentUser.roles) &&
+			!hasRole(Role.MAIN_ADMIN, user.roles) &&
+			!hasRole(Role.ADMIN, user.roles)
 		) {
 			if (
 				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
@@ -208,10 +209,10 @@ export class AuthService {
 
 		// reset password from teacher to students and parents
 		if (
-			currentUser.roles.some(role => role === Role.TEACHER) &&
-			!user.roles.some(role => role === Role.ADMIN) &&
-			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
-			!user.roles.some(role => role === Role.TEACHER)
+			hasRole(Role.TEACHER, currentUser.roles) &&
+			!hasRole(Role.MAIN_ADMIN, user.roles) &&
+			!hasRole(Role.ADMIN, user.roles) &&
+			!hasRole(Role.TEACHER, user.roles)
 		) {
 			if (
 				resetPasswordInputs.newPassword !== resetPasswordInputs.passwordConfirm
@@ -246,7 +247,7 @@ export class AuthService {
 		}
 
 		// change status from main admin
-		if (currentUser.roles.some(role => role === Role.MAIN_ADMIN)) {
+		if (hasRole(Role.MAIN_ADMIN, currentUser.roles)) {
 			return this.usersRepository.updateUserStatus(
 				user._id.toString(),
 				changeUserStatusDto,
@@ -255,9 +256,9 @@ export class AuthService {
 
 		// change status from admin
 		else if (
-			currentUser.roles.some(role => role === Role.ADMIN) &&
-			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
-			!user.roles.some(role => role === Role.ADMIN)
+			hasRole(Role.ADMIN, currentUser.roles) &&
+			!hasRole(Role.MAIN_ADMIN, user.roles) &&
+			!hasRole(Role.ADMIN, user.roles)
 		) {
 			return this.usersRepository.updateUserStatus(
 				user._id.toString(),
@@ -267,10 +268,10 @@ export class AuthService {
 
 		// change status from teacher to students and parents
 		if (
-			currentUser.roles.some(role => role === Role.TEACHER) &&
-			!user.roles.some(role => role === Role.ADMIN) &&
-			!user.roles.some(role => role === Role.MAIN_ADMIN) &&
-			!user.roles.some(role => role === Role.TEACHER)
+			hasRole(Role.TEACHER, currentUser.roles) &&
+			!hasRole(Role.MAIN_ADMIN, user.roles) &&
+			!hasRole(Role.ADMIN, user.roles) &&
+			!hasRole(Role.TEACHER, user.roles)
 		) {
 			return this.usersRepository.updateUserStatus(
 				user._id.toString(),

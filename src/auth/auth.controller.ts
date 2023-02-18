@@ -30,6 +30,7 @@ import { ChangeUserStatusDto } from './dto/change-status.dto';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { LogInWithCredentialsGuard } from './jwt/logIn-with-credentials.guard';
 import { Public } from 'src/utils/public.decorator';
+import { hasRole } from './decorators/has-role.decorator';
 
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
@@ -79,8 +80,8 @@ export class AuthController {
 		@GetUser() user: User,
 	): Promise<User> {
 		if (
-			signupInputs.roles.some(role => role !== Role.TEACHER) &&
-			signupInputs.roles.some(role => role !== Role.ADMIN)
+			!hasRole(Role.TEACHER, signupInputs.roles) &&
+			!hasRole(Role.ADMIN, signupInputs.roles)
 		) {
 			return this.authService.signUp(signupInputs, user);
 		} else {
@@ -98,7 +99,7 @@ export class AuthController {
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
 	): Promise<User> {
-		if (signupInputs.roles.some(role => role === Role.ADMIN)) {
+		if (hasRole(Role.ADMIN, signupInputs.roles)) {
 			return this.authService.signUp(signupInputs, user);
 		} else {
 			throw new BadRequestException('Something bad happened', {
@@ -115,7 +116,7 @@ export class AuthController {
 		@Body() signupInputs: SignupInputs,
 		@GetUser() user: User,
 	): Promise<User> {
-		if (signupInputs.roles.some(role => role === Role.TEACHER)) {
+		if (hasRole(Role.TEACHER, signupInputs.roles)) {
 			return this.authService.signUp(signupInputs, user);
 		} else {
 			throw new BadRequestException('Something bad happened', {

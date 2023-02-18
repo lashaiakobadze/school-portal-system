@@ -10,6 +10,7 @@ import { Profile } from './profile.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
 import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
+import { hasRole } from 'src/auth/decorators/has-role.decorator';
 
 @Injectable()
 export class ProfileService {
@@ -59,37 +60,37 @@ export class ProfileService {
 		}
 
 		if (
-			profileUser.roles.some(role => role === Role.MAIN_ADMIN) &&
+			hasRole(Role.MAIN_ADMIN, profileUser.roles) &&
 			profileUser._id.toString() !== user._id.toString()
 		) {
 			throw new ForbiddenException("You can't update main admin's profile.");
 		}
 
 		// If action author is main admin.
-		if (user.roles.some(role => role === Role.MAIN_ADMIN)) {
+		if (hasRole(Role.MAIN_ADMIN, user.roles)) {
 			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		// If action author is admin.
 		if (
-			user.roles.some(role => role === Role.ADMIN) &&
-			!profileUser.roles.some(role => role === Role.ADMIN)
+			hasRole(Role.ADMIN, user.roles) &&
+			!hasRole(Role.ADMIN, profileUser.roles)
 		) {
 			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		// If action author is teacher.
 		if (
-			user.roles.some(role => role === Role.TEACHER) &&
-			!profileUser.roles.some(role => role === Role.ADMIN) &&
-			!profileUser.roles.some(role => role === Role.TEACHER)
+			hasRole(Role.TEACHER, user.roles) &&
+			!hasRole(Role.ADMIN, profileUser.roles) &&
+			!hasRole(Role.TEACHER, profileUser.roles)
 		) {
 			return this.profileRepository.update(profileId, profileInputs);
 		}
 
 		throw new ForbiddenException("You can't this action with your status.");
 	}
-	
+
 	async findAll(
 		documentsToSkip: number,
 		limitOfDocuments?: number,
@@ -108,6 +109,9 @@ export class ProfileService {
 		let profile: Profile = await this.get(inputs.studentId);
 		profile.class = inputs.classId;
 
-		return this.profileRepository.update(profile._id.toString(), profile as any);
+		return this.profileRepository.update(
+			profile._id.toString(),
+			profile as any,
+		);
 	}
 }

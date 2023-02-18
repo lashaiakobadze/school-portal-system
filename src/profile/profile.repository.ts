@@ -18,6 +18,7 @@ import MongoError from 'src/utils/mongoError.enum';
 import { InjectConnection } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { transaction } from 'src/utils/transaction';
+import { hasRole } from 'src/auth/decorators/has-role.decorator';
 
 @Injectable()
 export class ProfileRepository {
@@ -131,15 +132,15 @@ export class ProfileRepository {
 			let profiles: Profile[] = await this.profileModel.find().populate('user');
 
 			if (profiles.length) {
-				if (user.roles.some(role => role === Role.MAIN_ADMIN)) {
+				if (hasRole(Role.MAIN_ADMIN, user.roles)) {
 					return profiles;
-				} else if (user.roles.some(role => role === Role.ADMIN)) {
+				} else if (hasRole(Role.ADMIN, user.roles)) {
 					return profiles.filter((profile: Profile) => {
 						return profile.user.roles.some(
 							role => role !== Role.MAIN_ADMIN && role !== Role.ADMIN,
 						);
 					});
-				} else if (user.roles.some(role => role === Role.TEACHER)) {
+				} else if (hasRole(Role.TEACHER, user.roles)) {
 					return profiles.filter((profile: Profile) => {
 						return profile.user.roles.some(
 							role =>
