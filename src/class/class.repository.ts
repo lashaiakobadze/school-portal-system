@@ -84,6 +84,9 @@ export class ClassRepository {
 					path: 'subjects',
 					populate: {
 						path: 'tests',
+						populate: {
+							path: 'scores',
+						},
 					},
 				})
 				.populate('teachers')
