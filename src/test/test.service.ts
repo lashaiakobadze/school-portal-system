@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/user.schema';
+import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
 import { TestDto } from './dto/test.dto';
 import { TestRepository } from './test.repository';
 import { Test } from './test.schema';
@@ -32,5 +33,12 @@ export class TestService {
 		};
 
 		return this.testRepository.onUpdate(id, updated);
+	}
+
+	async assignToSubject(user: User, inputs: assignTestToSubjectDto) {
+		let test: Test = await this.get(inputs.testId);
+		test.subject = inputs.subjectId;
+
+		return this.testRepository.onUpdate(test._id.toString(), test);
 	}
 }

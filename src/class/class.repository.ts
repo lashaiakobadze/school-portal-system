@@ -80,10 +80,14 @@ export class ClassRepository {
 						path: 'weeks',
 					},
 				})
+				.populate({
+					path: 'subjects',
+					populate: {
+						path: 'tests',
+					},
+				})
 				.populate('teachers')
-				.populate('students')
-				.populate('subjects');
-
+				.populate('students');
 
 			if (!objects)
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);

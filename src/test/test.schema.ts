@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Class } from 'src/class/class.schema';
+import { Subject } from 'src/subject/subject.schema';
 
 export type TestDocument = Test & Document;
 
@@ -21,8 +22,9 @@ export class Test {
 	@Prop()
 	creatorId: string;
 
-	@Prop()
-	level: string;
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Subject.name, unique: true })
+	@Type(() => Subject)
+	subject: Subject;
 }
 
 const TestSchema = SchemaFactory.createForClass(Test);

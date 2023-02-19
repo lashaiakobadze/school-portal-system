@@ -9,9 +9,5 @@ export class TestDto {
 
 	@IsNotEmpty()
 	@IsNumber()
-	orderId: string;
-
-	@IsString()
-	@IsNotEmpty()
-	level: string;
+	orderId: number;
 }

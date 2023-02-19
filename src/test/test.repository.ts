@@ -49,7 +49,7 @@ export class TestRepository {
 
 	async getById(id: string): Promise<Test> {
 		try {
-			const object: Test = await this.testModel.findById(id).exec();
+			const object: Test = await this.testModel.findById(id);
 
 			if (object) {
 				return object;

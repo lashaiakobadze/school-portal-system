@@ -17,6 +17,7 @@ import { User } from 'src/auth/user.schema';
 import { TestDto } from './dto/test.dto';
 import { Test } from './test.schema';
 import { TestService } from './test.service';
+import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Test))
 @Controller('test')
@@ -51,5 +52,15 @@ export class TestController {
 		@GetUser() user: User,
 	): Promise<Test> {
 		return this.testService.update(user, inputs, id);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@UseGuards(RolesGuard)
+	@Put('assign-to-subject')
+	assignToSubject(
+		@Body() inputs: assignTestToSubjectDto,
+		@GetUser() user: User,
+	): Promise<Test> {
+		return this.testService.assignToSubject(user, inputs);
 	}
 }

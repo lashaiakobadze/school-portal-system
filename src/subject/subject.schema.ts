@@ -31,4 +31,10 @@ export class Subject {
 
 const SubjectSchema = SchemaFactory.createForClass(Subject);
 
+SubjectSchema.virtual('tests', {
+	ref: 'Test',
+	localField: '_id',
+	foreignField: 'subject',
+});
+
 export { SubjectSchema };
