@@ -14,7 +14,6 @@ import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { assignScoreToTestDto } from './dto/assignScoreToTest.dto';
 import { TestScoreDto } from './dto/test-score.dto';
 import { TestScore } from './test-score.schema';
 import { TestScoreService } from './test-score.service';
@@ -55,15 +54,5 @@ export class TestScoreController {
 		@GetUser() user: User,
 	): Promise<TestScore> {
 		return this.testScoreService.update(user, inputs, id);
-	}
-
-	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
-	@UseGuards(RolesGuard)
-	@Put('assign-to-test')
-	assignToSubject(
-		@Body() inputs: assignScoreToTestDto,
-		@GetUser() user: User,
-	): Promise<TestScore> {
-		return this.testScoreService.assignToTest(user, inputs);
 	}
 }

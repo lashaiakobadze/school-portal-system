@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/user.schema';
-import { assignScoreToTestDto } from './dto/assignScoreToTest.dto';
 import { TestScoreDto } from './dto/test-score.dto';
 import { TestScoreRepository } from './test-score.repository';
 import { TestScore } from './test-score.schema';
@@ -37,15 +36,5 @@ export class TestScoreService {
 		};
 
 		return this.testScoreRepository.onUpdate(id, updated);
-	}
-
-	async assignToTest(user: User, inputs: assignScoreToTestDto) {
-		let testScore: TestScore = await this.get(inputs.testScoreId);
-		testScore.test = inputs.testId;
-
-		return this.testScoreRepository.onUpdate(
-			testScore._id.toString(),
-			testScore,
-		);
 	}
 }

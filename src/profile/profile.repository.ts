@@ -103,7 +103,19 @@ export class ProfileRepository {
 				.findOne({
 					user: profileUserId,
 				})
-				.populate('user');
+				.populate('user')
+				.populate({
+					path: 'class',
+					populate: {
+						path: 'subjects',
+						populate: {
+							path: 'tests',
+							populate: {
+								path: 'scores',
+							},
+						},
+					},
+				});
 
 			if (profile) {
 				return profile;
@@ -213,7 +225,7 @@ export class ProfileRepository {
 			}
 
 			const results = await findQuery;
-			const count = await this.profileModel.count();;
+			const count = await this.profileModel.count();
 
 			// ToDo: fix this object property set bug.
 			// return { results, count };

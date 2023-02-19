@@ -22,13 +22,13 @@ export class TestScore {
 	@Prop()
 	score: number;
 
-	// @Prop({
-	// 	type: mongoose.Schema.Types.ObjectId,
-	// 	ref: Profile.name,
-	// 	unique: true,
-	// })
-	// @Type(() => Profile)
-	// profile: Profile;
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		ref: Profile.name,
+		unique: true,
+	})
+	@Type(() => Profile)
+	profile: Profile;
 
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
