@@ -57,9 +57,9 @@ export class Profile {
 	@Type(() => User)
 	user: User;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: false })
 	@Type(() => Class)
-	class: Class;
+	class?: Class;
 }
 
 const ProfileSchema = SchemaFactory.createForClass(Profile);

@@ -14,7 +14,8 @@ import { TestScore, TestScoreDocument } from './test-score.schema';
 @Injectable()
 export class TestScoreRepository {
 	constructor(
-		@InjectModel(TestScore.name) private testScoreModel: Model<TestScoreDocument>,
+		@InjectModel(TestScore.name)
+		private testScoreModel: Model<TestScoreDocument>,
 	) {}
 
 	async onCreate(dto: TestScoreDto): Promise<TestScore> {
@@ -70,7 +71,10 @@ export class TestScoreRepository {
 
 	async getAll(user: User): Promise<TestScore[]> {
 		try {
-			let objects: TestScore[] = await this.testScoreModel.find().populate('');
+			let objects: TestScore[] = await this.testScoreModel
+				.find()
+				.populate('profile')
+				.populate('test');
 
 			if (!objects)
 				throw new HttpException(

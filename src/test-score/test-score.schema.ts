@@ -33,7 +33,7 @@ export class TestScore {
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: Test.name,
-		unique: true,
+		unique: false,
 	})
 	@Type(() => Test)
 	test: Test;

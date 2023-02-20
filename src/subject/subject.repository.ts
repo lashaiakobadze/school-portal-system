@@ -65,7 +65,12 @@ export class SubjectRepository {
 
 	async getAll(user: User): Promise<Subject[]> {
 		try {
-			let objects: Subject[] = await this.subjectModel.find().populate('tests');
+			let objects: Subject[] = await this.subjectModel.find().populate({
+				path: 'tests',
+				populate: {
+					path: 'scores',
+				},
+			});
 
 			if (!objects)
 				throw new HttpException('Subjects does not exist', HttpStatus.NOT_FOUND);
