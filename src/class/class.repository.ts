@@ -60,7 +60,7 @@ export class ClassRepository {
 			}
 
 			throw new HttpException(
-				'Profile with this id does not exist',
+				'class with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
 		} catch (error) {

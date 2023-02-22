@@ -25,13 +25,4 @@ export class ClassDto {
 
 	@IsOptional()
 	currentStageId?: string;
-
-	@IsDefined()
-	subjects: string[];
-
-	@IsDefined()
-	teachers: string[];
-
-	@IsNotEmpty()
-	students: string[];
 }
