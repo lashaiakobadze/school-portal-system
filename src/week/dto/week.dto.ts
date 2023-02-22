@@ -8,25 +8,9 @@ export class WeekDto {
 	creatorId: string;
 
 	@IsNotEmpty()
-	week: number;
+	weekOrder: number;
 
 	@IsString()
 	@IsOptional()
 	stage: string;
-
-	@IsNotEmpty()
-	@IsNumber()
-	testScore: number;
-
-	@IsNotEmpty()
-	@IsNumber()
-	homeworkScore: number;
-
-	@IsNotEmpty()
-	@IsNumber()
-	onlineTestScore: number;
-
-	@IsNotEmpty()
-	@IsNumber()
-	activityScore: number;
 }

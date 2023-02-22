@@ -22,7 +22,7 @@ export class Stage {
 	creatorId: string;
 
 	@Prop()
-	currentWeekId: string;
+	currentWeek: number;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name })
 	@Type(() => Class)

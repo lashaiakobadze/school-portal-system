@@ -43,7 +43,7 @@ export class ProfileRepository {
 				throw new ConflictException('Profile already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -67,14 +67,29 @@ export class ProfileRepository {
 				throw new ConflictException('Profile already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
 
 	async findOne(id: string): Promise<Profile> {
 		try {
-			let profile: Profile = await this.profileModel.findById(id).exec();
+			let profile: Profile = await this.profileModel.findById(id).populate({
+				path: 'class',
+				populate: {
+					path: 'subjects',
+					populate: {
+						path: 'tests',
+						populate: {
+							path: 'scores',
+							select: 'score',
+							match: {
+								profile: id
+							}
+						},
+					},
+				},
+			});
 
 			if (profile) {
 				return profile;
@@ -87,13 +102,7 @@ export class ProfileRepository {
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);
-			throw new InternalServerErrorException();
-
-			// ToDo: implement ErrorResponse
-			// return {
-			// 	reason: error.response,
-			// 	status: error.status
-			// }
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -128,7 +137,7 @@ export class ProfileRepository {
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -168,7 +177,7 @@ export class ProfileRepository {
 		} catch (error) {
 			// ToDo: improve Error handling
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 

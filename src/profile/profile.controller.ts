@@ -36,9 +36,13 @@ export class ProfileController {
 		return this.profileService.registrationProfile(profileInputs, user);
 	}
 
+	@Get('get-profile/:id')
+	getProfile(@Param('id') id: string): Promise<Profile> {
+		return this.profileService.get(id);
+	}
 	
-	@Get('get-profile')
-	getProfile(@GetUser() user: User): Promise<Profile> {
+	@Get('get-profile-by-user')
+	getProfileByUser(@GetUser() user: User): Promise<Profile> {
 		return this.profileService.getProfile(user);
 	}
 

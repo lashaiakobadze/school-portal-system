@@ -14,19 +14,7 @@ export class Week {
 	creatorId: string;
 
 	@Prop()
-	testScore: number;
-
-	@Prop()
-	week: number;
-
-	@Prop()
-	homeworkScore: number;
-
-	@Prop()
-	onlineTestScore: number;
-
-	@Prop()
-	activityScore: number;
+	weekOrder: number;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Stage.name })
 	@Type(() => Stage)

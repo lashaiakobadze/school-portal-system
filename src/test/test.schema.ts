@@ -23,8 +23,7 @@ export class Test {
 
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
-		ref: Subject.name,
-		unique: true,
+		ref: Subject.name
 	})
 	@Type(() => Subject)
 	subject: Subject;

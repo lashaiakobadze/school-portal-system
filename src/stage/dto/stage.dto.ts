@@ -15,9 +15,9 @@ export class StageDto {
 	@IsNumber()
 	stage: number;
 
-	@IsString()
+	@IsNumber()
 	@IsNotEmpty()
-	currentWeekId: string;
+	currentWeek: number;
 
 	@IsString()
 	@IsOptional()
