@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
+import { AcademicYear } from 'src/academic-year/academic-year.schema';
 
 export type ClassDocument = Class & Document;
 
@@ -21,10 +22,11 @@ export class Class {
 	class: number;
 
 	@Prop()
-	academicYear: string;
-
-	@Prop()
 	currentStageId: string;
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: AcademicYear.name })
+	@Type(() => AcademicYear)
+	academicYear: AcademicYear;
 }
 
 const ClassSchema = SchemaFactory.createForClass(Class);

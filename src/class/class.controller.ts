@@ -16,6 +16,7 @@ import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
 import { Class } from './class.schema';
 import { ClassService } from './class.service';
+import { assignClassToAcademicYearDto } from './dto/assignClassToAcademicYear.dto';
 import { ClassDto } from './dto/class.dto';
 
 @Controller('class')
@@ -52,5 +53,15 @@ export class ClassController {
 		@GetUser() user: User,
 	): Promise<Class> {
 		return this.classService.update(user, inputs, id);
+	}	
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@UseGuards(RolesGuard)
+	@Put('assign-to-academic-year')
+	assignToSubject(
+		@Body() inputs: assignClassToAcademicYearDto,
+		@GetUser() user: User,
+	): Promise<Class> {
+		return this.classService.assignToAcademicYear(user, inputs);
 	}
 }

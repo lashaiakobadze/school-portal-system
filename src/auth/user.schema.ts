@@ -2,7 +2,7 @@ import { Document, ObjectId } from 'mongoose';
 import { Exclude, Transform } from 'class-transformer';
 
 import { Role } from './models/role.enum';
-import { Status } from './models/user-status.enum';
+import { UserStatus } from './models/user-status.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type UserDocument = User & Document;
@@ -39,7 +39,7 @@ export class User {
 	public currentHashedRefreshToken?: string;
 
 	@Prop()
-	status: Status;
+	status: UserStatus;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

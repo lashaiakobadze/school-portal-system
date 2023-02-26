@@ -18,11 +18,4 @@ export class ClassDto {
 	@IsNotEmpty()
 	@IsNumber()
 	class: number;
-
-	@IsString()
-	@IsNotEmpty()
-	academicYear: string;
-
-	@IsOptional()
-	currentStageId?: string;
 }

@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 import { Role } from '../models/role.enum';
-import { Status } from './user-status.enum';
+import { UserStatus } from './user-status.enum';
 
 export class SignupInputs {
 	@IsString()
@@ -26,6 +26,6 @@ export class SignupInputs {
 	roles: Role[];
 
 	@IsNotEmpty()
-	@IsEnum(Status)
-	status: Status;
+	@IsEnum(UserStatus)
+	status: UserStatus;
 }

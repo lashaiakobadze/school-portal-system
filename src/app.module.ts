@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './utils/auth.guard';
 import { TestModule } from './test/test.module';
 import { TestScoreModule } from './test-score/test-score.module';
+import { AcademicYearModule } from './academic-year/academic-year.module';
 
 @Module({
 	imports: [
@@ -44,6 +45,7 @@ import { TestScoreModule } from './test-score/test-score.module';
 		SubjectModule,
 		TestModule,
 		TestScoreModule,
+		AcademicYearModule,
 	],
 	controllers: [],
 	providers: [
