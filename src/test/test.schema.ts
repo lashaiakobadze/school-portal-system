@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Subject } from 'src/subject/subject.schema';
+import { Status } from 'src/utils/status.enum';
 
 export type TestDocument = Test & Document;
 
@@ -20,6 +21,9 @@ export class Test {
 
 	@Prop({ required: true })
 	creatorId: string;
+	
+	@Prop({ required: true})
+	status: Status;
 
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,

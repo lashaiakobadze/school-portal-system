@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Stage } from 'src/stage/stage.schema';
+import { Status } from 'src/utils/status.enum';
 
 export type WeekDocument = Week & Document;
 
@@ -15,6 +16,9 @@ export class Week {
 
 	@Prop({ required: true })
 	weekOrder: number;
+
+	@Prop({ required: true})
+	status: Status;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Stage.name })
 	@Type(() => Stage)

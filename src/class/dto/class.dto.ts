@@ -1,10 +1,12 @@
 import {
 	IsDefined,
+	IsEnum,
 	IsMongoId,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 } from 'class-validator';
+import { Status } from 'src/utils/status.enum';
 
 export class ClassDto {
 	@IsMongoId()
@@ -17,4 +19,8 @@ export class ClassDto {
 	@IsNotEmpty()
 	@IsNumber()
 	class: number;
+
+	@IsNotEmpty()
+	@IsEnum(Status)
+	status: Status;
 }
