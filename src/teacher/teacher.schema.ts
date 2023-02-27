@@ -29,7 +29,7 @@ export class Teacher {
 	@Type(() => User)
 	user: User;
 
-	@Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: true }])
+	@Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Class.name }])
 	@Type(() => Class)
 	classes: Class[];
 }

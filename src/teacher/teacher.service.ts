@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/auth/user.schema';
+import { User, UserDocument } from 'src/auth/user.schema';
 import { Class, ClassDocument } from 'src/class/class.schema';
 import { assignTeacherToClassDto } from './dto/assignTeacherToClass.dto';
 import { TeacherDto } from './dto/teacher.dto';
@@ -13,6 +13,7 @@ export class TeacherService {
 	constructor(
 		private teacherRepository: TeacherRepository,
 		@InjectModel(Class.name) private classModel: Model<ClassDocument>,
+		@InjectModel(User.name) private userModel: Model<UserDocument>,
 	) {}
 
 	async create(
@@ -20,13 +21,24 @@ export class TeacherService {
 		teacherUserId: string,
 		user: User,
 	): Promise<Teacher> {
-		const dto: TeacherDto = {
-			user: teacherUserId,
-			creatorId: user._id.toString(),
-			...inputs,
-		};
+		// Check if the parent object exists
+		const parentExists = await this.userModel.exists({ _id: teacherUserId });
 
-		return this.teacherRepository.onCreate(dto);
+		if (parentExists) {
+			// Create a new child object and set the foreign key to the parent object's id
+			const dto: TeacherDto = {
+				user: teacherUserId,
+				creatorId: user._id.toString(),
+				...inputs,
+			};
+	
+			return this.teacherRepository.onCreate(dto);
+		} else {
+			throw new HttpException(
+				`Teacher user with id ${teacherUserId} not found`,
+				HttpStatus.NOT_FOUND,
+			);
+		}
 	}
 
 	get(id: string): Promise<Teacher> {

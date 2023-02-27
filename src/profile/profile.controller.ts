@@ -26,7 +26,6 @@ import { ProfileService } from './profile.service';
 @UseInterceptors(MongooseClassSerializerInterceptor(Profile))
 export class ProfileController {
 	constructor(private profileService: ProfileService) {}
-
 	
 	@Post('registration')
 	signUp(

@@ -1,9 +1,9 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
-  IsString,
-  Length
+  IsString
 } from 'class-validator';
 import { User } from 'src/auth/user.schema';
 
@@ -20,8 +20,7 @@ export class ProfileDto {
   @IsNotEmpty()
   lastName: string;
 
-  @Length(11)
-  // @IsNumber()
+  @IsNumber()
   @IsNotEmpty()
   personalNumber: number;
 
