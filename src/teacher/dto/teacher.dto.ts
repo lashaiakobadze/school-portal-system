@@ -25,5 +25,6 @@ export class TeacherDto {
 	@IsOptional()
 	user: User;
 
+	@IsOptional()
 	classes: Class[];
 }

@@ -10,10 +10,10 @@ export class Week {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-    @Prop()
+	@Prop({ required: true })
 	creatorId: string;
 
-	@Prop()
+	@Prop({ required: true })
 	weekOrder: number;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Stage.name })

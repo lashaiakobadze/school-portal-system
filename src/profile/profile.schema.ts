@@ -28,10 +28,11 @@ export class Profile {
 	})
 	personalNumber: number;
 
-	@Prop()
+	@Prop({ required: true })
 	phoneNumber: string;
 
 	@Prop({
+		required: true,
 		set: (content: string) => {
 			return content.trim();
 		},
@@ -47,14 +48,18 @@ export class Profile {
 	})
 	lastName: string;
 
-	@Prop({ unique: true })
+	@Prop({ unique: true, required: true })
 	email: string;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, unique: true })
 	@Type(() => User)
 	user: User;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: false })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		ref: Class.name,
+		unique: false,
+	})
 	@Type(() => Class)
 	class?: Class;
 }
@@ -66,7 +71,7 @@ ProfileSchema.virtual('fullName').get(function (this: ProfileDocument) {
 });
 
 /**
- * When we set up a text index, we can take advantage of the $text operator. 
+ * When we set up a text index, we can take advantage of the $text operator.
  * It performs a text search on the content of the fields indexed with a text index.
  * A collection can’t have more than one text index.
  */
@@ -78,10 +83,10 @@ ProfileSchema.index({ firstName: 'text' });
 // ProfileSchema.index({ firstName: 'text', lastName: 'text' });
 
 /**
- * By using 1, we create an ascending index. 
- * When we use -1, we create a descending index. 
- * The direction doesn’t matter for single key indexes because MongoDB can traverse the index in either direction. 
- * It can be significant for compound indexes, though. 
+ * By using 1, we create an ascending index.
+ * When we use -1, we create a descending index.
+ * The direction doesn’t matter for single key indexes because MongoDB can traverse the index in either direction.
+ * It can be significant for compound indexes, though.
  * The official documentation: https://www.mongodb.com/docs/manual/core/index-compound/#sort-order
  * StackOverflow page provide a good explanation: https://stackoverflow.com/questions/10329104/why-does-direction-of-index-matter-in-mongodb
  * Default: The @Prop({ index: true }) decorator creates an ascending index

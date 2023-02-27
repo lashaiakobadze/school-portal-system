@@ -16,13 +16,13 @@ export class Teacher {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true })
 	firstName: string;
 
-    @Prop()
+	@Prop({ required: true })
 	lastName: string;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, unique: true })

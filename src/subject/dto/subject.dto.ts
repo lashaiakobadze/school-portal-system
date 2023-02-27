@@ -9,13 +9,10 @@ export class SubjectDto {
 	id?: string;
 
 	@IsOptional()
+	@IsString()
 	creatorId: string;
 
 	@IsNotEmpty()
 	@IsString()
 	name: string;
-
-	@IsString()
-	@IsNotEmpty()
-	level: string;
 }

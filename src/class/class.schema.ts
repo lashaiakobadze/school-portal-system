@@ -15,14 +15,11 @@ export class Class {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true})
 	creatorId: string;
 
-	@Prop()
+	@Prop({ required: true})
 	class: number;
-
-	@Prop()
-	currentStageId: string;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: AcademicYear.name })
 	@Type(() => AcademicYear)

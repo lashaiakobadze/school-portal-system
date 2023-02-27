@@ -15,14 +15,11 @@ export class Stage {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true })
 	stage: number;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
-
-	@Prop()
-	currentWeek: number;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Class.name })
 	@Type(() => Class)

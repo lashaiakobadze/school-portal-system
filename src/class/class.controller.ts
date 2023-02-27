@@ -30,7 +30,6 @@ export class ClassController {
 	create(@Body() inputs: ClassDto, @GetUser() user: User): Promise<Class> {
 		return this.classService.create(inputs, user);
 	}
-
 	
 	@Get('get/:id')
 	get(@Param('id') id: string): Promise<Class> {

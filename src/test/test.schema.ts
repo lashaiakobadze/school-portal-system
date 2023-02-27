@@ -15,10 +15,10 @@ export class Test {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true })
 	orderId: number;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
 
 	@Prop({

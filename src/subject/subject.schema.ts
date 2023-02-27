@@ -15,14 +15,11 @@ export class Subject {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true })
 	name: string;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
-
-	@Prop()
-	level: string;
 
 	@Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: true }])
 	@Type(() => Class)

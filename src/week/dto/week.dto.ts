@@ -8,6 +8,7 @@ export class WeekDto {
 	creatorId: string;
 
 	@IsNotEmpty()
+	@IsNumber()
 	weekOrder: number;
 
 	@IsString()

@@ -20,25 +20,25 @@ export class User {
 	@Prop({ unique: true })
 	username: string;
 
-	@Prop()
+	@Prop({ required: true })
 	@Exclude()
 	password: string;
 
-	@Prop()
+	@Prop({ required: true })
 	@Exclude()
 	passwordConfirm: string;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
 
-	@Prop()
+	@Prop({ required: true })
 	roles?: Role[];
 
 	@Prop()
 	@Exclude()
 	public currentHashedRefreshToken?: string;
 
-	@Prop()
+	@Prop({ required: true })
 	status: UserStatus;
 }
 

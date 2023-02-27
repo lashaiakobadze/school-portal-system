@@ -16,10 +16,10 @@ export class TestScore {
 	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
-	@Prop()
+	@Prop({ required: true })
 	creatorId: string;
 
-	@Prop()
+	@Prop({ required: true })
 	score: number;
 
 	@Prop({
