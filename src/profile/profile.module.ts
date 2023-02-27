@@ -5,6 +5,7 @@ import { ProfileService } from './profile.service';
 import { ProfileController } from './profile.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Class, ClassSchema } from 'src/class/class.schema';
 
 @Module({
 	imports: [
@@ -20,6 +21,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 					return schema;
 				},
 			},
+		]),
+		MongooseModule.forFeature([
+			{ name: Class.name, schema: ClassSchema },
 		]),
 		AuthModule,
 	],

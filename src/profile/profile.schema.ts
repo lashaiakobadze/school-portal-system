@@ -50,9 +50,6 @@ export class Profile {
 	@Prop({ unique: true })
 	email: string;
 
-	@Prop()
-	profileImg: string;
-
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, unique: true })
 	@Type(() => User)
 	user: User;

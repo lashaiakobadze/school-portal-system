@@ -29,7 +29,6 @@ export class StageController {
 	create(@Body() inputs: StageDto, @Param('id') classId: string, @GetUser() user: User): Promise<Stage> {
 		return this.stageService.create(inputs, classId, user);
 	}
-
 	
 	@Get('get/:id')
 	get(@Param('id') id: string): Promise<Stage> {

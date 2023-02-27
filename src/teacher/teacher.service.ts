@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
+import { Class, ClassDocument } from 'src/class/class.schema';
 import { assignTeacherToClassDto } from './dto/assignTeacherToClass.dto';
 import { TeacherDto } from './dto/teacher.dto';
 import { TeacherRepository } from './teacher.repository';
@@ -7,7 +10,10 @@ import { Teacher } from './teacher.schema';
 
 @Injectable()
 export class TeacherService {
-	constructor(private teacherRepository: TeacherRepository) {}
+	constructor(
+		private teacherRepository: TeacherRepository,
+		@InjectModel(Class.name) private classModel: Model<ClassDocument>,
+	) {}
 
 	async create(
 		inputs: TeacherDto,
@@ -41,9 +47,20 @@ export class TeacherService {
 	}
 
 	async assignTeacherToClass(user: User, inputs: assignTeacherToClassDto) {
-		let teacher: Teacher = await this.get(inputs.teacherId);
-		teacher.classes.push(inputs.classId);
+		// Check if the parent object exists
+		const parentExists = await this.classModel.exists({ _id: inputs.classId });
 
-		return this.teacherRepository.onUpdate(teacher._id.toString(), teacher);
+		if (parentExists) {
+			// Create a new child object and set the foreign key to the parent object's id
+			let teacher: Teacher = await this.get(inputs.teacherId);
+			teacher.classes.push(inputs.classId);
+
+			return this.teacherRepository.onUpdate(teacher._id.toString(), teacher);
+		} else {
+			throw new HttpException(
+				`Class with id ${inputs.classId} not found`,
+				HttpStatus.NOT_FOUND,
+			);
+		}
 	}
 }

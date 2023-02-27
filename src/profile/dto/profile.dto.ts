@@ -5,10 +5,11 @@ import {
   IsString,
   Length
 } from 'class-validator';
+import { User } from 'src/auth/user.schema';
 
 export class ProfileDto {
   @IsOptional()
-  user?: string;
+  user?: User;
 
   @IsNotEmpty()
   @IsString()
@@ -30,7 +31,4 @@ export class ProfileDto {
 
   @IsNotEmpty()
   phoneNumber: string;
-
-  @IsOptional()
-  profileImg: string;
 }

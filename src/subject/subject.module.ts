@@ -9,13 +9,15 @@ import { SubjectSchema } from './subject.schema';
 import { SubjectService } from './subject.service';
 
 @Module({
-  imports: [
-		MongooseModule.forFeature([{ name: Subject.name, schema: SubjectSchema }]),
-    MongooseModule.forFeature([{ name: Class.name, schema: ClassSchema }]),
+	imports: [
+		MongooseModule.forFeature([
+			{ name: Subject.name, schema: SubjectSchema },
+			{ name: Class.name, schema: ClassSchema },
+		]),
 		AuthModule,
 	],
-  controllers: [SubjectController],
-  providers: [SubjectService, SubjectRepository],
-  exports: [SubjectService]
+	controllers: [SubjectController],
+	providers: [SubjectService, SubjectRepository],
+	exports: [SubjectService],
 })
 export class SubjectModule {}

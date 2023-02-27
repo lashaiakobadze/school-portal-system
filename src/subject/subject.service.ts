@@ -52,7 +52,7 @@ export class SubjectService {
 	
 			return this.subjectRepository.onUpdate(subject._id.toString(), subject);
 		} else {
-			throw new HttpException(`Class with id ${inputs.subjectId} not found`, HttpStatus.NOT_FOUND);
+			throw new HttpException(`Class with id ${inputs.classId} not found`, HttpStatus.NOT_FOUND);
 		}
 	}
 }

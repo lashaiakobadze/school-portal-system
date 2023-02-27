@@ -1,5 +1,7 @@
 import {
 	ForbiddenException,
+	HttpException,
+	HttpStatus,
 	Injectable,
 	UnauthorizedException,
 } from '@nestjs/common';
@@ -11,12 +13,16 @@ import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
 import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
 import { hasRole } from 'src/auth/decorators/has-role.decorator';
+import { Class, ClassDocument } from 'src/class/class.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ProfileService {
 	constructor(
 		private profileRepository: ProfileRepository,
 		private authService: AuthService,
+		@InjectModel(Class.name) private classModel: Model<ClassDocument>,
 	) {}
 
 	registrationProfile(profileInputs: ProfileDto, user: User): Promise<Profile> {
@@ -106,12 +112,20 @@ export class ProfileService {
 	}
 
 	async assignStudentToClass(user: User, inputs: assignStudentToClassDto) {
-		let profile: Profile = await this.get(inputs.studentId);
-		profile.class = inputs.classId;
+		// Check if the parent object exists
+		const parentExists = await this.classModel.exists({ _id: inputs.classId });
 
-		return this.profileRepository.update(
-			profile._id.toString(),
-			profile as any,
-		);
+		if (parentExists) {
+			// Create a new child object and set the foreign key to the parent object's id
+			let profile: Profile = await this.get(inputs.studentId);
+			profile.class = inputs.classId;
+
+			return this.profileRepository.update(profile._id.toString(), profile);
+		} else {
+			throw new HttpException(
+				`Class with id ${inputs.classId} not found`,
+				HttpStatus.NOT_FOUND,
+			);
+		}
 	}
 }
