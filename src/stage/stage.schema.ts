@@ -12,7 +12,7 @@ export type StageDocument = Stage & Document;
 	},
 })
 export class Stage {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop()

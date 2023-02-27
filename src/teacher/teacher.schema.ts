@@ -13,7 +13,7 @@ export type TeacherDocument = Teacher & Document;
 	},
 })
 export class Teacher {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop()

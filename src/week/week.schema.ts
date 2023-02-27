@@ -7,7 +7,7 @@ export type WeekDocument = Week & Document;
 
 @Schema()
 export class Week {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
     @Prop()

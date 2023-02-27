@@ -13,7 +13,7 @@ export type ProfileDocument = Profile & Document;
 	},
 })
 export class Profile {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop({

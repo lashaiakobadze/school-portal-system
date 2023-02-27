@@ -12,7 +12,7 @@ export type AcademicYearDocument = AcademicYear & Document;
 	},
 })
 export class AcademicYear {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop({ required: true })

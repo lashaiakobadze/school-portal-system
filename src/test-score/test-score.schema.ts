@@ -13,7 +13,7 @@ export type TestScoreDocument = TestScore & Document;
 	},
 })
 export class TestScore {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop()

@@ -12,7 +12,7 @@ export type TestDocument = Test & Document;
 	},
 })
 export class Test {
-	@Transform(value => value.obj._id.toString())
+	@Transform(({ value }) => value.toString())
 	_id: ObjectId;
 
 	@Prop()
