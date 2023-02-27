@@ -26,10 +26,14 @@ export class StageController {
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(RolesGuard)
 	@Post('create/:id')
-	create(@Body() inputs: StageDto, @Param('id') classId: string, @GetUser() user: User): Promise<Stage> {
+	create(
+		@Body() inputs: StageDto,
+		@Param('id') classId: string,
+		@GetUser() user: User,
+	): Promise<Stage> {
 		return this.stageService.create(inputs, classId, user);
 	}
-	
+
 	@Get('get/:id')
 	get(@Param('id') id: string): Promise<Stage> {
 		return this.stageService.get(id);

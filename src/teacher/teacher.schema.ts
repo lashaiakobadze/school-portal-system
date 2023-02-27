@@ -29,6 +29,7 @@ export class Teacher {
 	@Type(() => User)
 	user: User;
 
+	// ToDo: fix do not repeat same id.
 	@Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Class.name }])
 	@Type(() => Class)
 	classes: Class[];

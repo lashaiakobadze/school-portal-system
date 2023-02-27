@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
-import { Class } from 'src/class/class.schema';
 import { Subject, SubjectDocument } from 'src/subject/subject.schema';
 import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
 import { TestDto } from './dto/test.dto';
@@ -11,7 +10,10 @@ import { Test } from './test.schema';
 
 @Injectable()
 export class TestService {
-	constructor(private testRepository: TestRepository, @InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,) {}
+	constructor(
+		private testRepository: TestRepository,
+		@InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
+	) {}
 
 	async create(inputs: TestDto, user: User): Promise<Test> {
 		const dto: TestDto = {
@@ -41,7 +43,9 @@ export class TestService {
 
 	async assignToSubject(user: User, inputs: assignTestToSubjectDto) {
 		// Check if the parent object exists
-		const parentExists = await this.subjectModel.exists({ _id: inputs.subjectId });
+		const parentExists = await this.subjectModel.exists({
+			_id: inputs.subjectId,
+		});
 
 		if (parentExists) {
 			// Create a new child object and set the foreign key to the parent object's id

@@ -25,6 +25,7 @@ export class Subject {
 	@Prop({ required: true})
 	status: Status;
 
+	// ToDo: fix do not repeat same id.
 	@Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Class.name, unique: true }])
 	@Type(() => Class)
 	classes: Class[];
