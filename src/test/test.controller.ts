@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Put,
 	UseGuards,
@@ -18,6 +19,7 @@ import { TestDto } from './dto/test.dto';
 import { Test } from './test.schema';
 import { TestService } from './test.service';
 import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
+import { ChangeStatusDto } from 'src/utils/change-status.dto';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Test))
 @Controller('test')
@@ -62,5 +64,15 @@ export class TestController {
 		@GetUser() user: User,
 	): Promise<Test> {
 		return this.testService.assignToSubject(user, inputs);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN, Role.TEACHER)
+	@UseGuards(RolesGuard)
+	@Patch('change-status')
+	changeUserStatus(
+		@Body() changeStatusDto: ChangeStatusDto,
+		@GetUser() user: User,
+	): Promise<Test> {
+		return this.testService.changeStatus(changeStatusDto, user);
 	}
 }

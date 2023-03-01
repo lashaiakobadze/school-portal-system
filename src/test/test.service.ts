@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
 import { Subject, SubjectDocument } from 'src/subject/subject.schema';
+import { ChangeStatusDto } from 'src/utils/change-status.dto';
 import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
 import { TestDto } from './dto/test.dto';
 import { TestRepository } from './test.repository';
@@ -59,5 +60,18 @@ export class TestService {
 				HttpStatus.NOT_FOUND,
 			);
 		}
+	}
+
+	async changeStatus(
+		changeStatusDto: ChangeStatusDto,
+		user: User,
+	): Promise<Test> {
+		const changeObj: Test = await this.testRepository.getById(
+			changeStatusDto.id,
+		);
+
+		changeObj.status = changeStatusDto.status;
+
+		return this.testRepository.onUpdate(changeObj._id.toString(), changeObj);
 	}
 }
