@@ -3,7 +3,6 @@ import {
 	HttpException,
 	HttpStatus,
 	Injectable,
-	InternalServerErrorException,
 } from '@nestjs/common';
 
 import { User } from 'src/auth/user.schema';
@@ -24,13 +23,12 @@ export class ClassRepository {
 			const newCreated = await new this.classModel(dto).save();
 
 			return newCreated;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Class already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -46,7 +44,7 @@ export class ClassRepository {
 				throw new ConflictException('Class already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -63,10 +61,9 @@ export class ClassRepository {
 				'class with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -96,10 +93,9 @@ export class ClassRepository {
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 }

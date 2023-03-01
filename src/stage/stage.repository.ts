@@ -3,7 +3,6 @@ import {
 	HttpException,
 	HttpStatus,
 	Injectable,
-	InternalServerErrorException,
 } from '@nestjs/common';
 
 import { Stage, StageDocument } from './stage.schema';
@@ -24,13 +23,12 @@ export class StageRepository {
 			const newCreated = await new this.stageModel(dto).save();
 
 			return newCreated;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Stage already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -46,7 +44,7 @@ export class StageRepository {
 				throw new ConflictException('Stage already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -63,10 +61,9 @@ export class StageRepository {
 				'Stage with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -78,10 +75,9 @@ export class StageRepository {
 				throw new HttpException('Stages does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 }

@@ -3,7 +3,6 @@ import {
 	HttpException,
 	HttpStatus,
 	Injectable,
-	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
 
@@ -37,8 +36,7 @@ export class ProfileRepository {
 
 			return newProfile;
 		} catch (error) {
-			console.log(error);
-			// ToDo: improve Error handling
+			console.log(error);			
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Profile already exists');
 			} else {
@@ -99,8 +97,7 @@ export class ProfileRepository {
 				'Profile with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
@@ -134,8 +131,7 @@ export class ProfileRepository {
 				'Profile with this user id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
@@ -174,8 +170,7 @@ export class ProfileRepository {
 			}
 
 			throw new HttpException('Profiles does not exist', HttpStatus.NOT_FOUND);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}

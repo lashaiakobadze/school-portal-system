@@ -1,7 +1,7 @@
 import {
 	ConflictException,
+	HttpException,
 	Injectable,
-	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common';
 
@@ -35,12 +35,11 @@ export class UserRepository {
 
 			return createdUser;
 		} catch (error) {
-			// ToDo: improve Error handling
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Username already exists');
 			} else {
 				console.log('error', error);
-				throw new InternalServerErrorException();
+				throw new HttpException(error?.response, error?.status);
 			}
 		}
 	}
@@ -51,7 +50,7 @@ export class UserRepository {
 			return user;
 		} catch (error) {
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -70,7 +69,7 @@ export class UserRepository {
 			return user;
 		} catch (error) {
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -81,10 +80,9 @@ export class UserRepository {
 			if (user) {
 				return user;
 			}
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
 
@@ -95,11 +93,9 @@ export class UserRepository {
 			if (user) {
 				return user;
 			}
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
-			throw new InternalServerErrorException();
+			throw new HttpException(error?.response, error?.status);
 		}
 	}
-
 }

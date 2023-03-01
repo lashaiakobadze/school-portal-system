@@ -20,8 +20,7 @@ export class TestRepository {
 			const newCreated = await new this.testModel(dto).save();
 
 			return newCreated;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Test already exists');
 			} else {
@@ -59,8 +58,7 @@ export class TestRepository {
 				'Test with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
@@ -74,8 +72,7 @@ export class TestRepository {
 				throw new HttpException('Tests does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}

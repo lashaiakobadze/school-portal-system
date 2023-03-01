@@ -17,8 +17,7 @@ export class SubjectRepository {
 			const newCreated = await new this.subjectModel(dto).save();
 
 			return newCreated;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Subject already exists');
 			} else {
@@ -56,8 +55,7 @@ export class SubjectRepository {
 				'Subject with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
@@ -76,8 +74,7 @@ export class SubjectRepository {
 				throw new HttpException('Subjects does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
-		} catch (error) {
-			// ToDo: improve Error handling
+		} catch (error) {			
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
