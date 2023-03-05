@@ -23,7 +23,7 @@ export class ClassRepository {
 			const newCreated = await new this.classModel(dto).save();
 
 			return newCreated;
-		} catch (error) {			
+		} catch (error) {
 			if (error.code === MongoError.DuplicateKey) {
 				throw new ConflictException('Class already exists');
 			} else {
@@ -61,7 +61,7 @@ export class ClassRepository {
 				'class with this id does not exist',
 				HttpStatus.NOT_FOUND,
 			);
-		} catch (error) {			
+		} catch (error) {
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}
@@ -75,6 +75,12 @@ export class ClassRepository {
 					path: 'stages',
 					populate: {
 						path: 'weeks',
+						populate: {
+							path: 'test',
+							populate: {
+								path: 'scores',
+							},
+						},
 					},
 				})
 				.populate({
@@ -93,7 +99,7 @@ export class ClassRepository {
 				throw new HttpException('Classes does not exist', HttpStatus.NOT_FOUND);
 
 			return objects;
-		} catch (error) {			
+		} catch (error) {
 			console.log('error', error);
 			throw new HttpException(error?.response, error?.status);
 		}

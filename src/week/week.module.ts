@@ -6,11 +6,13 @@ import { WeekRepository } from './week.repository';
 import { WeekService } from './week.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Stage, StageSchema } from 'src/stage/stage.schema';
+import { Test, TestSchema } from 'src/test/test.schema';
 @Module({
 	imports: [
 		MongooseModule.forFeature([
 			{ name: Week.name, schema: WeekSchema },
 			{ name: Stage.name, schema: StageSchema },
+			{ name: Test.name, schema: TestSchema },
 		]),
 		AuthModule,
 	],

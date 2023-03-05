@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Test } from '@nestjs/testing';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Stage } from 'src/stage/stage.schema';
@@ -17,12 +18,16 @@ export class Week {
 	@Prop({ required: true })
 	weekOrder: number;
 
-	@Prop({ required: true})
+	@Prop({ required: true })
 	status: Status;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Stage.name })
 	@Type(() => Stage)
 	stage: Stage;
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Test.name })
+	@Type(() => Test)
+	test: Test;
 }
 
 export const WeekSchema = SchemaFactory.createForClass(Week);

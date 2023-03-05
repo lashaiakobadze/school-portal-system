@@ -1,4 +1,11 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+} from 'class-validator';
+import { Stage } from 'src/stage/stage.schema';
 import { Status } from 'src/utils/status.enum';
 
 export class WeekDto {
@@ -18,5 +25,5 @@ export class WeekDto {
 
 	@IsString()
 	@IsOptional()
-	stage: string;
+	stage: Stage;
 }

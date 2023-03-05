@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from 'src/auth/user.schema';
 import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { assignTestAtWeekDto } from './dto/assignTestAtWeek.dto';
 import { WeekDto } from './dto/week.dto';
 import { Week } from './week.schema';
 import { WeekService } from './week.service';
@@ -12,12 +22,16 @@ import { WeekService } from './week.service';
 @Controller('week')
 @UseInterceptors(MongooseClassSerializerInterceptor(Week))
 export class WeekController {
-    constructor(private weekService: WeekService) {}
+	constructor(private weekService: WeekService) {}
 
-    @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(RolesGuard)
 	@Post('create/:id')
-	create(@Body() inputs: WeekDto,  @Param('id') stageId: string, @GetUser() user: User): Promise<Week> {
+	create(
+		@Body() inputs: WeekDto,
+		@Param('id') stageId: string,
+		@GetUser() user: User,
+	): Promise<Week> {
 		return this.weekService.create(inputs, stageId, user);
 	}
 
@@ -42,5 +56,15 @@ export class WeekController {
 		@GetUser() user: User,
 	): Promise<Week> {
 		return this.weekService.update(user, inputs, id);
+	}
+
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@UseGuards(RolesGuard)
+	@Put('assign-test')
+	assignTest(
+		@Body() inputs: assignTestAtWeekDto,
+		@GetUser() user: User,
+	): Promise<Week> {
+		return this.weekService.assignTest(user, inputs);
 	}
 }
