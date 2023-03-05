@@ -5,8 +5,8 @@ import {
 	IsOptional,
 	IsString,
 } from 'class-validator';
+import { Status } from 'src/shared/enums/status.enum';
 import { Stage } from 'src/stage/stage.schema';
-import { Status } from 'src/utils/status.enum';
 
 export class WeekDto {
 	@IsOptional()

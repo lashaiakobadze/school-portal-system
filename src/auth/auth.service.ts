@@ -18,9 +18,9 @@ import { TokenPayload } from './models/token-payload.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
 import { Role } from './models/role.enum';
-import { ChangeUserStatusDto } from './dto/change-status.dto';
+import { ChangeUserStatusDto } from './dto/change-user-status.dto';
 import { ObjectId } from 'mongoose';
-import { hasRole } from './decorators/has-role.decorator';
+import { hasRole } from '../shared/decorators/has-role.decorator';
 
 @Injectable()
 export class AuthService {

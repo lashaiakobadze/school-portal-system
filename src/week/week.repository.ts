@@ -8,9 +8,9 @@ import {
 import { Week, WeekDocument } from './week.schema';
 import { WeekDto } from './dto/week.dto';
 import { User } from 'src/auth/user.schema';
-import MongoError from 'src/utils/mongoError.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import MongoError from 'src/shared/enums/mongoError.enum';
 
 @Injectable()
 export class WeekRepository {

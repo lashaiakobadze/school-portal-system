@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Class } from 'src/class/class.schema';
-import { Status } from 'src/utils/status.enum';
+import { Status } from 'src/shared/enums/status.enum';
 
 export type StageDocument = Stage & Document;
 

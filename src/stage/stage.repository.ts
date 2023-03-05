@@ -8,7 +8,7 @@ import {
 import { Stage, StageDocument } from './stage.schema';
 import { StageDto } from './dto/stage.dto';
 import { User } from 'src/auth/user.schema';
-import MongoError from 'src/utils/mongoError.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 

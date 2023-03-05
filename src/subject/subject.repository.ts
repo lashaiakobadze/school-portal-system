@@ -2,7 +2,7 @@ import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestj
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
-import MongoError from 'src/utils/mongoError.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
 import { SubjectDto } from './dto/subject.dto';
 import { Subject, SubjectDocument } from './subject.schema';
 

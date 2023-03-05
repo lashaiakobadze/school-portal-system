@@ -12,12 +12,12 @@ import { User } from 'src/auth/user.schema';
 import { Role } from 'src/auth/models/role.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, ObjectId } from 'mongoose';
-import MongoError from 'src/utils/mongoError.enum';
 
 import { InjectConnection } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { transaction } from 'src/utils/transaction';
-import { hasRole } from 'src/auth/decorators/has-role.decorator';
+import { transaction } from 'src/shared/utils/transaction';
+import { hasRole } from 'src/shared/decorators/has-role.decorator';
+import MongoError from 'src/shared/enums/mongoError.enum';
 
 @Injectable()
 export class ProfileRepository {

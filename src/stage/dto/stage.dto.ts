@@ -5,7 +5,7 @@ import {
 	IsOptional,
 	IsString
 } from 'class-validator';
-import { Status } from 'src/utils/status.enum';
+import { Status } from 'src/shared/enums/status.enum';
 
 export class StageDto {
 	@IsOptional()

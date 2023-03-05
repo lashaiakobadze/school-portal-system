@@ -11,7 +11,7 @@ import { WeekModule } from './week/week.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { SubjectModule } from './subject/subject.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AtGuard } from './utils/auth.guard';
+import { AtGuard } from './shared/guards/auth.guard';
 import { TestModule } from './test/test.module';
 import { TestScoreModule } from './test-score/test-score.module';
 import { AcademicYearModule } from './academic-year/academic-year.module';

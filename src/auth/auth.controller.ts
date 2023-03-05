@@ -15,10 +15,10 @@ import { AuthService } from './auth.service';
 
 import { User } from './user.schema';
 
-import { HasRoles } from './decorators/roles.decorator';
-import { GetUser } from './decorators/get-user.decorator';
+import { HasRoles } from '../shared/decorators/roles.decorator';
+import { GetUser } from '../shared/decorators/get-user.decorator';
 
-import { RolesGuard } from './roles.guard';
+import { RolesGuard } from '../shared/guards/roles.guard';
 import JwtRefreshGuard from './jwt/jwt-refresh.guard';
 
 import RequestWithUser from './models/requestsWithUser';
@@ -26,11 +26,11 @@ import { SignupInputs } from './models/signup.inputs';
 import { Role } from './models/role.enum';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ResetPasswordInputs } from './models/reset-password.inputs';
-import { ChangeUserStatusDto } from './dto/change-status.dto';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import { ChangeUserStatusDto } from './dto/change-user-status.dto';
+import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongooseClassSerializer.interceptor';
 import { LogInWithCredentialsGuard } from './jwt/logIn-with-credentials.guard';
-import { Public } from 'src/utils/public.decorator';
-import { hasRole } from './decorators/has-role.decorator';
+import { Public } from 'src/shared/decorators/public.decorator';
+import { hasRole } from '../shared/decorators/has-role.decorator';
 
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))

@@ -9,17 +9,17 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { HasRoles } from 'src/auth/decorators/roles.decorator';
+import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongooseClassSerializer.interceptor';
+import { GetUser } from 'src/shared/decorators/get-user.decorator';
+import { HasRoles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { User } from 'src/auth/user.schema';
 import { TestDto } from './dto/test.dto';
 import { Test } from './test.schema';
 import { TestService } from './test.service';
 import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
-import { ChangeStatusDto } from 'src/utils/change-status.dto';
+import { ChangeStatusDto } from 'src/shared/DTOs/change-status.dto';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Test))
 @Controller('test')

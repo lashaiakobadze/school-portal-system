@@ -12,7 +12,7 @@ import { Profile } from './profile.schema';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/models/role.enum';
 import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
-import { hasRole } from 'src/auth/decorators/has-role.decorator';
+import { hasRole } from 'src/shared/decorators/has-role.decorator';
 import { Class, ClassDocument } from 'src/class/class.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

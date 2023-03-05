@@ -13,8 +13,8 @@ import { SignupDto } from './dto/signup.dto';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { Model, ObjectId } from 'mongoose';
-import MongoError from 'src/utils/mongoError.enum';
-import { ChangeUserStatusDto } from './dto/change-status.dto';
+import MongoError from 'src/shared/enums/mongoError.enum';
+import { ChangeUserStatusDto } from './dto/change-user-status.dto';
 
 @Injectable()
 export class UserRepository {

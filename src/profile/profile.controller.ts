@@ -9,18 +9,17 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { HasRoles } from 'src/auth/decorators/roles.decorator';
+import { GetUser } from 'src/shared/decorators/get-user.decorator';
+import { HasRoles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { User } from 'src/auth/user.schema';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
-import { PaginationParams } from 'src/utils/paginationParams';
-import ParamsWithId from 'src/utils/paramsWithId';
+import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongooseClassSerializer.interceptor';
 import { assignStudentToClassDto } from './dto/assignStudentToClass.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { Profile } from './profile.schema';
 import { ProfileService } from './profile.service';
+import { PaginationParams } from 'src/shared/DTOs/paginationParams';
 
 @Controller('profile')
 @UseInterceptors(MongooseClassSerializerInterceptor(Profile))

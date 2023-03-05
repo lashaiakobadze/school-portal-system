@@ -8,12 +8,12 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { HasRoles } from 'src/auth/decorators/roles.decorator';
+import { GetUser } from 'src/shared/decorators/get-user.decorator';
+import { HasRoles } from 'src/shared/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { User } from 'src/auth/user.schema';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongooseClassSerializer.interceptor';
 import { assignTeacherToClassDto } from './dto/assignTeacherToClass.dto';
 import { TeacherDto } from './dto/teacher.dto';
 import { Teacher } from './teacher.schema';

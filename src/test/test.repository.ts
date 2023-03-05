@@ -7,8 +7,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { User } from 'src/auth/user.schema';
-import MongoError from 'src/utils/mongoError.enum';
-import { Status } from 'src/utils/status.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
+import { Status } from 'src/shared/enums/status.enum';
 import { TestDto } from './dto/test.dto';
 import { Test, TestDocument } from './test.schema';
 

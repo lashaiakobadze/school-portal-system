@@ -5,7 +5,7 @@ import { UserRepository } from './user.repository';
 import { User, UserSchema } from './user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
-import { RolesGuard } from './roles.guard';
+import { RolesGuard } from '../shared/guards/roles.guard';
 import { LocalStrategy } from './jwt/local.strategy';
 import { JwtRefreshTokenStrategy } from './jwt/jwt-refresh.strategy';
 import { JwtService } from '@nestjs/jwt';

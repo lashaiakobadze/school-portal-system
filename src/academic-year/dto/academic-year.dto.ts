@@ -5,7 +5,7 @@ import {
 	IsNumber,
 	IsOptional,
 } from 'class-validator';
-import { Status } from 'src/utils/status.enum';
+import { Status } from 'src/shared/enums/status.enum';
 
 export class AcademicYearDto {
 	@IsMongoId()

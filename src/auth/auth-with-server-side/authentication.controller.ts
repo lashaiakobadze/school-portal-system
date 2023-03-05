@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import RequestWithUser from '../models/requestsWithUser';
 import { LogInWithCredentialsGuard } from '../jwt/logIn-with-credentials.guard';
-import MongooseClassSerializerInterceptor from 'src/utils/mongooseClassSerializer.interceptor';
+import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongooseClassSerializer.interceptor';
 import { User } from '../user.schema';
-import { Public } from 'src/utils/public.decorator';
+import { Public } from 'src/shared/decorators/public.decorator';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 

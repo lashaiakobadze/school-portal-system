@@ -1,11 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from './models/role.enum';
+import { Role } from '../../auth/models/role.enum';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-import { UserRepository } from './user.repository';
-import { User } from './user.schema';
-import { AuthConfig } from 'src/utils/auth-config.enum';
+import { UserRepository } from '../../auth/user.repository';
+import { User } from '../../auth/user.schema';
+import { AuthConfig } from 'src/shared/enums/auth-config.enum';
 
 const ROLES_KEY = 'roles';
 @Injectable()

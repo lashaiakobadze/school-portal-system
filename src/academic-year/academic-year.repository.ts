@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { User } from 'src/auth/user.schema';
-import MongoError from 'src/utils/mongoError.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AcademicYearDto } from './dto/academic-year.dto';

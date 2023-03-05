@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import MongoError from 'src/utils/mongoError.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
 import { TeacherDto } from './dto/teacher.dto';
 import { Teacher, TeacherDocument } from './teacher.schema';
 

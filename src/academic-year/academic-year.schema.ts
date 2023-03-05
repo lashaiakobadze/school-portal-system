@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { ObjectId } from 'mongoose';
-import { Status } from 'src/utils/status.enum';
+import { Status } from 'src/shared/enums/status.enum';
 
 export type AcademicYearDocument = AcademicYear & Document;
 

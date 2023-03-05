@@ -7,7 +7,7 @@ import {
 
 import { User } from 'src/auth/user.schema';
 import { ClassDto } from './dto/class.dto';
-import MongoError from 'src/utils/mongoError.enum';
+import MongoError from 'src/shared/enums/mongoError.enum';
 import { Class, ClassDocument } from './class.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
