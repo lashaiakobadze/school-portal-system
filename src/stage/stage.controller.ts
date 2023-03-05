@@ -17,6 +17,7 @@ import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongoose
 import { StageDto } from './dto/stage.dto';
 import { Stage } from './stage.schema';
 import { StageService } from './stage.service';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @Controller('stage')
 @UseInterceptors(MongooseClassSerializerInterceptor(Stage))
@@ -35,7 +36,7 @@ export class StageController {
 	}
 
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Stage> {
+	get(@Param() { id }: ParamsWithId): Promise<Stage> {
 		return this.stageService.get(id);
 	}
 
@@ -50,7 +51,7 @@ export class StageController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: StageDto,
 		@GetUser() user: User,
 	): Promise<Stage> {

@@ -9,6 +9,7 @@ import { assignSubjectToClassDto } from './dto/assignSubjectToClass.dto';
 import { SubjectDto } from './dto/subject.dto';
 import { Subject } from './subject.schema';
 import { SubjectService } from './subject.service';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Subject))
 @Controller('subject')
@@ -24,7 +25,7 @@ export class SubjectController {
 
 	
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Subject> {
+	get(@Param() { id }: ParamsWithId): Promise<Subject> {
 		return this.subjectService.get(id);
 	}
 
@@ -39,7 +40,7 @@ export class SubjectController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: SubjectDto,
 		@GetUser() user: User,
 	): Promise<Subject> {

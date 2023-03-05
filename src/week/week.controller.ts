@@ -18,6 +18,7 @@ import { assignTestAtWeekDto } from './dto/assignTestAtWeek.dto';
 import { WeekDto } from './dto/week.dto';
 import { Week } from './week.schema';
 import { WeekService } from './week.service';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @Controller('week')
 @UseInterceptors(MongooseClassSerializerInterceptor(Week))
@@ -36,7 +37,7 @@ export class WeekController {
 	}
 
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Week> {
+	get(@Param() { id }: ParamsWithId): Promise<Week> {
 		return this.weekService.get(id);
 	}
 
@@ -51,7 +52,7 @@ export class WeekController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: WeekDto,
 		@GetUser() user: User,
 	): Promise<Week> {

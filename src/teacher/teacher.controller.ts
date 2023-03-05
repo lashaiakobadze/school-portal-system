@@ -18,6 +18,7 @@ import { assignTeacherToClassDto } from './dto/assignTeacherToClass.dto';
 import { TeacherDto } from './dto/teacher.dto';
 import { Teacher } from './teacher.schema';
 import { TeacherService } from './teacher.service';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Teacher))
 @Controller('teacher')
@@ -32,7 +33,7 @@ export class TeacherController {
 	}
 	
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Teacher> {
+	get(@Param() { id }: ParamsWithId): Promise<Teacher> {
 		return this.teacherService.get(id);
 	}
 
@@ -47,7 +48,7 @@ export class TeacherController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: TeacherDto,
 		@GetUser() user: User,
 	): Promise<Teacher> {

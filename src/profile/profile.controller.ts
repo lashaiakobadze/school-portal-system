@@ -20,6 +20,7 @@ import { ProfileDto } from './dto/profile.dto';
 import { Profile } from './profile.schema';
 import { ProfileService } from './profile.service';
 import { PaginationParams } from 'src/shared/DTOs/paginationParams';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @Controller('profile')
 @UseInterceptors(MongooseClassSerializerInterceptor(Profile))
@@ -35,7 +36,9 @@ export class ProfileController {
 	}
 
 	@Get('get-profile/:id')
-	getProfile(@Param('id') id: string): Promise<Profile> {
+	getProfile(
+		@Param() { id }: ParamsWithId,
+	): Promise<Profile> {
 		return this.profileService.get(id);
 	}
 	
@@ -64,15 +67,14 @@ export class ProfileController {
 	@UseGuards(RolesGuard)
 	@Put('update-profile/:id')
 	updateProfile(
-		@Param('id') profileId: string,
-		// @Param() { id }: ParamsWithId,
+		@Param() { id }: ParamsWithId,
 		@Body() profileInputs: ProfileDto,
 		@GetUser() user: User,
 	): Promise<Profile> | any {
 		return this.profileService.updateProfile(
 			user,
 			profileInputs,
-			profileId,
+			id,
 		);
 	}
 

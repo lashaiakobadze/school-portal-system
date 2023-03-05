@@ -18,21 +18,22 @@ import { Class } from './class.schema';
 import { ClassService } from './class.service';
 import { assignClassToAcademicYearDto } from './dto/assignClassToAcademicYear.dto';
 import { ClassDto } from './dto/class.dto';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @Controller('class')
 @UseInterceptors(MongooseClassSerializerInterceptor(Class))
 export class ClassController {
 	constructor(private classService: ClassService) {}
 
-    @HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
+	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(RolesGuard)
 	@Post('create')
 	create(@Body() inputs: ClassDto, @GetUser() user: User): Promise<Class> {
 		return this.classService.create(inputs, user);
 	}
-	
+
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Class> {
+	get(@Param() { id }: ParamsWithId): Promise<Class> {
 		return this.classService.get(id);
 	}
 
@@ -47,12 +48,12 @@ export class ClassController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: ClassDto,
 		@GetUser() user: User,
 	): Promise<Class> {
 		return this.classService.update(user, inputs, id);
-	}	
+	}
 
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(RolesGuard)

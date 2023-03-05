@@ -15,6 +15,7 @@ import { User } from 'src/auth/user.schema';
 import { AcademicYear } from './academic-year.schema';
 import { AcademicYearService } from './academic-year.service';
 import { AcademicYearDto } from './dto/academic-year.dto';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @Controller('academic-year')
 export class AcademicYearController {
@@ -31,7 +32,7 @@ export class AcademicYearController {
 	}
 
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<AcademicYear> {
+	get(@Param() { id }: ParamsWithId): Promise<AcademicYear> {
 		return this.academicYearService.get(id);
 	}
 
@@ -46,7 +47,7 @@ export class AcademicYearController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: AcademicYearDto,
 		@GetUser() user: User,
 	): Promise<AcademicYear> {

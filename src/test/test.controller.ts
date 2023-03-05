@@ -20,6 +20,7 @@ import { Test } from './test.schema';
 import { TestService } from './test.service';
 import { assignTestToSubjectDto } from './dto/assignTestToSubject.dto';
 import { ChangeStatusDto } from 'src/shared/DTOs/change-status.dto';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(Test))
 @Controller('test')
@@ -34,7 +35,7 @@ export class TestController {
 	}
 
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<Test> {
+	get(@Param() { id }: ParamsWithId): Promise<Test> {
 		return this.testService.get(id);
 	}
 
@@ -49,7 +50,7 @@ export class TestController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: TestDto,
 		@GetUser() user: User,
 	): Promise<Test> {

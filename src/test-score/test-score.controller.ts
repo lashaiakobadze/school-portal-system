@@ -17,6 +17,7 @@ import MongooseClassSerializerInterceptor from 'src/shared/interceptors/mongoose
 import { TestScoreDto } from './dto/test-score.dto';
 import { TestScore } from './test-score.schema';
 import { TestScoreService } from './test-score.service';
+import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 
 @UseInterceptors(MongooseClassSerializerInterceptor(TestScore))
 @Controller('test-score')
@@ -34,7 +35,7 @@ export class TestScoreController {
 	}
 
 	@Get('get/:id')
-	get(@Param('id') id: string): Promise<TestScore> {
+	get(@Param() { id }: ParamsWithId): Promise<TestScore> {
 		return this.testScoreService.get(id);
 	}
 
@@ -49,7 +50,7 @@ export class TestScoreController {
 	@UseGuards(RolesGuard)
 	@Put('update/:id')
 	update(
-		@Param('id') id: string,
+		@Param() { id }: ParamsWithId,
 		@Body() inputs: TestScoreDto,
 		@GetUser() user: User,
 	): Promise<TestScore> {
