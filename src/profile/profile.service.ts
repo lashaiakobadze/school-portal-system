@@ -16,6 +16,7 @@ import { hasRole } from 'src/shared/decorators/has-role.decorator';
 import { Class, ClassDocument } from 'src/class/class.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PublicFileService } from 'src/public-file/public-file.service';
 
 @Injectable()
 export class ProfileService {
@@ -23,6 +24,7 @@ export class ProfileService {
 		private profileRepository: ProfileRepository,
 		private authService: AuthService,
 		@InjectModel(Class.name) private classModel: Model<ClassDocument>,
+		private readonly filesService: PublicFileService,
 	) {}
 
 	registrationProfile(profileInputs: ProfileDto, user: User): Promise<Profile> {
@@ -126,6 +128,32 @@ export class ProfileService {
 				`Class with id ${inputs.classId} not found`,
 				HttpStatus.NOT_FOUND,
 			);
+		}
+	}
+
+	async addAvatar(user: User, imageBuffer: Buffer, filename: string) {
+		let profile: Profile = await this.getProfile(user);
+
+		const avatar = await this.filesService.uploadPublicFile(
+			imageBuffer,
+			filename,
+			profile._id.toString(),
+		);
+
+		profile.avatar = avatar;
+
+		return await this.profileRepository.update(profile._id.toString(), profile);
+	}
+
+	async deleteAvatar(user: User) {
+		let profile: Profile = await this.getProfile(user);
+		const fileId = profile.avatar?._id;
+
+		if (fileId) {
+			profile.avatar = null;
+			await this.profileRepository.update(profile._id.toString(), profile);
+
+			await this.filesService.deletePublicFile(fileId.toString());
 		}
 	}
 }

@@ -6,6 +6,7 @@ import { ProfileController } from './profile.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Class, ClassSchema } from 'src/class/class.schema';
+import { PublicFileModule } from 'src/public-file/public-file.module';
 
 @Module({
 	imports: [
@@ -26,6 +27,7 @@ import { Class, ClassSchema } from 'src/class/class.schema';
 			{ name: Class.name, schema: ClassSchema },
 		]),
 		AuthModule,
+		PublicFileModule
 	],
 	providers: [ProfileRepository, ProfileService],
 	controllers: [ProfileController],

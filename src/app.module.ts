@@ -15,6 +15,7 @@ import { AtGuard } from './shared/guards/auth.guard';
 import { TestModule } from './test/test.module';
 import { TestScoreModule } from './test-score/test-score.module';
 import { AcademicYearModule } from './academic-year/academic-year.module';
+import { PublicFileModule } from './public-file/public-file.module';
 
 @Module({
 	imports: [
@@ -46,6 +47,7 @@ import { AcademicYearModule } from './academic-year/academic-year.module';
 		TestModule,
 		TestScoreModule,
 		AcademicYearModule,
+		PublicFileModule,
 	],
 	controllers: [],
 	providers: [

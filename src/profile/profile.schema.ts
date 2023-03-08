@@ -3,6 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { User } from 'src/auth/user.schema';
 import { Class } from 'src/class/class.schema';
+import { PublicFile } from 'src/public-file/public-file.schema';
 
 export type ProfileDocument = Profile & Document;
 
@@ -62,6 +63,14 @@ export class Profile {
 	})
 	@Type(() => Class)
 	class?: Class;
+
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		ref: PublicFile.name,
+		unique: false,
+	})
+	@Type(() => PublicFile)
+	public avatar?: PublicFile;
 }
 
 const ProfileSchema = SchemaFactory.createForClass(Profile);

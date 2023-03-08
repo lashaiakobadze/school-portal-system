@@ -7,6 +7,7 @@ import * as passport from 'passport';
 import { ConfigService } from '@nestjs/config';
 import { createClient } from 'redis';
 import * as createRedisStore from 'connect-redis';
+import { config } from 'aws-sdk';
 
 async function bootstrap() {
 	const logger = new Logger();
@@ -45,6 +46,12 @@ async function bootstrap() {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	config.update({
+	  accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+	  secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+	  region: configService.get('AWS_REGION'),
+	});
 
 	const port = 3000;
 	await app.listen(port);
