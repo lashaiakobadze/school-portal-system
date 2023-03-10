@@ -6,6 +6,7 @@ import {
 	Post,
 	Put,
 	Query,
+	UploadedFile,
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
@@ -21,6 +22,9 @@ import { Profile } from './profile.schema';
 import { ProfileService } from './profile.service';
 import { PaginationParams } from 'src/shared/DTOs/paginationParams';
 import ParamsWithId from 'src/shared/DTOs/paramsWithId';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { Multer } from 'multer';
 
 @Controller('profile')
 @UseInterceptors(MongooseClassSerializerInterceptor(Profile))
@@ -96,5 +100,11 @@ export class ProfileController {
 		@GetUser() user: User,
 	): Promise<Profile> {
 		return this.profileService.assignStudentToClass(user, inputs);
+	}
+
+	@Post('avatar')
+	@UseInterceptors(FileInterceptor('file'))
+	async addAvatar(@GetUser() user: User, @UploadedFile() file: Multer.File) {
+	  return this.profileService.addAvatar(user, file.buffer, file.originalname);
 	}
 }
