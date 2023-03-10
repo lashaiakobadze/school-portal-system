@@ -134,6 +134,10 @@ export class ProfileService {
 	async addAvatar(user: User, imageBuffer: Buffer, filename: string) {
 		let profile: Profile = await this.getProfile(user);
 
+		if (profile?.avatar) {
+			await this.filesService.deletePublicFile(profile.avatar);
+		  }
+
 		const avatar = await this.filesService.uploadPublicFile(
 			imageBuffer,
 			filename,
@@ -143,17 +147,5 @@ export class ProfileService {
 		profile.avatar = avatar;
 
 		return await this.profileRepository.update(profile._id.toString(), profile);
-	}
-
-	async deleteAvatar(user: User) {
-		let profile: Profile = await this.getProfile(user);
-		const fileId = profile.avatar?._id;
-
-		if (fileId) {
-			profile.avatar = null;
-			await this.profileRepository.update(profile._id.toString(), profile);
-
-			await this.filesService.deletePublicFile(fileId.toString());
-		}
 	}
 }

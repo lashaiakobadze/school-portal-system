@@ -26,7 +26,7 @@ export class PublicFileService {
 				Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
 				Body: dataBuffer,
 				Key: `${uniqueId}-${filename}`,
-			})
+			}) 
 			.promise();
 
 		const newFile = await new this.publicFileModel({
@@ -37,8 +37,8 @@ export class PublicFileService {
 		return newFile;
 	}
 
-	async deletePublicFile(fileId: string) {
-		const file = await this.publicFileModel.findById({ id: fileId });
+	async deletePublicFile(avatar: PublicFile) {
+		const file = await this.publicFileModel.findOne({ id: avatar._id });
 		const s3 = new S3();
 		await s3
 			.deleteObject({
@@ -47,6 +47,6 @@ export class PublicFileService {
 			})
 			.promise();
 
-		await this.publicFileModel.deleteOne({ id: fileId });
+		await this.publicFileModel.deleteOne({ id: file._id });
 	}
 }
