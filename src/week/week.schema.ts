@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Test } from '@nestjs/testing';
 import { Transform, Type } from 'class-transformer';
 import mongoose, { ObjectId } from 'mongoose';
 import { Status } from 'src/shared/enums/status.enum';
 import { Stage } from 'src/stage/stage.schema';
+import { Test } from 'src/test/test.schema';
 
 export type WeekDocument = Week & Document;
 
