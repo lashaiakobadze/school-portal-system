@@ -53,7 +53,7 @@ async function bootstrap() {
 	  region: configService.get('AWS_REGION'),
 	});
 
-	const port = 3000;
+	const port = configService.get('SERVER_PORT');
 	await app.listen(port);
 	logger.log(`Application listening on port ${port}`);
 }

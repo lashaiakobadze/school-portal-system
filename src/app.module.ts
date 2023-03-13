@@ -32,8 +32,8 @@ import { PublicFileModule } from './public-file/public-file.module';
 				const port = configService.get('DB_PORT');
 
 				return {
-					// uri: `mongodb://${host}:${port}`,
-					uri: `mongodb://mongodb:${port}`,
+					uri: `mongodb://${host}:${port}`,
+					// uri: `mongodb://mongodb:${port}/${database}`,
 					dbName: database,
 				};
 			},
