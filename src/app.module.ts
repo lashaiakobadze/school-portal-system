@@ -36,6 +36,10 @@ import { PublicFileModule } from './public-file/public-file.module';
 					// uri: `mongodb://mongodb:${port}/${database}`,
 					dbName: database,
 				};
+				// return {
+				// 	uri: `mongodb+srv://main_adimn:main_adimn@schoolpoertalsystem.xorinw0.mongodb.net/test?authSource=SchoolPoertalSystem&authMechanism=SCRAM-SHA-1`,
+				// 	dbName: database,
+				// };
 			},
 		}),
 		AuthModule,
