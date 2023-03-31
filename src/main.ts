@@ -24,20 +24,34 @@ async function bootstrap() {
 	 * server-side-sessions with redis.
 	 */
 	const configService = app.get(ConfigService);
+	let client = null;
 
 	const RedisStore = createRedisStore(session);
-	const client = createClient({
-		legacyMode: true,
-		url: `redis://${configService.get('REDIS_HOST')}:${configService.get(
-			'REDIS_PORT',
-		)}`,
-	});
+	if (process.env.STAGE === 'dev') {
+		client = createClient({
+			legacyMode: true,
+			url: `redis://${configService.get('REDIS_HOST')}:${configService.get(
+				'REDIS_PORT',
+			)}`,
+		});
+	}
+
+	if (process.env.STAGE === 'prod') {
+		client = createClient({
+			legacyMode: true,
+			password: configService.get('REDIS_PASSWORD'),
+			socket: {
+				host: configService.get('REDIS_HOST'),
+				port: configService.get('REDIS_PORT'),
+			},
+		});
+	}
 
 	await client.connect();
 
 	app.use(
 		session({
-			store: new RedisStore({client} as any),
+			store: new RedisStore({ client } as any),
 			secret: configService.get('SESSION_SECRET'),
 			resave: false,
 			saveUninitialized: false,
@@ -48,9 +62,9 @@ async function bootstrap() {
 	app.use(passport.session());
 
 	config.update({
-	  accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-	  secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-	  region: configService.get('AWS_REGION'),
+		accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+		secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+		region: configService.get('AWS_REGION'),
 	});
 
 	const port = configService.get('SERVER_PORT');

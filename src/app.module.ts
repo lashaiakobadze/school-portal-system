@@ -20,26 +20,34 @@ import { PublicFileModule } from './public-file/public-file.module';
 @Module({
 	imports: [
 		ConfigModule.forRoot({
-			envFilePath: [`.env.stage.${process.env.STAGE}`],
+			envFilePath: [`.env.${process.env.STAGE}`],
 			validationSchema: configValidationSchema,
 		}),
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => {
-				const database = configService.get('DB_DATABASE');
 				const host = configService.get('DB_HOST');
 				const port = configService.get('DB_PORT');
+				const database = configService.get('DB_DATABASE');
+				const username = configService.get('DB_USERNAME');
+				const password = configService.get('DB_PASSWORD');
+				const url = configService.get('DB_URL');
+				const authSecure = configService.get('DB_AUTH_SOURCE');
+				const authMechanism = configService.get('DB_AUTH_MECHANISM');
 
-				return {
-					uri: `mongodb://${host}:${port}`,
-					// uri: `mongodb://mongodb:${port}/${database}`,
-					dbName: database,
-				};
-				// return {
-				// 	uri: `mongodb+srv://main_adimn:main_adimn@schoolpoertalsystem.xorinw0.mongodb.net/test?authSource=SchoolPoertalSystem&authMechanism=SCRAM-SHA-1`,
-				// 	dbName: database,
-				// };
+				if (process.env.STAGE === 'dev') {
+					return {
+						dbName: database,
+						uri: `mongodb://${host}:${port}`,
+					};
+				}
+				if (process.env.STAGE === 'prod') {
+					return {
+						dbName: database,
+						uri: `mongodb+srv://${username}:${password}@${url}?authSource=${authSecure}&authMechanism=${authMechanism}`,
+					};
+				}
 			},
 		}),
 		AuthModule,
