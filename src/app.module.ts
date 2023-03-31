@@ -36,6 +36,9 @@ import { PublicFileModule } from './public-file/public-file.module';
 				const authSecure = configService.get('DB_AUTH_SOURCE');
 				const authMechanism = configService.get('DB_AUTH_MECHANISM');
 
+
+
+				
 				if (process.env.STAGE === 'dev') {
 					return {
 						dbName: database,
