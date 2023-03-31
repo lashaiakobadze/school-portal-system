@@ -46,15 +46,16 @@ export class AuthenticationController {
 		return request.user;
 	}
 
-	@HttpCode(200)
-	@Post('log-out')
-	async logOut(@Req() request: RequestWithUser) {
-		request.logout(err => {
-			if (err) {
-				console.log('invalid logout', err);
-			}
-		});
+	// Todo: Fix this log-out
+	// @HttpCode(200)
+	// @Post('log-out')
+	// async logOut(@Req() request: RequestWithUser) {
+	// 	request.logout(err => {
+	// 		if (err) {
+	// 			console.log('invalid logout', err);
+	// 		}
+	// 	});
 
-		request.session.cookie.maxAge = 0;
-	}
+	// 	request.session.cookie.maxAge = 0;
+	// }
 }

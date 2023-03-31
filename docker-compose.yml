@@ -13,4 +13,30 @@ services:
       - '8081:8081'
     depends_on:
       - redis
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes: 
+      - data:/data/db
+
+  nestjs-api:
+    build:
+      context: .
+      target: install-dependencies
+    command: npm run start:dev
+    volumes:
+      - ./src:/user/src/app/src
+      - /home/node/app/node_modules
+    env_file:
+      - .env.stage.dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+
+volumes: 
+  data:
 # ...
+

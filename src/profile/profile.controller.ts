@@ -23,7 +23,6 @@ import { ProfileService } from './profile.service';
 import { PaginationParams } from 'src/shared/DTOs/paginationParams';
 import ParamsWithId from 'src/shared/DTOs/paramsWithId';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
 import { Multer } from 'multer';
 
 @Controller('profile')
