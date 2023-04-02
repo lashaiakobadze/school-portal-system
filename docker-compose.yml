@@ -30,7 +30,7 @@ services:
       - ./src:/user/src/app/src
       - /home/node/app/node_modules
     env_file:
-      - .env.stage.dev
+      - .env.dev
     ports:
       - "3000:3000"
     depends_on:
