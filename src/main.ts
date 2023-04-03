@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { createClient } from 'redis';
 import * as createRedisStore from 'connect-redis';
 import { config } from 'aws-sdk';
+import { runInCluster } from './runInCluster';
 
 async function bootstrap() {
 	const logger = new Logger();
@@ -47,7 +48,10 @@ async function bootstrap() {
 		});
 	}
 
-	await client.connect();
+	// await client.connect();
+	client.on('error', err => {
+		console.log('Error ' + err);
+	});
 
 	app.use(
 		session({
@@ -71,4 +75,4 @@ async function bootstrap() {
 	await app.listen(port);
 	logger.log(`Application listening on port ${port}`);
 }
-bootstrap();
+runInCluster(bootstrap);
