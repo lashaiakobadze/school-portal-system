@@ -29,4 +29,8 @@ export const configValidationSchema = Joi.object({
 	DB_DATABASE: Joi.string().required(),
 	DB_AUTH_SOURCE: Joi.string().required(),
 	DB_AUTH_MECHANISM: Joi.string().required(),
+
+	GRAYLOG_HOST: Joi.string().required(),
+	GRAYLOG_PORT: Joi.number().required(),
+	GRAYLOG_FACILITY: Joi.string().required(),
 });

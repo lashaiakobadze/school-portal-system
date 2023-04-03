@@ -21,6 +21,7 @@ import { Role } from './models/role.enum';
 import { ChangeUserStatusDto } from './dto/change-user-status.dto';
 import { ObjectId } from 'mongoose';
 import { hasRole } from '../shared/decorators/has-role.decorator';
+import { GraylogService } from 'nestjs-graylog';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
 		private usersRepository: UserRepository,
 		private jwtService: JwtService,
 		private readonly configService: ConfigService,
+		private graylogService: GraylogService
 	) {}
 
 	signUp(signupInputs: SignupInputs, user: User): Promise<User> {
@@ -53,6 +55,7 @@ export class AuthService {
 
 	async checkUser(authCredentialDto: AuthCredentialDto): Promise<User> {
 		const { username, password } = authCredentialDto;
+		await this.graylogService.debug('test message', { foo: 'bar' });
 
 		const user: User = await this.usersRepository.findByName(username);
 

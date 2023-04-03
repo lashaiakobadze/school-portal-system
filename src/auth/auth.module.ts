@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthenticationController } from './auth-with-server-side/authentication.controller';
 import { LocalSerializer } from './auth-with-server-side/local.serializer';
+import { GraylogProviderModule } from 'src/graylog/graylog.module';
 
 @Module({
 	imports: [
@@ -30,6 +31,7 @@ import { LocalSerializer } from './auth-with-server-side/local.serializer';
 				},
 			},
 		]),
+		GraylogProviderModule,
 	],
 	providers: [
 		AuthService,
