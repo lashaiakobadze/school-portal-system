@@ -1,5 +1,8 @@
 import {
 	Body,
+	CacheInterceptor,
+	CacheKey,
+	CacheTTL,
 	Controller,
 	Get,
 	Param,
@@ -19,6 +22,8 @@ import { ClassService } from './class.service';
 import { assignClassToAcademicYearDto } from './dto/assignClassToAcademicYear.dto';
 import { ClassDto } from './dto/class.dto';
 import ParamsWithId from 'src/shared/DTOs/paramsWithId';
+import { GET_CLASSES_CACHE_KEY } from './models/classCacheKey.constant';
+import { HttpCacheInterceptor } from 'src/shared/interceptors/httpCache.interceptor';
 
 @Controller('class')
 @UseInterceptors(MongooseClassSerializerInterceptor(Class))
@@ -37,8 +42,11 @@ export class ClassController {
 		return this.classService.get(id);
 	}
 
+	
 	@HasRoles(Role.MAIN_ADMIN, Role.ADMIN)
 	@UseGuards(RolesGuard)
+	@UseInterceptors(HttpCacheInterceptor)
+	@CacheKey(GET_CLASSES_CACHE_KEY)
 	@Get('get-all')
 	getAll(@GetUser() user: User): Promise<Class[]> {
 		return this.classService.getAll(user);

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -16,6 +16,7 @@ import { TestModule } from './test/test.module';
 import { TestScoreModule } from './test-score/test-score.module';
 import { AcademicYearModule } from './academic-year/academic-year.module';
 import { PublicFileModule } from './public-file/public-file.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
 	imports: [
@@ -49,6 +50,22 @@ import { PublicFileModule } from './public-file/public-file.module';
 					};
 				}
 			},
+		}),
+		/**
+		 * Disadvantage: it is not shared between multiple instances of our application.
+		 * To deal with this issue, we can use Redis.
+		 */
+		CacheModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				store: redisStore,
+				host: configService.get('REDIS_HOST'),
+				port: configService.get('REDIS_PORT'),
+				ttl: 120,
+				max: 100,
+			}),
+			isGlobal: true,
 		}),
 		AuthModule,
 		ProfileModule,
