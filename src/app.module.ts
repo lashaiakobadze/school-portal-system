@@ -16,6 +16,7 @@ import { TestModule } from './test/test.module';
 import { TestScoreModule } from './test-score/test-score.module';
 import { AcademicYearModule } from './academic-year/academic-year.module';
 import { PublicFileModule } from './public-file/public-file.module';
+import { SubscriberModule } from './subscriber/subscriber.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -78,6 +79,7 @@ import * as redisStore from 'cache-manager-redis-store';
 		TestScoreModule,
 		AcademicYearModule,
 		PublicFileModule,
+		SubscriberModule,
 	],
 	controllers: [],
 	providers: [
