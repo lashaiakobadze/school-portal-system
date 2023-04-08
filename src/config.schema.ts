@@ -10,15 +10,15 @@ export const configValidationSchema = Joi.object({
 	JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
 	JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
 	JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
-	
+
 	REDIS_HOST: Joi.string().required(),
 	REDIS_PORT: Joi.number().required(),
 	REDIS_PASSWORD: Joi.string().required(),
 	SESSION_SECRET: Joi.string().required(),
 
 	AWS_REGION: Joi.string().required(),
-    AWS_ACCESS_KEY_ID: Joi.string().required(),
-    AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+	AWS_ACCESS_KEY_ID: Joi.string().required(),
+	AWS_SECRET_ACCESS_KEY: Joi.string().required(),
 	AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
 
 	DB_USERNAME: Joi.string().required(),
@@ -33,4 +33,12 @@ export const configValidationSchema = Joi.object({
 	GRAYLOG_HOST: Joi.string().required(),
 	GRAYLOG_PORT: Joi.number().required(),
 	GRAYLOG_FACILITY: Joi.string().required(),
+
+	SUBSCRIBERS_SERVICE_HOST: Joi.string().required(),
+	SUBSCRIBERS_SERVICE_PORT: Joi.number().required(),
+
+	RABBITMQ_USER: Joi.string().required(),
+	RABBITMQ_PASSWORD: Joi.string().required(),
+	RABBITMQ_HOST: Joi.string().required(),
+	RABBITMQ_QUEUE_NAME: Joi.string().required(),
 });
